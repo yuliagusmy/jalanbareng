@@ -1,41 +1,44 @@
 <template>
   <div>
-    <!-- Modern Hero Section with Gradient -->
+    <!-- Authentic Community Hero Section -->
     <v-sheet class="hero-section" :style="{
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.78) 0%, rgba(15, 23, 42, 0.92) 100%), url(\'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1600&auto=format&fit=crop\') center/cover no-repeat',
       position: 'relative',
       overflow: 'hidden'
     }">
-      <!-- Animated Background Shapes -->
-      <div class="hero-bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-      </div>
-
       <v-container class="hero-content"
-        style="position: relative; z-index: 2; padding-top: 100px; padding-bottom: 80px">
+        style="position: relative; z-index: 2; padding-top: 110px; padding-bottom: 90px">
         <v-row align="center" justify="center" class="pt-16 pb-16 pb-md-20">
-          <v-col cols="12" md="8" class="text-center pb-8 pb-md-12">
+          <v-col cols="12" md="9" lg="8" class="text-center pb-8 pb-md-12">
             <div class="animate-fade-in">
+              <!-- Community Pill Badge -->
+              <div class="d-inline-flex align-center ga-2 px-4 py-1 rounded-pill mb-4 hero-pill-badge">
+                <v-icon size="small" color="#FBBF24">mdi-compass-outline</v-icon>
+                <span>KOMUNITAS PEJALAN KAKI & PENJELAJAH KOTA</span>
+              </div>
 
-              <h1 class="text-h5 text-sm-h4 text-md-h3 text-lg-h2 font-weight-bold text-white mb-4 mb-md-6"
-                style="line-height: 1.2;">
-                Bergabung dalam<br>
-                <span class="gradient-text">Aktivasi Komunitas</span>
+              <!-- Human & Grounded Headline -->
+              <h1 class="text-h4 text-sm-h3 text-md-h2 text-lg-h1 font-weight-black text-white mb-4 hero-main-heading">
+                Setiap Sudut Kota Punya Cerita,<br>
+                <span class="hero-highlight-text">Mari Menjelajah Bareng</span>
               </h1>
 
-              <p class="text-body-1 text-sm-h6 text-md-h5 text-white mb-6 mb-md-8 mx-auto px-4"
-                style="max-width: 700px; opacity: 0.95;">
-                Temukan destinasi menarik, ikuti event seru, dan berbagi pengalaman
-                bersama komunitas penjelajah lokal di berbagai kota
+              <!-- Honest, Warm Community Copy -->
+              <p class="text-body-1 text-sm-h6 text-white mb-8 mx-auto px-4 hero-main-subtitle">
+                Temukan teman jalan baru, susuri trotoar dan lorong tersembunyi, ikuti agenda jalan santai, serta bagikan catatan perjalananmu di berbagai kota.
               </p>
 
-              <div class="d-flex flex-column flex-sm-row justify-center align-center ga-4 px-4">
-                <v-btn :size="$vuetify.display.mobile ? 'large' : 'x-large'" color="white" class="px-6 px-sm-8"
-                  rounded="pill" elevation="8" to="/aktivasi" :block="$vuetify.display.mobile">
+              <!-- Purposeful Actions -->
+              <div class="d-flex flex-column flex-sm-row justify-center align-center ga-3 px-4">
+                <v-btn :size="$vuetify.display.mobile ? 'large' : 'x-large'" color="primary" class="px-8 font-weight-bold elevation-4"
+                  rounded="pill" to="/aktivasi" :block="$vuetify.display.mobile">
                   <v-icon start>mdi-map-marker-radius</v-icon>
-                  Lihat Aktivasi
+                  Lihat Aktivasi & Event
+                </v-btn>
+                <v-btn :size="$vuetify.display.mobile ? 'large' : 'x-large'" color="white" variant="outlined" class="px-8 font-weight-bold"
+                  rounded="pill" to="/cerita" :block="$vuetify.display.mobile">
+                  <v-icon start>mdi-feather</v-icon>
+                  Baca Cerita Teman Jalan
                 </v-btn>
               </div>
             </div>
@@ -69,27 +72,23 @@
       <!-- Active Activations Grid -->
       <HomeActiveActivationsSection :activations="activeActivations" />
 
-      <!-- CTA Section -->
-      <v-card v-if="!authStore.isLoggedIn" elevation="0" rounded="xl" class="pa-6 pa-md-12 text-center"
-        style="background: linear-gradient(135deg, #5d71c9 0%, #6b4591 100%);">
-        <v-icon :size="$vuetify.display.mobile ? 48 : 64" color="white" class="mb-3 mb-md-4">mdi-account-group</v-icon>
-        <h2 :class="$vuetify.display.mobile ? 'text-h5' : 'text-h3'" class="text-white font-weight-bold mb-3 mb-md-4">
-          Bergabung dengan Komunitas
+      <!-- Purposeful Bottom CTA Section -->
+      <v-card v-if="!authStore.isLoggedIn" elevation="0" rounded="xl" class="pa-6 pa-md-12 text-center border antislop-cta-card">
+        <v-avatar color="white" size="64" class="mb-4 elevation-2">
+          <v-icon size="36" color="primary">mdi-foot-print</v-icon>
+        </v-avatar>
+        <h2 :class="$vuetify.display.mobile ? 'text-h5' : 'text-h3'" class="text-white font-weight-bold mb-3">
+          Langkah Pertama Dimulai Bersama Kami
         </h2>
         <p :class="$vuetify.display.mobile ? 'text-body-2' : 'text-h6'" class="text-white mb-6 mb-md-8 mx-auto px-4"
-          style="max-width: 600px; opacity: 0.9;">
-          Daftar sekarang dan mulai berbagi pengalaman jalan-jalan Anda
+          style="max-width: 620px; opacity: 0.92; line-height: 1.6;">
+          Daftar gratis untuk mulai terhubung dengan sesama penjelajah kota di kotamu. Ikuti jalan santai mingguan dan bagikan catatan perjalananmu.
         </p>
-        <v-btn v-if="!authStore.isLoggedIn" to="/register" color="white"
-          :size="$vuetify.display.mobile ? 'large' : 'x-large'" rounded="pill" class="px-8 px-md-10" elevation="8"
+        <v-btn to="/register" color="primary"
+          :size="$vuetify.display.mobile ? 'large' : 'x-large'" rounded="pill" class="px-8 px-md-10 font-weight-bold elevation-4"
           :block="$vuetify.display.mobile">
-          <v-icon start>mdi-google</v-icon>
-          Daftar Sekarang
-        </v-btn>
-        <v-btn v-else to="/profile" color="white" :size="$vuetify.display.mobile ? 'large' : 'x-large'" rounded="pill"
-          class="px-8 px-md-10" elevation="8" :block="$vuetify.display.mobile">
-          <v-icon start>mdi-account</v-icon>
-          Lihat Profil
+          <v-icon start>mdi-account-plus</v-icon>
+          Gabung Jadi Teman Jalan
         </v-btn>
       </v-card>
     </v-container>
@@ -185,8 +184,8 @@ onMounted(async () => {
   // Fetch destinations for stats
   try {
     const destinationsResponse = await api.get('/destinations')
-    const destinations = destinationsResponse.data.data || destinationsResponse.data
-    stats.value[1].value = destinations.length.toString()
+    const totalDest = destinationsResponse.data.total ?? destinationsResponse.data.data?.length ?? (Array.isArray(destinationsResponse.data) ? destinationsResponse.data.length : 0)
+    stats.value[1].value = totalDest.toString()
   } catch (error) {
     console.error('Error fetching destinations:', error)
   }
@@ -194,8 +193,8 @@ onMounted(async () => {
   // Fetch events for stats
   try {
     const eventsResponse = await api.get('/events')
-    const events = eventsResponse.data.data || eventsResponse.data
-    stats.value[2].value = events.length.toString()
+    const totalEvents = eventsResponse.data.total ?? eventsResponse.data.data?.length ?? (Array.isArray(eventsResponse.data) ? eventsResponse.data.length : 0)
+    stats.value[2].value = totalEvents.toString()
   } catch (error) {
     console.error('Error fetching events:', error)
   }
@@ -203,8 +202,8 @@ onMounted(async () => {
   // Fetch users for stats
   try {
     const usersResponse = await api.get('/users')
-    const users = usersResponse.data.data || usersResponse.data
-    stats.value[3].value = users.length.toString()
+    const totalUsers = usersResponse.data.total ?? usersResponse.data.data?.length ?? (Array.isArray(usersResponse.data) ? usersResponse.data.length : 0)
+    stats.value[3].value = totalUsers.toString()
   } catch (error) {
     console.error('Error fetching users:', error)
   }
@@ -237,67 +236,33 @@ onMounted(async () => {
   overflow: hidden;
 }
 
-.hero-bg-shapes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
+.hero-pill-badge {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.725rem;
+  letter-spacing: 0.75px;
+  color: #F8FAFC;
 }
 
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  animation: float 20s infinite ease-in-out;
+.hero-main-heading {
+  line-height: 1.15;
+  letter-spacing: -1px;
 }
 
-.shape-1 {
-  width: 300px;
-  height: 300px;
-  top: -100px;
-  left: -100px;
-  animation-delay: 0s;
+.hero-highlight-text {
+  color: #FBBF24;
 }
 
-.shape-2 {
-  width: 200px;
-  height: 200px;
-  bottom: -50px;
-  right: 100px;
-  animation-delay: 5s;
+.hero-main-subtitle {
+  max-width: 680px;
+  line-height: 1.6;
+  opacity: 0.92;
 }
 
-.shape-3 {
-  width: 150px;
-  height: 150px;
-  top: 50%;
-  right: -50px;
-  animation-delay: 10s;
-}
-
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0) translateX(0);
-  }
-
-  33% {
-    transform: translateY(-30px) translateX(20px);
-  }
-
-  66% {
-    transform: translateY(20px) translateX(-20px);
-  }
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #fff 0%, #f4f4f4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.antislop-cta-card {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .wave-divider {
