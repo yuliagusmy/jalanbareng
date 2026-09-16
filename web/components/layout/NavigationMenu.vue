@@ -72,6 +72,9 @@
     <v-btn to="/destinations" variant="text" :color="textColor" class="mx-1 nav-link" rounded="lg">
       Destinasi
     </v-btn>
+    <v-btn to="/cerita" variant="text" :color="textColor" class="mx-1 nav-link" rounded="lg">
+      Cerita
+    </v-btn>
     <v-btn to="/map" variant="text" :color="textColor" class="mx-1 nav-link" rounded="lg">
       Peta
     </v-btn>
@@ -132,6 +135,14 @@
           </template>
           <v-list-item-title>Kelola Halaman</v-list-item-title>
           <v-list-item-subtitle class="text-caption">Manage halaman statis</v-list-item-subtitle>
+        </v-list-item>
+
+        <v-list-item to="/manage/stories" rounded="lg" class="mx-2">
+          <template v-slot:prepend>
+            <v-icon color="pink">mdi-feather</v-icon>
+          </template>
+          <v-list-item-title>Kurasi Tulisan</v-list-item-title>
+          <v-list-item-subtitle class="text-caption">Moderasi cerita teman jalan</v-list-item-subtitle>
         </v-list-item>
 
         <v-divider class="my-2"></v-divider>

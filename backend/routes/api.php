@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ActivationController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\StoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,6 +69,11 @@ Route::get('/pages/{slug}', [PageController::class, 'show']);
 
 // Settings
 Route::get('/settings/footer', [SettingController::class, 'footer']);
+
+// Stories (Tulisan Komunitas)
+Route::get('/stories', [StoryController::class, 'index']);
+Route::get('/stories/{slug}', [StoryController::class, 'show']);
+Route::post('/stories', [StoryController::class, 'store']);
 
 // Protected routes (require authentication)
 Route::middleware('auth:sanctum')->group(function () {
@@ -141,4 +147,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Settings (Admin only)
     Route::get('/admin/settings', [SettingController::class, 'index']);
     Route::put('/admin/settings', [SettingController::class, 'update']);
+    
+    // Stories (Admin curation)
+    Route::get('/admin/stories', [StoryController::class, 'adminIndex']);
+    Route::put('/admin/stories/{id}/status', [StoryController::class, 'adminUpdateStatus']);
+    Route::post('/admin/stories/{id}', [StoryController::class, 'adminUpdate']);
+    Route::delete('/admin/stories/{id}', [StoryController::class, 'adminDestroy']);
 });

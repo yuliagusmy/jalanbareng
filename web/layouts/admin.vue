@@ -212,6 +212,18 @@
             </template>
             <v-list-item-title>Kelola Kategori</v-list-item-title>
           </v-list-item>
+
+          <v-list-item
+            to="/manage/stories"
+            rounded="lg"
+            class="mb-2"
+            color="primary"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-feather</v-icon>
+            </template>
+            <v-list-item-title>Kurasi Tulisan</v-list-item-title>
+          </v-list-item>
         </template>
       </v-list>
 

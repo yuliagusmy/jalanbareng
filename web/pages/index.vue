@@ -57,6 +57,9 @@
       <!-- Stats Section -->
       <HomeStatsSection :stats="stats" />
 
+      <!-- Community Stories Section (Cerita Teman Jalan) -->
+      <HomeCommunityStoriesSection />
+
       <!-- Featured Activation Section -->
       <HomeFeaturedActivationSection :featured-activation="featuredActivation" />
 
@@ -108,6 +111,7 @@ useSeoMeta({
 })
 
 import HomeStatsSection from '~/components/home/StatsSection.vue'
+import HomeCommunityStoriesSection from '~/components/home/CommunityStoriesSection.vue'
 import HomeFeaturedActivationSection from '~/components/home/FeaturedActivationSection.vue'
 import HomeCategorySection from '~/components/home/CategorySection.vue'
 import HomeActiveActivationsSection from '~/components/home/ActiveActivationsSection.vue'

@@ -46,6 +46,10 @@
         <v-list-item-title>Peta</v-list-item-title>
       </v-list-item>
 
+      <v-list-item to="/cerita" prepend-icon="mdi-feather" rounded="lg" class="mb-1">
+        <v-list-item-title>Cerita Teman Jalan</v-list-item-title>
+      </v-list-item>
+
       <!-- Admin Menu -->
       <template v-if="authStore.isAdmin">
         <v-divider class="my-4"></v-divider>
@@ -93,6 +97,13 @@
             <v-icon color="teal">mdi-file-document-multiple</v-icon>
           </template>
           <v-list-item-title>Kelola Halaman</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item to="/manage/stories" rounded="lg" class="mb-1" color="secondary">
+          <template v-slot:prepend>
+            <v-icon color="pink">mdi-feather</v-icon>
+          </template>
+          <v-list-item-title>Kurasi Tulisan</v-list-item-title>
         </v-list-item>
 
         <v-list-item to="/manage/settings" rounded="lg" class="mb-1" color="secondary">
