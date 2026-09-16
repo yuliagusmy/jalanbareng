@@ -12,7 +12,7 @@
           </v-chip>
         </div>
         <h2 class="text-h4 text-md-h3 font-weight-bold text-grey-darken-4 stories-heading">
-          Cerita Teman Jalan
+          Cerita Jalan Bareng
         </h2>
         <p class="text-body-2 text-md-body-1 text-grey-darken-1 mt-1 mb-0" style="max-width: 680px;">
           Kumpulan refleksi, riset jalur jalan kaki, dan cerita lorong perkotaan yang ditulis langsung oleh teman-teman pejalan dan dikurasi tim Jalan Bareng.
@@ -198,7 +198,7 @@
             Tertarik Menjelajah & Berbagi Cerita Bersama Kami?
           </h3>
           <p class="text-body-1 text-white opacity-90 mb-0" style="max-width: 620px;">
-            Daftarkan diri Anda menjadi teman jalan. Dapatkan teman jelajah baru, akses rute eksklusif, event komunitas, dan publikasikan catatan perjalananmu di sini!
+            Daftarkan diri Anda di Jalan Bareng. Dapatkan kawan jelajah baru, akses rute eksklusif, event komunitas, dan publikasikan catatan perjalananmu di sini!
           </p>
         </v-col>
 
@@ -224,7 +224,7 @@
               class="font-weight-bold px-6 text-primary elevation-4 cta-reg-btn"
             >
               <v-icon start>mdi-account-check</v-icon>
-              Profil Teman Jalan
+              Profil Saya
             </v-btn>
 
             <v-btn

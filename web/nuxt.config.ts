@@ -5,16 +5,16 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Jalan Bareng - Teman Jalan Komunitas',
+      title: 'Jalan Bareng - Komunitas Pejalan Kaki',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'theme-color', content: '#667eea' },
+        { name: 'theme-color', content: '#1976D2' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
         { name: 'apple-mobile-web-app-title', content: 'Jalan Bareng' },
-        { name: 'description', content: 'Platform komunitas untuk mencari teman jalan, berbagi destinasi, dan mengikuti event seru.' }
+        { name: 'description', content: 'Platform komunitas untuk menjelajah kota bersama Jalan Bareng, berbagi destinasi menarik, dan mengikuti event seru.' }
       ],
       link: [
         { rel: 'manifest', href: '/manifest.webmanifest' },

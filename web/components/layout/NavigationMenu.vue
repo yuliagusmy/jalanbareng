@@ -142,7 +142,7 @@
             <v-icon color="pink">mdi-feather</v-icon>
           </template>
           <v-list-item-title>Kurasi Tulisan</v-list-item-title>
-          <v-list-item-subtitle class="text-caption">Moderasi cerita teman jalan</v-list-item-subtitle>
+          <v-list-item-subtitle class="text-caption">Moderasi cerita Jalan Bareng</v-list-item-subtitle>
         </v-list-item>
 
         <v-divider class="my-2"></v-divider>

@@ -9,7 +9,7 @@
               Koleksi Tulisan Komunitas
             </v-chip>
             <h1 class="text-h4 text-md-h3 font-weight-bold text-grey-darken-4 mb-3">
-              Cerita & Kabar Teman Jalan
+              Cerita & Kabar Jalan Bareng
             </h1>
             <p class="text-body-1 text-grey-darken-1 mb-0" style="max-width: 600px;">
               Temukan refleksi perjalanan, kisah inklusi warga, dan laporan observasi lorong perkotaan dari sudut pandang pejalan kaki.
@@ -134,7 +134,7 @@ import { useApi } from '~/composables/useApi'
 import SubmitStoryDialog from '~/components/stories/SubmitStoryDialog.vue'
 
 useSeoMeta({
-  title: 'Cerita & Tulisan Teman Jalan - Jalan Bareng',
+  title: 'Cerita & Tulisan Jalan Bareng - Komunitas Pejalan Kaki',
   description: 'Kumpulan catatan lapangan, riset rute jalan kaki, dan cerita lorong perkotaan dari komunitas Jalan Bareng.',
 })
 

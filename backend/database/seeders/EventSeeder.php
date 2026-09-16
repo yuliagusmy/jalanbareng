@@ -97,7 +97,7 @@ class EventSeeder extends Seeder
             [
                 'name' => 'Gathering: Meet & Greet Member Baru',
                 'type' => 'regular',
-                'description' => '<p>Acara perkenalan untuk member baru komunitas Teman Jalan. Ayo kenalan dan bangun networking!</p><p><strong>Agenda:</strong></p><ul><li>Perkenalan member baru</li><li>Games & Ice breaking</li><li>Sharing pengalaman jalan-jalan</li><li>Makan bersama</li></ul><p><strong>Tempat:</strong> Cafe Losari Beach<br><strong>Dress code:</strong> Casual, wear our merchandise!</p>',
+                'description' => '<p>Acara perkenalan untuk member baru komunitas Jalan Bareng. Ayo kenalan dan bangun networking!</p><p><strong>Agenda:</strong></p><ul><li>Perkenalan member baru</li><li>Games & Ice breaking</li><li>Sharing pengalaman jalan-jalan</li><li>Makan bersama</li></ul><p><strong>Tempat:</strong> Cafe Losari Beach<br><strong>Dress code:</strong> Casual, wear our merchandise!</p>',
                 'date' => Carbon::now()->addDays(5)->setHour(16)->setMinute(0),
                 'registration_link' => 'https://forms.gle/pqr678',
                 'youtube_link' => null,

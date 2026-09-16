@@ -25,7 +25,7 @@
               </h1>
 
               <p class="text-h6 mb-0" style="opacity: 0.95; max-width: 600px; line-height: 1.6;">
-                Jelajahi tempat-tempat menarik yang dibagikan oleh komunitas Teman Jalan
+                Jelajahi tempat-tempat menarik yang dibagikan oleh komunitas Jalan Bareng
               </p>
             </div>
           </v-col>

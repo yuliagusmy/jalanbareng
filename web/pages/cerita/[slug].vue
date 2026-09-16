@@ -14,7 +14,7 @@
         Tulisan yang Anda cari mungkin sedang dalam proses kurasi atau tautan tidak valid.
       </p>
       <v-btn to="/cerita" color="primary" rounded="pill">
-        Kembali ke Cerita Teman Jalan
+        Kembali ke Cerita Jalan Bareng
       </v-btn>
     </v-container>
 
@@ -40,7 +40,7 @@
           <v-row align="center">
             <v-col cols="12" md="8">
               <v-chip size="small" color="white" variant="flat" class="font-weight-bold mb-4 text-uppercase">
-                Catatan Teman Jalan
+                Catatan Jalan Bareng
               </v-chip>
               <h1 class="text-h4 text-sm-h3 text-md-h2 font-weight-bold text-white mb-4 story-title">
                 {{ story.title }}
@@ -191,7 +191,7 @@
                   size="large"
                   class="text-primary font-weight-bold px-6"
                 >
-                  Daftar Jadi Teman Jalan
+                  Daftar di Jalan Bareng
                 </v-btn>
                 <v-btn
                   color="white"

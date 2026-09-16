@@ -1,7 +1,7 @@
 {
-  "name": "Jalan Bareng - Teman Jalan Komunitas",
+  "name": "Jalan Bareng - Komunitas Pejalan Kaki",
   "short_name": "Jalan Bareng",
-  "description": "Platform komunitas untuk mencari teman jalan, berbagi destinasi menarik, dan mengikuti event seru di berbagai kota.",
+  "description": "Platform komunitas untuk menjelajah kota bersama Jalan Bareng, berbagi destinasi menarik, dan mengikuti event seru di berbagai kota.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",

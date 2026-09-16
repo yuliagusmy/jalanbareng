@@ -258,7 +258,7 @@
               {{ formatStatusLabel(selectedStory.status) }}
             </v-chip>
             <span class="text-subtitle-1 font-weight-bold text-grey-darken-4">
-              Kurasi Tulisan Teman Jalan
+              Kurasi Tulisan Jalan Bareng
             </span>
           </div>
           <v-btn icon="mdi-close" variant="text" density="comfortable" @click="previewDialog = false"></v-btn>

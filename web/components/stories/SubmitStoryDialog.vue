@@ -8,7 +8,7 @@
             <v-icon color="primary" size="24">mdi-feather</v-icon>
           </v-avatar>
           <div>
-            <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-0">Kirim Tulisan Teman Jalan</h3>
+            <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-0">Kirim Tulisan Jalan Bareng</h3>
             <span class="text-caption text-grey-darken-1">Bagikan cerita, riset, atau pengalaman jelajahmu</span>
           </div>
         </div>

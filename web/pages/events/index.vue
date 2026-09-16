@@ -22,7 +22,7 @@
                 <span class="gradient-text-white">Bersama Jalan Bareng</span>
               </h1>
               <p class="text-h6 mb-0" style="opacity: 0.95; max-width: 650px; line-height: 1.6;">
-                Bergabunglah dalam kegiatan jalan kaki, workshop, dan acara seru lainnya bersama Teman Jalan Makassar
+                Bergabunglah dalam kegiatan jalan kaki, workshop, dan acara seru lainnya bersama Jalan Bareng Makassar
               </p>
             </div>
           </v-col>

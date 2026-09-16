@@ -25,7 +25,7 @@
 
               <!-- Honest, Warm Community Copy -->
               <p class="text-body-1 text-sm-h6 text-white mb-8 mx-auto px-4 hero-main-subtitle">
-                Temukan teman jalan baru, susuri trotoar dan lorong tersembunyi, ikuti agenda jalan santai, serta bagikan catatan perjalananmu di berbagai kota.
+                Temukan kawan jalan baru, susuri trotoar dan lorong tersembunyi, ikuti agenda jalan santai, serta bagikan catatan perjalananmu di berbagai kota.
               </p>
 
               <!-- Purposeful Actions -->
@@ -38,7 +38,7 @@
                 <v-btn :size="$vuetify.display.mobile ? 'large' : 'x-large'" color="white" variant="outlined" class="px-8 font-weight-bold"
                   rounded="pill" to="/cerita" :block="$vuetify.display.mobile">
                   <v-icon start>mdi-feather</v-icon>
-                  Baca Cerita Teman Jalan
+                  Baca Cerita Jalan Bareng
                 </v-btn>
               </div>
             </div>
@@ -60,7 +60,7 @@
       <!-- Stats Section -->
       <HomeStatsSection :stats="stats" />
 
-      <!-- Community Stories Section (Cerita Teman Jalan) -->
+      <!-- Community Stories Section (Cerita Jalan Bareng) -->
       <HomeCommunityStoriesSection />
 
       <!-- Featured Activation Section -->
@@ -88,7 +88,7 @@
           :size="$vuetify.display.mobile ? 'large' : 'x-large'" rounded="pill" class="px-8 px-md-10 font-weight-bold elevation-4"
           :block="$vuetify.display.mobile">
           <v-icon start>mdi-account-plus</v-icon>
-          Gabung Jadi Teman Jalan
+          Gabung Bersama Jalan Bareng
         </v-btn>
       </v-card>
     </v-container>
@@ -101,10 +101,10 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Jalan Bareng - Temukan Teman Jalanmu',
-  ogTitle: 'Jalan Bareng - Temukan Teman Jalanmu',
-  description: 'Platform komunitas untuk mencari teman jalan, berbagi destinasi, dan mengikuti event seru di berbagai kota.',
-  ogDescription: 'Platform komunitas untuk mencari teman jalan, berbagi destinasi, dan mengikuti event seru di berbagai kota.',
+  title: 'Jalan Bareng - Menjelajah Bersama Komunitas',
+  ogTitle: 'Jalan Bareng - Menjelajah Bersama Komunitas',
+  description: 'Platform komunitas untuk menjelajah kota bersama Jalan Bareng, berbagi destinasi menarik, dan mengikuti event seru di berbagai kota.',
+  ogDescription: 'Platform komunitas untuk menjelajah kota bersama Jalan Bareng, berbagi destinasi menarik, dan mengikuti event seru di berbagai kota.',
   ogImage: 'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=1200&h=630&fit=crop',
   twitterCard: 'summary_large_image',
 })

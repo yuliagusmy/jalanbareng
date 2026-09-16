@@ -47,7 +47,7 @@
       </v-list-item>
 
       <v-list-item to="/cerita" prepend-icon="mdi-feather" rounded="lg" class="mb-1">
-        <v-list-item-title>Cerita Teman Jalan</v-list-item-title>
+        <v-list-item-title>Cerita Jalan Bareng</v-list-item-title>
       </v-list-item>
 
       <!-- Admin Menu -->
