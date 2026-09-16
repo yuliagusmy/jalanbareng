@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Rounded App Icon Background -->
+  <rect width="512" height="512" rx="110" fill="url(#grad)" />
+  
+  <!-- Subtle decorative ring -->
+  <circle cx="256" cy="230" r="160" fill="none" stroke="#ffffff" stroke-width="6" opacity="0.2" />
+
+  <!-- Map Pin Icon -->
+  <g filter="url(#shadow)">
+    <path d="M 256 100 C 189.7 100 136 153.7 136 220 C 136 305 240 395 248.5 402.5 C 253 406.4 259 406.4 263.5 402.5 C 272 395 376 305 376 220 C 376 153.7 322.3 100 256 100 Z" fill="#ffffff" />
+    <!-- Pin Center Circle with walking/compass dot -->
+    <circle cx="256" cy="215" r="48" fill="#667eea" />
+    <circle cx="256" cy="215" r="22" fill="#ffffff" />
+  </g>
+
+  <!-- Community / Trail accent curves at the bottom -->
+  <path d="M 120 440 Q 256 400 392 440" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" opacity="0.8" />
+</svg>

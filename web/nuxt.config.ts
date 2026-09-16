@@ -1,0 +1,88 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  compatibilityDate: '2025-07-15',
+  devtools: { enabled: true },
+
+  app: {
+    head: {
+      title: 'Jalan Bareng - Teman Jalan Komunitas',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'theme-color', content: '#667eea' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+        { name: 'apple-mobile-web-app-title', content: 'Jalan Bareng' },
+        { name: 'description', content: 'Platform komunitas untuk mencari teman jalan, berbagi destinasi, dan mengikuti event seru.' }
+      ],
+      link: [
+        { rel: 'manifest', href: '/manifest.webmanifest' },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/icons/icon-192.png' },
+        { rel: 'apple-touch-icon', href: '/icons/icon-192.png' }
+      ]
+    }
+  },
+
+  typescript: {
+    types: ['@types/node']
+  },
+
+  modules: [
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    'vuetify-nuxt-module'
+  ],
+
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
+
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8001',
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:8001/api',
+      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+      googleMapsMapId: process.env.NUXT_PUBLIC_GOOGLE_MAPS_MAP_ID || ''
+    }
+  },
+
+  vuetify: {
+    vuetifyOptions: {
+      theme: {
+        defaultTheme: 'light',
+        themes: {
+          light: {
+            colors: {
+              primary: '#1976D2',
+              secondary: '#424242',
+              accent: '#82B1FF',
+              error: '#FF5252',
+              info: '#2196F3',
+              success: '#4CAF50',
+              warning: '#FFC107',
+            },
+          },
+          dark: {
+            colors: {
+              primary: '#2196F3',
+              secondary: '#424242',
+              accent: '#FF4081',
+              error: '#FF5252',
+              info: '#2196F3',
+              success: '#4CAF50',
+              warning: '#FB8C00',
+            },
+          },
+        },
+      },
+    }
+  },
+
+  css: [
+    '@mdi/font/css/materialdesignicons.css'
+  ]
+})
