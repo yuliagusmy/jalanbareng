@@ -46,8 +46,22 @@ const deferredPrompt = ref<any>(null)
 onMounted(() => {
   if (typeof window === 'undefined') return
 
-  // Register service worker if supported
+  // In development mode, unregister any active service worker and clear stale caches to allow Vite HMR
   if ('serviceWorker' in navigator) {
+    if (import.meta.dev) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const registration of registrations) {
+          registration.unregister()
+        }
+      })
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => caches.delete(key))
+        })
+      }
+      return
+    }
+
     navigator.serviceWorker.register('/sw.js').then((reg) => {
       console.log('[PWA] Service Worker registered with scope:', reg.scope)
     }).catch((err) => {

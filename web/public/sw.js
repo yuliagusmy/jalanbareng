@@ -38,8 +38,13 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  // Do not intercept or cache local dev files or _nuxt bundles
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.pathname.includes('/_nuxt/')) {
+    return
+  }
+
   // Handle static assets with Cache-first strategy
-  if (url.pathname.startsWith('/icons/') || url.pathname.includes('/_nuxt/')) {
+  if (url.pathname.startsWith('/icons/')) {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached

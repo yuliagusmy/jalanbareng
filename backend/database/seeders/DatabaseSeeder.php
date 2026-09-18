@@ -19,13 +19,14 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             CategorySeeder::class,
             UserSeeder::class,
+            ActivationSeeder::class,
             DestinationSeeder::class,
             EventSeeder::class,
-            ActivationSeeder::class,
             UpdateActivationRelationsSeeder::class,
             UpdateEventDatesSeeder::class,
             PageSeeder::class,
             SettingSeeder::class,
+            StorySeeder::class,
         ]);
     }
 }

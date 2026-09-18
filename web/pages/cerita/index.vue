@@ -132,6 +132,7 @@
 import { ref, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
 import SubmitStoryDialog from '~/components/stories/SubmitStoryDialog.vue'
+import { defaultDummyStories } from '~/utils/dummyStories'
 
 useSeoMeta({
   title: 'Cerita & Tulisan Jalan Bareng - Komunitas Pejalan Kaki',
@@ -157,6 +158,16 @@ const formatDate = (dateStr: string) => {
   })
 }
 
+const filterFallbackStories = (query: string) => {
+  if (!query) return defaultDummyStories
+  const q = query.toLowerCase()
+  return defaultDummyStories.filter(s =>
+    s.title.toLowerCase().includes(q) ||
+    s.author_name.toLowerCase().includes(q) ||
+    s.excerpt.toLowerCase().includes(q)
+  )
+}
+
 const fetchStories = async () => {
   loading.value = true
   try {
@@ -166,9 +177,15 @@ const fetchStories = async () => {
         per_page: 24,
       }
     })
-    stories.value = res.data.stories || res.data.data || []
+    const fetched = res.data.stories || res.data.data || []
+    if (fetched && fetched.length > 0) {
+      stories.value = fetched
+    } else {
+      stories.value = filterFallbackStories(searchQuery.value)
+    }
   } catch (err) {
-    console.error('Failed to load stories archive:', err)
+    console.error('Failed to load stories archive from API, using fallback:', err)
+    stories.value = filterFallbackStories(searchQuery.value)
   } finally {
     loading.value = false
   }

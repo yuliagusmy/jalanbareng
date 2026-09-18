@@ -17,6 +17,7 @@ class StorySeeder extends Seeder
         $userId = $admin ? $admin->id : null;
 
         $stories = [
+            // 1. Riset & Tata Kota
             [
                 'title' => 'Learning Report: Membangun Ruang Aman & Nyaman Bagi Pejalan Kaki Pemula',
                 'slug' => 'learning-report-membangun-ruang-aman-pejalan-kaki-pemula',
@@ -33,11 +34,13 @@ class StorySeeder extends Seeder
                 'published_at' => now()->subDays(2),
                 'views_count' => 142,
             ],
+
+            // 2. Inklusi Disabilitas Makassar
             [
                 'title' => 'Makassar City: Menjelajah Ruang Ramah Disabilitas dan Cerita Inklusi Warga',
                 'slug' => 'makassar-city-menjelajah-ruang-ramah-disabilitas-cerita-inklusi',
                 'excerpt' => 'Menyusuri pesisir Losari hingga gang-gang perkampungan tua untuk menguji sejauh mana kota merangkul seluruh warganya.',
-                'content' => '<p>Makassar dikenal dengan angin sepoi pantainya yang khas dan aroma pisang epe yang semerbak. Namun di balik keindahan panorama Pantai Losari, bagaimana kenyamanan kota ini bagi kawan-kawan difabel dan lansia yang ingin menikmati sore hari?</p><h3>Jalan Bareng Inklusif</h3><p>Bersama komunitas kawan dengar dan teman netra lokal, kami menyusuri jalur pedestrian sepanjang 3 kilometer. Kami mencatat kebutuhan jalur pemandu (*guiding block*) yang tidak terputus dan ramp kursi roda yang landai.</p><p>Cerita ini adalah pengingat bahwa kota yang ramah bagi kelompok rentan adalah kota yang nyaman dan manusiawi untuk dinikmati oleh siapa saja.</p>',
+                'content' => '<p>Makassar dikenal dengan angin sepoi pantainya yang khas dan aroma pisang epe yang semerbak. Namun di balik keindahan panorama Pantai Losari, bagaimana kenyamanan kota ini bagi kawan-kawan difabel dan lansia yang ingin menikmati sore hari?</p><h3>Jalan Bareng Inklusif</h3><p>Bersama komunitas kawan dengar dan teman netra lokal, kami menyusuri jalur pedestrian sepanjang 3 kilometer. Kami mencatat kebutuhan jalur pemandu (guiding block) yang tidak terputus dan ramp kursi roda yang landai.</p><p>Cerita ini adalah pengingat bahwa kota yang ramah bagi kelompok rentan adalah kota yang nyaman dan manusiawi untuk dinikmati oleh siapa saja.</p>',
                 'cover_image' => 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&h=1000&fit=crop',
                 'author_name' => 'Siti Nurhaliza',
                 'author_email' => 'siti.nurhaliza@jalanbareng.com',
@@ -49,11 +52,13 @@ class StorySeeder extends Seeder
                 'published_at' => now()->subDays(5),
                 'views_count' => 98,
             ],
+
+            // 3. Iklim Mikro & Gang Hijau
             [
                 'title' => 'Yang Tinggal Bersama Hawa Panas: Cerita Lorong dan Iklim Kota yang Berubah',
                 'slug' => 'yang-tinggal-bersama-hawa-panas-cerita-lorong-dan-iklim-kota',
                 'excerpt' => 'Di tengah terik aspal kota tropis, lorong-lorong hijau swadaya warga menjadi oase penyejuk yang menyatukan tetangga.',
-                'content' => '<p>Suhu perkotaan yang semakin meningkat belakangan ini bukan lagi sekadar angka di ramalan cuaca smartphone. Warga yang beraktivitas kaki dan bersepeda merasakan langsung dampaknya di sekujur kulit.</p><h3>Gotong Royong Tanaman Lorong</h3><p>Ketika menyusuri salah satu perkampungan padat di pinggiran rel kereta, kami disambut oleh jajaran pot lidah mertua, sirih gading, dan pohon mangga rimbun yang ditata apik oleh warga. Lorong tersebut terasa 3-4 derajat lebih sejuk dibandingkan jalan protokol di luarnya.</p><p>Gerakan kecil warga menanam di depan teras bukan hanya sekadar estetika, melainkan mitigasi iklim mikro yang nyata dan patut diduplikasi ke sudut-sudut kota lainnya.</p>',
+                'content' => '<p>Suhu perkotaan yang semakin meningkat belakangan ini bukan lagi sekadar angka di ramalan cuaca smartphone. Warga yang beraktivitas kaki dan bersepeda merasakan langsung dampaknya di sekujur kulit.</p><h3>Gotong Royong Tanaman Lorong</h3><p>Ketika menyusuri salah satu perkampungan padat di pinggiran rel kereta, kami disambut oleh jajaran pot lidah mertua, sirih gading, dan pohon mangga rimbun yang ditata apik oleh warga. Lorong tersebut terasa 3 sampai 4 derajat lebih sejuk dibandingkan jalan protokol di luarnya.</p><p>Gerakan kecil warga menanam di depan teras bukan hanya sekadar estetika, melainkan mitigasi iklim mikro yang nyata dan patut diduplikasi ke sudut-sudut kota lainnya.</p>',
                 'cover_image' => 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=1000&fit=crop',
                 'author_name' => 'Fajar Pratama',
                 'author_email' => 'fajar.pratama@gmail.com',
@@ -65,6 +70,8 @@ class StorySeeder extends Seeder
                 'published_at' => now()->subDays(8),
                 'views_count' => 76,
             ],
+
+            // 4. Sejarah Kota Tua
             [
                 'title' => 'Merekam Denyut Pejalan Kaki: Catatan dari Sudut Tersembunyi Kota Tua',
                 'slug' => 'merekam-denyut-pejalan-kaki-catatan-dari-sudut-tersembunyi-kota-tua',
@@ -81,18 +88,182 @@ class StorySeeder extends Seeder
                 'published_at' => now()->subDays(12),
                 'views_count' => 110,
             ],
+
+            // 5. Yogyakarta: Gang Kotagede
+            [
+                'title' => 'Menyusuri Lorong Perak Kotagede: Antara Tembok Bata Kuno dan Sapaan Pagi Warga',
+                'slug' => 'menyusuri-lorong-perak-kotagede-tembok-bata-kuno-sapaan-pagi',
+                'excerpt' => 'Labirin gang sempit peninggalan Mataram Islam yang menyimpan ketenangan, aroma dupa pagi, dan denting palu perajin perak.',
+                'content' => '<p>Berjalan kaki di Kotagede Yogyakarta bagaikan melintasi lorong waktu. Gang-gang sempit yang hanya muat satu sepeda onthel ini menyajikan pemandangan arsitektur khas: dinding bata tanpa plester, gapura paduraksa, dan pohon kamboja tua yang meneduhkan halaman rumah singgah.</p><h3>Ritme Lambat yang Memulihkan</h3><p>Ketika mobil tak bisa masuk, ruang jalan berubah menjadi serambi bersama. Anak-anak berangkat sekolah dengan berjalan kaki, ibu-ibu berbelanja jamu gendong, dan para sesepuh duduk santai di lincak bambu. Dari mereka kita belajar bahwa keakraban sosial tumbuh subur di ruang pejalan kaki yang intim.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1584810359583-96fc3448beaa?w=800&h=1000&fit=crop',
+                'author_name' => 'Dimas Wicaksono',
+                'author_email' => 'dimas.wicaksono@gmail.com',
+                'author_bio' => 'Penulis lepas dan peminat tata ruang kampung tradisional.',
+                'author_instagram' => '@dimas_jogjawalks',
+                'card_style' => 'coral',
+                'status' => 'approved',
+                'is_featured' => true,
+                'published_at' => now()->subDays(14),
+                'views_count' => 165,
+            ],
+
+            // 6. Bandung: Subuh di Braga
+            [
+                'title' => 'Melangkah Subuh di Koridor Braga: Udara Dingin Cekungan Bandung dan Fasad Art Deco',
+                'slug' => 'melangkah-subuh-di-koridor-braga-udara-dingin-fasad-art-deco',
+                'excerpt' => 'Menikmati trotoar batu andesit Jalan Braga sebelum toko-toko seni dibuka dan lalu lintas kendaraan memadat.',
+                'content' => '<p>Kawasan Braga kerap riuh di malam akhir pekan. Namun jika Anda datang tepat pukul setengah enam pagi, jalan legendaris ini menampilkan wajah yang sangat teduh. Kabut tipis khas dataran tinggi Priangan masih menggantung di puncak atap gedung De Vries.</p><h3>Menikmati Detail Arsitektur</h3><p>Dengan melambatkan langkah kaki, kita bisa memperhatikan detail kaca patri, ornamen besi tempa, dan deretan lukisan cat minyak yang baru saja dipajang di emperan toko. Sarapan roti tawar hangat dan kopi susu di kedai tua menjadi penutup rute yang sempurna.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=800&h=1000&fit=crop',
+                'author_name' => 'Annisa Rahmawati',
+                'author_email' => 'annisa.rahma@jalanbareng.com',
+                'author_bio' => 'Pegiat arsitektur kota dan penjelajah trotoar Bandung.',
+                'author_instagram' => '@annisa_bdgwalk',
+                'card_style' => 'magenta',
+                'status' => 'approved',
+                'is_featured' => false,
+                'published_at' => now()->subDays(16),
+                'views_count' => 134,
+            ],
+
+            // 7. Solo: Jalur Ramah Difabel Slamet Riyadi
+            [
+                'title' => 'Uji Aksesibilitas Jalan Slamet Riyadi Solo: Jalur Pemandu dan Ruang Teduh Pepohonan',
+                'slug' => 'uji-aksesibilitas-jalan-slamet-riyadi-solo-jalur-pemandu-ruang-teduh',
+                'excerpt' => 'Catatan lapangan menguji trotoar terpanjang di Jawa Tengah bersama kawan pengguna kursi roda dan tongkat penuntun.',
+                'content' => '<p>Jalan Slamet Riyadi sering dipuji sebagai salah satu jalur pedestrian kota terbaik di Indonesia. Jalurnya yang sangat lebar, dipayungi pohon angsana rimbun, dan berdampingan dengan rel kereta uap Jaladara memberikan pengalaman berjalan yang unik.</p><h3>Catatan untuk Kemajuan Bersama</h3><p>Dalam uji jalan sejauh 4 kilometer ini, kami mencatat bahwa sebagian besar guiding block berada dalam kondisi prima. Namun beberapa titik masih terhalang tiang utilitas dan pot tanaman yang ditaruh tanpa memperhitungkan jalur lurus pengguna tongkat. Dialog konstruktif dengan dinas terkait pun kami susun sebagai tindak lanjut.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1572949645841-094f3a9c4c94?w=800&h=1000&fit=crop',
+                'author_name' => 'Bagus Hendrawan',
+                'author_email' => 'bagus.hendra@gmail.com',
+                'author_bio' => 'Relawan advokasi disabilitas dan transportasi inklusif.',
+                'author_instagram' => '@bagus_pedestrian',
+                'card_style' => 'amber',
+                'status' => 'approved',
+                'is_featured' => false,
+                'published_at' => now()->subDays(19),
+                'views_count' => 88,
+            ],
+
+            // 8. Jakarta Selatan: Kantong Hijau Blok M ke Tebet
+            [
+                'title' => 'Menghubungkan Titik Hijau Jakarta Selatan: Menembus Trotoar Nyaman Blok M hingga Tebet',
+                'slug' => 'menghubungkan-titik-hijau-jaksel-trotoar-nyaman-blok-m-tebet',
+                'excerpt' => 'Menyusuri koridor transit ramah pejalan, taman kota yang saling terhubung, dan jeda tenang di tengah denyut metropolitan.',
+                'content' => '<p>Jakarta sering dicap sebagai kota yang tidak ramah pejalan kaki. Namun kawasan transit di Jakarta Selatan perlahan membalikkan anggapan tersebut. Berjalan kaki dari Stasiun MRT Blok M, menembus Taman Literasi, hingga trotoar rimbun Barito kini terasa menyenangkan.</p><h3>Kota yang Bisa Ditempuh Kaki</h3><p>Infrastruktur pedestrian yang terawat bukan sekadar mempermudah komuter, melainkan menciptakan ruang hidup baru bagi UMKM lokal, musisi jalanan, dan komunitas pembaca buku. Kuncinya adalah integrasi: trotoar yang lebar, naungan pepohonan, dan akses mudah ke halte transportasi publik.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=800&h=1000&fit=crop',
+                'author_name' => 'Reza Pratama',
+                'author_email' => 'reza.pratama@gmail.com',
+                'author_bio' => 'Komuter harian dan penjelajah ruang urban Jakarta.',
+                'author_instagram' => '@reza_urbanwalk',
+                'card_style' => 'photo',
+                'status' => 'approved',
+                'is_featured' => true,
+                'published_at' => now()->subDays(22),
+                'views_count' => 205,
+            ],
+
+            // 9. Surabaya: Kampung Peneleh
+            [
+                'title' => 'Menapaki Jejak Sejarah di Kampung Peneleh Surabaya: Dari Makam Belanda ke Kali Mas',
+                'slug' => 'menapaki-jejak-sejarah-kampung-peneleh-surabaya-kali-mas',
+                'excerpt' => 'Mendengarkan kisah pergerakan bangsa dan menyusuri tepian sungai yang dulu menjadi urat nadi perniagaan Kota Pahlawan.',
+                'content' => '<p>Peneleh adalah salah satu kampung tertua di Surabaya yang masih mempertahankan tata ruang masa lampau. Di sini, gang-gang sempit dinamai dengan angka Romawi, menghubungkan rumah masa kecil para tokoh sejarah dengan kompleks pemakaman kuno bergaya Eropa.</p><h3>Menghargai Warisan Lokal</h3><p>Warga kampung menyambut kami dengan hangat, menawarkan air putih dingin dan bercerita tentang sumur tua berkhasiat di belakang musala. Berjalan kaki membuka ruang silaturahmi yang tulus antara generasi muda dan penjaga sejarah lokal.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1508807526345-15e9b5f4eaff?w=800&h=1000&fit=crop',
+                'author_name' => 'Lestari Handayani',
+                'author_email' => 'lestari.h@gmail.com',
+                'author_bio' => 'Guru sejarah dan pemandu wisata komunitas Surabaya.',
+                'author_instagram' => '@lestari_peneleh',
+                'card_style' => 'coral',
+                'status' => 'approved',
+                'is_featured' => false,
+                'published_at' => now()->subDays(25),
+                'views_count' => 119,
+            ],
+
+            // 10. Semarang: Kota Lama & Tawang
+            [
+                'title' => 'Kala Lampu Jalan Menyala: Catatan Jalan Kaki Senja di Kawasan Kota Lama Semarang',
+                'slug' => 'kala-lampu-jalan-menyala-catatan-jalan-kaki-senja-kota-lama-semarang',
+                'excerpt' => 'Mengamati transformasi kawasan cagar budaya yang ramah bagi pejalan kaki keluarga dan anak muda di tepi Danau Polder.',
+                'content' => '<p>Revitalisasi Kota Lama Semarang telah mengubah kawasan yang dulu sepi dan rawan genangan menjadi salah satu magnet pejalan kaki terbaik di Jawa Tengah. Batu kali yang dipasang rapi dan larangan melintas bagi kendaraan bermotor di zona inti membuat udara terasa bersih.</p><h3>Penerangan dan Rasa Aman</h3><p>Saat senja tiba, lampu-lampu temaram bergaya klasik mulai berpendar menerangi fasad Gereja Blenduk dan gedung Spiegel. Warga dari berbagai usia berkumpul menikmati hembusan angin malam dengan rasa aman tanpa khawatir senggolan knalpot.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=800&h=1000&fit=crop',
+                'author_name' => 'Hendra Setiawan',
+                'author_email' => 'hendra.setiawan@gmail.com',
+                'author_bio' => 'Fotografer cagar budaya dan anggota Jalan Bareng Semarang.',
+                'author_instagram' => '@hendra_semarangwalk',
+                'card_style' => 'magenta',
+                'status' => 'approved',
+                'is_featured' => false,
+                'published_at' => now()->subDays(28),
+                'views_count' => 92,
+            ],
+
+            // 11. Bali (Ubud): Pematang Sawah Kajeng
+            [
+                'title' => 'Menjaga Sunyi di Jalur Subak Ubud: Berjalan di Pematang Tanpa Deru Knalpot',
+                'slug' => 'menjaga-sunyi-jalur-subak-ubud-berjalan-di-pematang-tanpa-deru-knalpot',
+                'excerpt' => 'Pentingnya menjaga jalan setapak persawahan tradisional agar tetap menjadi ruang tenang bagi manusia dan kelestarian alam.',
+                'content' => '<p>Di balik padatnya jalan raya Ubud, jalur setapak Subak Juwuk Manis dan Kajeng menawarkan pengalaman berjalan kaki yang menenangkan batin. Suara gemericik air irigasi sawah dan kicau burung jalak putih menemani setiap ayunan langkah.</p><h3>Etika Melintasi Ruang Tani</h3><p>Dalam tulisan ini, kami menekankan pentingnya etika pejalan: tidak membuang sampah botol plastik ke saluran air, tidak merusak pematang pemisah lahan, dan selalu menyapa para petani yang sedang menggarap sawah. Ruang jalan kaki yang asri hanya bisa bertahan jika kita menghormati pemilik lahannya.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&h=1000&fit=crop',
+                'author_name' => 'Ketut Suardika',
+                'author_email' => 'ketut.suardika@gmail.com',
+                'author_bio' => 'Pecinta alam terbuka dan pemerhati kearifan lokal Bali.',
+                'author_instagram' => '@ketut_balisteps',
+                'card_style' => 'amber',
+                'status' => 'approved',
+                'is_featured' => false,
+                'published_at' => now()->subDays(31),
+                'views_count' => 178,
+            ],
+
+            // 12. Palopo: Pesisir Tanjung Ringgit
+            [
+                'title' => 'Angin Pesisir Teluk Bone: Refleksi Jalan Pagi di Pelabuhan Tanjung Ringgit Palopo',
+                'slug' => 'angin-pesisir-teluk-bone-refleksi-jalan-pagi-pelabuhan-tanjung-ringgit',
+                'excerpt' => 'Menyapa nelayan pulang melaut dan menikmati panorama perbukitan hijau yang memeluk Kota Idaman dari kejauhan.',
+                'content' => '<p>Kota Palopo memiliki bentang alam yang istimewa: gunung di belakang kota dan laut tenang di depannya. Pelabuhan Tanjung Ringgit di pagi hari adalah titik kumpul favorit warga untuk menggerakkan badan dan menghirup udara segar yang bebas polusi.</p><h3>Solidaritas Komunitas Lokal</h3><p>Kehadiran teman-teman pejalan di Palopo menunjukkan antusiasme warga di luar kota metropolitan untuk memiliki ruang gerak yang sehat dan setara. Dari obrolan di dermaga kapal kayu, lahirlah ide-ide rute penjelajahan baru ke cagar budaya Istana Datu Luwu.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=1000&fit=crop',
+                'author_name' => 'Faisal Basri',
+                'author_email' => 'faisal.basri@jalanbareng.com',
+                'author_bio' => 'Koordinator Chapter Jalan Bareng Palopo.',
+                'author_instagram' => '@faisal_palopowalk',
+                'card_style' => 'photo',
+                'status' => 'approved',
+                'is_featured' => false,
+                'published_at' => now()->subDays(35),
+                'views_count' => 84,
+            ],
+
+            // 13. Pending Story (Kuliner Malam Stasiun)
             [
                 'title' => 'Menelusuri Rute Kuliner Kaki Lima Tengah Malam di Sudut Stasiun',
                 'slug' => 'menelusuri-rute-kuliner-kaki-lima-tengah-malam-sudut-stasiun',
                 'excerpt' => 'Mencicipi wedang ronde hangat dan nasi kucing sembari menyimak obrolan para komuter malam yang baru pulang kerja.',
-                'content' => '<p>Ini adalah kiriman tulisan dari anggota baru kami yang ingin membagikan rute jalan santai malam hari sembari menjelajah warung-warung makan tradisional di sekitar stasiun kereta.</p>',
+                'content' => '<p>Ini adalah kiriman tulisan dari anggota baru kami yang ingin membagikan rute jalan santai malam hari sembari menjelajah warung-warung makan tradisional di sekitar stasiun kereta api.</p>',
                 'cover_image' => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=1000&fit=crop',
                 'author_name' => 'Rina Amelia',
                 'author_email' => 'rina.amelia@gmail.com',
                 'author_bio' => 'Pecinta kuliner malam dan jalan santai.',
                 'author_instagram' => '@rina_kuliner',
                 'card_style' => 'coral',
-                'status' => 'pending', // Pending curation!
+                'status' => 'pending', // Pending curation test!
+                'is_featured' => false,
+                'published_at' => null,
+                'views_count' => 0,
+            ],
+
+            // 14. Pending Story (Fotografi Jalanan)
+            [
+                'title' => 'Tips Memotret Dinamika Jalanan Tanpa Mengganggu Privasi Warga',
+                'slug' => 'tips-memotret-dinamika-jalanan-tanpa-mengganggu-privasi-warga',
+                'excerpt' => 'Etika membawa kamera saku saat berjalan santai di perkampungan padat agar tercipta hubungan saling menghormati.',
+                'content' => '<p>Tulisan panduan praktis dari seorang kawan fotografer jalanan tentang pentingnya senyuman, izin lisan, dan tidak menjadikan kemiskinan sebagai komoditas visual semata.</p>',
+                'cover_image' => 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&h=1000&fit=crop',
+                'author_name' => 'Yusuf Maulana',
+                'author_email' => 'yusuf.maulana@gmail.com',
+                'author_bio' => 'Fotografer dokumenter dan pejalan kaki kota.',
+                'author_instagram' => '@yusuf_streetframe',
+                'card_style' => 'amber',
+                'status' => 'pending', // Pending curation test!
                 'is_featured' => false,
                 'published_at' => null,
                 'views_count' => 0,
@@ -106,6 +277,6 @@ class StorySeeder extends Seeder
             );
         }
 
-        $this->command->info('StorySeeder executed: 4 approved stories + 1 pending story for curation testing!');
+        $this->command->info('StorySeeder executed: 12 approved stories + 2 pending stories for curation testing!');
     }
 }

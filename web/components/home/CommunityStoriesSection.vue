@@ -57,7 +57,7 @@
       <v-col
         v-for="(story, index) in stories"
         :key="story.id"
-        cols="12"
+        cols="6"
         sm="6"
         :md="getColSpan(index, stories.length)"
       >
@@ -178,65 +178,53 @@
       </v-btn>
     </v-card>
 
-    <!-- REGISTRATION CTA BANNER (Inserted Underneath Cards) -->
+    <!-- SUBMIT STORY CTA BANNER (Inserted Underneath Cards) -->
     <v-card
       elevation="0"
       rounded="xl"
       class="mt-8 pa-6 pa-md-8 registration-cta-banner"
     >
       <v-row align="center" justify="space-between">
-        <v-col cols="12" md="8">
+        <v-col cols="12" lg="7" md="7">
           <div class="d-flex align-center ga-3 mb-2">
             <v-avatar color="white" size="42" class="elevation-2">
-              <v-icon color="primary" size="24">mdi-account-heart</v-icon>
+              <v-icon color="#2563EB" size="24">mdi-feather</v-icon>
             </v-avatar>
             <span class="text-subtitle-2 font-weight-bold text-white text-uppercase tracking-wider">
-              Gabung Gerakan Pejalan Kaki
+              Ruang Kontribusi Pejalan
             </span>
           </div>
-          <h3 class="text-h5 text-md-h4 font-weight-bold text-white mb-2">
-            Tertarik Menjelajah & Berbagi Cerita Bersama Kami?
+          <h3 class="text-h5 text-md-h4 font-weight-bold text-white mb-2 banner-heading">
+            Punya Catatan & Cerita Menarik dari Trotoar Kotamu?
           </h3>
-          <p class="text-body-1 text-white opacity-90 mb-0" style="max-width: 620px;">
-            Daftarkan diri Anda di Jalan Bareng. Dapatkan kawan jelajah baru, akses rute eksklusif, event komunitas, dan publikasikan catatan perjalananmu di sini!
+          <p class="text-body-1 text-white opacity-90 mb-0" style="max-width: 580px; line-height: 1.6;">
+            Bagikan refleksi jalan santai, kisah lorong kota, atau catatan riset pejalan kakimu. Setiap tulisan yang masuk akan dikurasi dan dipublikasikan di kanal Cerita Jalan Bareng.
           </p>
         </v-col>
 
-        <v-col cols="12" md="4" class="text-md-right mt-4 mt-md-0">
-          <div class="d-flex flex-column flex-sm-row justify-md-end ga-3">
+        <v-col cols="12" lg="5" md="5" class="text-md-right mt-4 mt-md-0">
+          <div class="cta-btn-group justify-start justify-md-end">
             <v-btn
-              v-if="!authStore.isLoggedIn"
-              to="/register"
               color="white"
-              size="x-large"
+              size="large"
               rounded="pill"
               class="font-weight-bold px-6 text-primary elevation-4 cta-reg-btn"
+              @click="showSubmitDialog = true"
             >
-              <v-icon start>mdi-account-plus</v-icon>
-              Registrasi Jalan Bareng
-            </v-btn>
-            <v-btn
-              v-else
-              to="/profile"
-              color="white"
-              size="x-large"
-              rounded="pill"
-              class="font-weight-bold px-6 text-primary elevation-4 cta-reg-btn"
-            >
-              <v-icon start>mdi-account-check</v-icon>
-              Profil Saya
+              <v-icon start size="20">mdi-feather</v-icon>
+              Submit Tulisan Sekarang
             </v-btn>
 
             <v-btn
+              to="/cerita"
               variant="outlined"
               color="white"
-              size="x-large"
+              size="large"
               rounded="pill"
               class="font-weight-bold px-5"
-              @click="showSubmitDialog = true"
             >
-              <v-icon start>mdi-feather</v-icon>
-              Submit Tulisan
+              <v-icon start size="18">mdi-book-open-page-variant-outline</v-icon>
+              Baca Arsip Cerita
             </v-btn>
           </div>
         </v-col>
@@ -256,6 +244,7 @@ import { ref, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 import SubmitStoryDialog from '~/components/stories/SubmitStoryDialog.vue'
+import { defaultDummyStories } from '~/utils/dummyStories'
 
 const { api } = useApi()
 const authStore = useAuthStore()
@@ -287,9 +276,15 @@ const fetchStories = async () => {
     const res = await api.get('/stories', {
       params: { limit: 3 }
     })
-    stories.value = res.data.stories || res.data.data || []
+    const fetched = res.data.stories || res.data.data || []
+    if (fetched && fetched.length > 0) {
+      stories.value = fetched
+    } else {
+      stories.value = defaultDummyStories.slice(0, 3)
+    }
   } catch (err) {
-    console.error('Failed to load community stories:', err)
+    console.error('Failed to load community stories from API, using fallback:', err)
+    stories.value = defaultDummyStories.slice(0, 3)
   } finally {
     loading.value = false
   }
@@ -565,6 +560,19 @@ onMounted(() => {
   pointer-events: none;
 }
 
+.banner-heading {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.3;
+}
+
+.cta-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
 .cta-reg-btn {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -572,5 +580,87 @@ onMounted(() => {
 .cta-reg-btn:hover {
   transform: scale(1.03);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Mobile 2-column layout refinements */
+@media (max-width: 600px) {
+  .story-card {
+    height: 285px;
+    border-radius: 16px;
+  }
+
+  .card-inner-report {
+    padding: 12px 10px;
+  }
+
+  .book-mockup-wrapper {
+    transform: scale(0.65);
+    transform-origin: center center;
+    margin-top: -12px;
+    margin-bottom: -18px;
+  }
+
+  .card-headline {
+    font-size: 0.8rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 4px !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-subtext {
+    display: none !important;
+  }
+
+  .card-footer-meta {
+    font-size: 0.68rem !important;
+    margin-top: 4px;
+    padding-top: 4px;
+  }
+
+  .author-label {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 80px;
+  }
+
+  .read-more-link {
+    font-size: 0.68rem !important;
+  }
+
+  .read-more-link :deep(.v-icon) {
+    font-size: 14px !important;
+  }
+
+  .card-inner-photo-compact {
+    padding: 10px;
+  }
+
+  .compact-photo-wrapper {
+    height: 110px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+  }
+
+  .photo-headline {
+    font-size: 0.8rem !important;
+    line-height: 1.25 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .photo-subtext {
+    display: none !important;
+  }
+
+  .photo-footer-meta {
+    font-size: 0.68rem !important;
+  }
 }
 </style>

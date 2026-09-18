@@ -38,16 +38,16 @@
         <v-list-item-title>Event</v-list-item-title>
       </v-list-item>
 
-      <v-list-item to="/destinations" prepend-icon="mdi-map-marker" rounded="lg" class="mb-1">
-        <v-list-item-title>Destinasi</v-list-item-title>
-      </v-list-item>
-
-      <v-list-item to="/map" prepend-icon="mdi-map" rounded="lg" class="mb-1">
-        <v-list-item-title>Peta</v-list-item-title>
+      <v-list-item to="/destinations" prepend-icon="mdi-map-marker-radius" rounded="lg" class="mb-1">
+        <v-list-item-title>Destinasi &amp; Peta</v-list-item-title>
       </v-list-item>
 
       <v-list-item to="/cerita" prepend-icon="mdi-feather" rounded="lg" class="mb-1">
         <v-list-item-title>Cerita Jalan Bareng</v-list-item-title>
+      </v-list-item>
+
+      <v-list-item to="/mitra" prepend-icon="mdi-handshake-outline" rounded="lg" class="mb-1">
+        <v-list-item-title>Mitra &amp; Kolaborator</v-list-item-title>
       </v-list-item>
 
       <!-- Admin Menu -->

@@ -48,7 +48,7 @@
       "name": "Peta Destinasi",
       "short_name": "Peta",
       "description": "Buka peta interaktif",
-      "url": "/map",
+      "url": "/destinations?view=map",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]

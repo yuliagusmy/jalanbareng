@@ -243,28 +243,38 @@ const formatDate = (dateStr: string) => {
   })
 }
 
+import { defaultDummyStories } from '~/utils/dummyStories'
+
 const fetchStory = async () => {
   loading.value = true
+  const slug = String(route.params.slug)
   try {
-    const slug = route.params.slug
     const res = await api.get(`/stories/${slug}`)
-    story.value = res.data.story
+    story.value = res.data.story || res.data.data
     related.value = res.data.related || []
-
-    if (story.value) {
-      useSeoMeta({
-        title: `${story.value.title} - Jalan Bareng`,
-        description: story.value.excerpt || story.value.title,
-        ogTitle: story.value.title,
-        ogDescription: story.value.excerpt || story.value.title,
-        ogImage: story.value.cover_image_url || undefined,
-      })
-    }
   } catch (err) {
-    console.error('Failed to load story:', err)
-  } finally {
-    loading.value = false
+    console.error('Failed to load story from API, checking fallback:', err)
   }
+
+  // Fallback to local dummy stories if story was not loaded from API
+  if (!story.value) {
+    const found = defaultDummyStories.find(s => s.slug === slug)
+    if (found) {
+      story.value = found
+      related.value = defaultDummyStories.filter(s => s.slug !== slug).slice(0, 3)
+    }
+  }
+
+  if (story.value) {
+    useSeoMeta({
+      title: `${story.value.title} - Jalan Bareng`,
+      description: story.value.excerpt || story.value.title,
+      ogTitle: story.value.title,
+      ogDescription: story.value.excerpt || story.value.title,
+      ogImage: story.value.cover_image_url || undefined,
+    })
+  }
+  loading.value = false
 }
 
 const copyShareLink = () => {

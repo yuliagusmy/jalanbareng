@@ -9,7 +9,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'theme-color', content: '#1976D2' },
+        { name: 'theme-color', content: '#DC2626' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
@@ -57,13 +57,15 @@ export default defineNuxtConfig({
         themes: {
           light: {
             colors: {
-              primary: '#1976D2',
-              secondary: '#424242',
-              accent: '#82B1FF',
-              error: '#FF5252',
-              info: '#2196F3',
-              success: '#4CAF50',
-              warning: '#FFC107',
+              primary: '#DC2626',
+              secondary: '#111827',
+              accent: '#FACC15',
+              warning: '#F59E0B',
+              error: '#EF4444',
+              info: '#0284C7',
+              success: '#16A34A',
+              background: '#FAFAF9',
+              surface: '#FFFFFF',
             },
           },
           dark: {

@@ -22,21 +22,21 @@ class SettingSeeder extends Seeder
             ],
             [
                 'key' => 'footer_brand_description',
-                'value' => 'Platform komunitas untuk berbagi dan menemukan destinasi menarik, mengikuti event jalan kaki, dan terhubung dengan komunitas lokal di Makassar.',
+                'value' => 'Inisiatif ruang bersama untuk pejalan kaki, penjelajah sudut kota, dan komunitas kreatif di Indonesia. #menelusurikotalebihlambat',
                 'type' => 'text',
                 'group' => 'footer',
             ],
             
             // Social Media Links
             [
-                'key' => 'footer_social_facebook',
-                'value' => 'https://facebook.com',
+                'key' => 'footer_social_instagram',
+                'value' => 'https://instagram.com/jalanbarengind',
                 'type' => 'url',
                 'group' => 'footer',
             ],
             [
-                'key' => 'footer_social_instagram',
-                'value' => 'https://instagram.com',
+                'key' => 'footer_social_facebook',
+                'value' => 'https://facebook.com',
                 'type' => 'url',
                 'group' => 'footer',
             ],
@@ -45,6 +45,38 @@ class SettingSeeder extends Seeder
                 'value' => 'https://twitter.com',
                 'type' => 'url',
                 'group' => 'footer',
+            ],
+
+            // Community Movement Stats
+            [
+                'key' => 'community_tagline',
+                'value' => '#menelusurikotalebihlambat',
+                'type' => 'text',
+                'group' => 'community',
+            ],
+            [
+                'key' => 'stats_members',
+                'value' => '1.000+',
+                'type' => 'text',
+                'group' => 'community',
+            ],
+            [
+                'key' => 'stats_database_registrants',
+                'value' => '10.000+',
+                'type' => 'text',
+                'group' => 'community',
+            ],
+            [
+                'key' => 'stats_partners',
+                'value' => '80+',
+                'type' => 'text',
+                'group' => 'community',
+            ],
+            [
+                'key' => 'stats_cities',
+                'value' => '5 Wilayah',
+                'type' => 'text',
+                'group' => 'community',
             ],
         ];
 
@@ -55,6 +87,6 @@ class SettingSeeder extends Seeder
             );
         }
 
-        $this->command->info('   - Footer settings created successfully');
+        $this->command->info('   - Settings seeded successfully with official Jalan Bareng ecosystem data');
     }
 }

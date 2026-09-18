@@ -19,7 +19,7 @@ class ActivationController extends Controller
     public function index(Request $request)
     {
         $query = Activation::with(['media', 'faqs', 'testimonials'])
-            ->withCount('events');
+            ->withCount(['events', 'destinations']);
 
         // Filter by active status (default: only active)
         if ($request->has('include_inactive')) {

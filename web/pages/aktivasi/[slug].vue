@@ -1,98 +1,141 @@
 <template>
   <div v-if="!loading && activation">
-    <!-- Modern Hero Section with Hero Image Background -->
-    <v-sheet class="activation-hero" :style="{
-      position: 'relative',
-      overflow: 'hidden'
-    }">
-      <!-- Hero Image Background -->
-      <div v-if="activation.hero_image" class="hero-background" :style="{
-        backgroundImage: `url(${apiBase}/storage/${activation.hero_image})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0
-      }"></div>
+    <!-- Modern EduFlex-Inspired Hero Section -->
+    <section class="activation-hero-section">
+      <div class="hero-ambient-glow" aria-hidden="true"></div>
 
-      <!-- Color Overlay -->
-      <div class="hero-overlay" :style="{
-        background: `linear-gradient(135deg, ${hexToRgba(activation.color_theme || '#667eea', 0.9)} 0%, ${hexToRgba(darkenColor(activation.color_theme || '#764ba2', 20), 0.85)} 100%)`,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 1
-      }"></div>
+      <v-container class="hero-inner-container">
+        <v-row align="center" class="hero-main-row">
+          <!-- Left Column: Eyebrow, Headline, Description, Dual CTAs, Stats -->
+          <v-col cols="12" md="6" lg="6" class="hero-text-col">
+            <!-- Eyebrow Chip & Social Badge -->
+            <div class="d-flex align-center flex-wrap ga-3 mb-5">
+              <div class="hero-eyebrow-pill">
+                <span class="eyebrow-dot"></span>
+                <span class="eyebrow-text">
+                  {{ activation.category === 'city' ? '#CITYCHAPTER' : '#AKTIVASI' }} • {{ (activation.city || activation.name).toUpperCase() }}
+                </span>
+              </div>
 
-      <!-- Fallback Gradient (if no hero image) -->
-      <div v-if="!activation.hero_image" class="hero-gradient" :style="{
-        background: `linear-gradient(135deg, ${activation.color_theme || '#667eea'} 0%, ${darkenColor(activation.color_theme || '#764ba2', 20)} 100%)`,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0
-      }"></div>
+              <a
+                v-if="activation.social_instagram"
+                :href="`https://instagram.com/${activation.social_instagram}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hero-ig-badge"
+              >
+                <v-icon size="16" color="#E11D48" class="mr-1">mdi-instagram</v-icon>
+                <span>@{{ activation.social_instagram }}</span>
+              </a>
+            </div>
 
-      <!-- Animated Background Shapes -->
-      <div class="hero-bg-shapes" style="z-index: 1">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-      </div>
-
-      <v-container class="hero-content"
-        style="position: relative; z-index: 2; padding-top: 160px; padding-bottom: 160px">
-        <v-row align="center" justify="center">
-          <v-col cols="12" md="10" lg="8" class="text-center">
-            <!-- Icon -->
-            <v-avatar v-if="activation.icon" size="100" class="mb-6 elevation-8"
-              style="border: 4px solid rgba(255,255,255,0.3)">
-              <v-img :src="`${apiBase}/storage/${activation.icon}`" :alt="activation.name"></v-img>
-            </v-avatar>
-
-            <!-- Title -->
-            <h1 class="text-h3 text-md-h2 font-weight-bold text-white mb-4" style="line-height: 1.2;">
+            <!-- Main Headline: Directly Activation Name as requested -->
+            <h1 class="hero-main-title font-weight-black text-grey-darken-4 mb-4">
               {{ activation.name }}
             </h1>
 
-            <!-- Tagline -->
-            <p v-if="activation.tagline" class="text-h6 text-md-h5 text-white mb-6" style="opacity: 0.95;">
-              {{ activation.tagline }}
+            <!-- Lead Copy -->
+            <p class="hero-lead-text mb-6">
+              {{ heroDescription }}
             </p>
 
-            <!-- City -->
-            <div v-if="activation.city" class="d-flex align-center justify-center mb-8">
-              <v-icon color="white" class="mr-2">mdi-map-marker</v-icon>
-              <span class="text-h6 text-white">{{ activation.city }}</span>
+            <!-- Action Buttons -->
+            <div class="hero-actions-group d-flex flex-wrap align-center ga-3 mb-8">
+              <v-btn
+                @click="scrollToEventsOrRegister"
+                color="#DC2626"
+                size="large"
+                rounded="pill"
+                class="hero-primary-btn font-weight-bold"
+                elevation="0"
+              >
+                Ikut Jalan Pekan Ini
+                <v-icon end size="18">mdi-arrow-right</v-icon>
+              </v-btn>
+
+              <v-btn
+                @click="scrollToAbout"
+                variant="outlined"
+                size="large"
+                rounded="pill"
+                class="hero-secondary-btn font-weight-bold"
+              >
+                Tentang Aktivasi
+              </v-btn>
             </div>
 
-            <!-- CTA Button - Scroll to About -->
-            <div>
-              <v-btn @click="scrollToAbout" size="x-large" color="white" class="px-10" rounded="pill" elevation="8">
-                Pelajari Lebih Lanjut
-                <v-icon end>mdi-arrow-down</v-icon>
-              </v-btn>
+            <!-- Stats Counter Row with Dividers -->
+            <div class="hero-stats-row">
+              <div class="stat-item">
+                <div class="stat-value">1.800+</div>
+                <div class="stat-label">Pejalan Terhubung</div>
+              </div>
+
+              <div class="stat-divider"></div>
+
+              <div class="stat-item">
+                <div class="stat-value">65+</div>
+                <div class="stat-label">Edisi Jalan</div>
+              </div>
+
+              <div class="stat-divider"></div>
+
+              <div class="stat-item">
+                <div class="stat-value d-flex align-center ga-1">
+                  <!-- Interlocking loops icon like in reference image -->
+                  <svg class="stat-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="8" cy="12" r="5" />
+                    <circle cx="16" cy="12" r="5" />
+                  </svg>
+                  <span>15+</span>
+                </div>
+                <div class="stat-label">Rute & Lorong</div>
+              </div>
+            </div>
+          </v-col>
+
+          <!-- Right Column: 2-Column Collage (Home Columns 3 & 4 style) -->
+          <v-col cols="12" md="6" lg="6" class="hero-visual-col">
+            <div class="activation-hero-collage">
+              <!-- Column 1: Tall Vertical Card (Lane 3 style) -->
+              <div class="collage-lane-tall">
+                <div class="collage-card card-tall elevation-2">
+                  <div class="card-img-wrapper">
+                    <img
+                      :src="heroCard1Image"
+                      :alt="activation.name"
+                      class="collage-card-img"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 2: Two Stacked Cards (Lane 4 style) -->
+              <div class="collage-lane-stacked">
+                <div class="collage-card card-stacked-top elevation-2">
+                  <div class="card-img-wrapper">
+                    <img
+                      :src="heroCard2Image"
+                      alt="Dokumentasi Komunitas Jalan Bareng"
+                      class="collage-card-img"
+                    />
+                  </div>
+                </div>
+                <div class="collage-card card-stacked-bottom elevation-2">
+                  <div class="card-img-wrapper">
+                    <img
+                      :src="heroCard3Image"
+                      alt="Aktivitas Komunitas Jalan Bareng"
+                      class="collage-card-img"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </v-col>
         </v-row>
       </v-container>
-
-      <!-- Wave Divider -->
-      <div class="wave-divider">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
-            fill="white" />
-        </svg>
-      </div>
-    </v-sheet>
+    </section>
 
     <v-container class="py-12">
       <!-- 1. ABOUT SECTION (URUTAN 1) - Modern & Informative with Gallery -->
@@ -102,7 +145,7 @@
             <!-- About Header -->
             <div class="mb-12">
               <h2 class="text-h3 text-md-h2 font-weight-bold mb-6"
-                :style="{ color: activation.color_theme || '#1976D2' }">
+                :style="{ color: activation.color_theme || '#DC2626' }">
                 Tentang {{ activation.name }}
               </h2>
               <div class="about-content text-h6 text-md-h5 font-weight-regular text-grey-darken-2 line-height-relaxed"
@@ -170,6 +213,7 @@
 
       <!-- UPCOMING EVENTS SECTION - Moved here, limited to 3 -->
       <div v-if="activation.upcoming_events && activation.upcoming_events.length > 0"
+        id="upcoming-events"
         class="upcoming-events-section mb-16">
         <div class="text-center mb-10">
           <h2 class="text-h3 font-weight-bold mb-3">Event Mendatang</h2>
@@ -230,108 +274,7 @@
         </div>
       </div>
 
-      <!-- Explore by Category Section -->
-      <div class="category-section mb-16">
-        <v-row align="center">
-          <v-col cols="12" md="4" lg="3">
-            <div class="category-intro">
-              <p class="category-label text-overline font-weight-bold mb-2"
-                :style="{ color: activation.color_theme || '#1976D2' }">
-                JELAJAHI {{ activation.city || 'MAKASSAR' }}
-              </p>
-              <h2 class="category-title text-h4 text-md-h3 font-weight-bold mb-4">
-                Temukan Destinasi<br>
-                <span :style="{ color: activation.color_theme || '#1976D2' }">Favoritmu</span>
-              </h2>
-              <p class="text-body-1 text-grey-darken-1 mb-6">
-                Telusuri berbagai kategori destinasi menarik di {{ activation.city || 'Makassar' }},
-                dari pantai eksotis hingga kuliner khas yang menggugah selera.
-              </p>
-              <v-btn :to="`/destinations?activation_id=${activation.id}`" :color="activation.color_theme || 'primary'"
-                size="large" rounded="pill" class="px-8" variant="flat">
-                JELAJAHI SEMUA
-                <v-icon end>mdi-arrow-right</v-icon>
-              </v-btn>
-            </div>
-          </v-col>
 
-          <v-col cols="12" md="8" lg="9">
-            <div class="category-cards-wrapper">
-              <v-row>
-                <v-col v-for="category in destinationCategories" :key="category.id" cols="12" sm="6" md="6" lg="4">
-                  <v-card :to="`/destinations?category_id=${category.id}`" class="category-card" elevation="0">
-                    <div class="category-image-wrapper">
-                      <img :src="category.image" :alt="category.name" class="category-image" />
-                      <div class="category-overlay"></div>
-                      <div class="category-content">
-                        <div class="category-icon-wrapper">
-                          <v-icon size="32" color="white">{{ category.icon }}</v-icon>
-                        </div>
-                        <h3 class="category-name">{{ category.name }}</h3>
-                        <p class="category-description">{{ category.description }}</p>
-                        <v-btn variant="outlined" color="white" size="small" rounded="pill" class="category-button">
-                          Lihat {{ category.count }}+ tempat
-                          <v-icon end size="small">mdi-arrow-right</v-icon>
-                        </v-btn>
-                      </div>
-                    </div>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div>
-          </v-col>
-        </v-row>
-      </div>
-
-      <!-- Popular Destinations Section -->
-      <div v-if="activation.popular_destinations && activation.popular_destinations.length > 0" class="mb-16">
-        <div class="text-center mb-8">
-          <h2 class="text-h3 font-weight-bold mb-3">Destinasi Populer</h2>
-          <p class="text-h6 text-grey-darken-1 font-weight-regular">Tempat favorit yang sering dikunjungi komunitas</p>
-        </div>
-
-        <v-row>
-          <v-col v-for="destination in activation.popular_destinations" :key="destination.id" cols="6" sm="6" md="3">
-            <v-card elevation="0" class="destination-card h-100" :to="`/destinations/${destination.id}`" rounded="xl">
-              <div class="destination-image-wrapper">
-                <img :src="`${apiBase}/storage/${destination.primary_photo}`" :alt="destination.name"
-                  class="destination-image" />
-                <div class="destination-overlay"></div>
-                <div class="destination-badge">
-                  <v-chip v-if="destination.category" color="white" size="small" class="font-weight-medium">
-                    {{ destination.category.name }}
-                  </v-chip>
-                </div>
-              </div>
-
-              <v-card-text class="pa-4">
-                <h4 class="text-subtitle-1 font-weight-bold mb-2">
-                  {{ destination.name }}
-                </h4>
-
-                <div class="d-flex align-center justify-space-between">
-                  <div class="d-flex align-center">
-                    <v-icon size="small" color="error" class="mr-1">mdi-heart</v-icon>
-                    <span class="text-caption">{{ destination.likes_count || 0 }}</span>
-                  </div>
-                  <div class="d-flex align-center">
-                    <v-icon size="small" color="grey" class="mr-1">mdi-comment</v-icon>
-                    <span class="text-caption">{{ destination.comments_count || 0 }}</span>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-
-        <div class="text-center mt-8">
-          <v-btn :to="`/destinations?activation_id=${activation.id}`" :color="activation.color_theme || 'primary'"
-            size="large" rounded="pill" variant="outlined" class="px-8">
-            Jelajahi Semua Destinasi
-            <v-icon end>mdi-arrow-right</v-icon>
-          </v-btn>
-        </div>
-      </div>
 
       <!-- Testimonials Section -->
       <div v-if="activation.show_testimonials && activation.testimonials && activation.testimonials.length > 0"
@@ -368,13 +311,19 @@
         <p class="text-h6 text-white mb-8" style="opacity: 0.9;">
           Jangan lewatkan kesempatan untuk menjadi bagian dari komunitas kami
         </p>
-        <div class="d-flex flex-column flex-sm-row justify-center align-center ga-4">
-          <v-btn v-if="activation.cta_primary_label" :href="activation.cta_primary_url" target="_blank" color="white"
-            size="x-large" rounded="pill" class="px-10" elevation="8">
+        <div class="d-flex flex-wrap justify-center align-center ga-4">
+          <v-btn v-if="activation.social_instagram" :href="`https://instagram.com/${activation.social_instagram}`" target="_blank"
+            rel="noopener noreferrer" color="white" size="x-large" rounded="pill" class="px-8 font-weight-bold" elevation="8">
+            <v-icon start>mdi-instagram</v-icon>
+            Instagram @{{ activation.social_instagram }}
+          </v-btn>
+          <v-btn v-if="activation.cta_primary_label" :href="activation.cta_primary_url" target="_blank"
+            rel="noopener noreferrer" variant="outlined" color="white" size="x-large" rounded="pill" class="px-8 font-weight-bold">
             {{ activation.cta_primary_label }}
+            <v-icon end>mdi-open-in-new</v-icon>
           </v-btn>
           <v-btn v-if="activation.cta_secondary_label" :href="activation.cta_secondary_url" target="_blank"
-            variant="outlined" color="white" size="x-large" rounded="pill" class="px-10">
+            rel="noopener noreferrer" variant="text" color="white" size="x-large" rounded="pill" class="px-8">
             {{ activation.cta_secondary_label }}
           </v-btn>
         </div>
@@ -411,43 +360,7 @@ const apiBase = config.public.apiBase
 const activation = ref<any>(null)
 const loading = ref(true)
 
-// Destination categories - fetch from API
-const destinationCategories = ref([])
 
-// Helper function to get category image URL
-const getCategoryImageUrl = (category: any) => {
-  // Use photo_url from backend if available
-  if (category.photo_url) {
-    return category.photo_url
-  }
-  // Fallback to constructing URL from photo path
-  if (category.photo) {
-    const cleanPath = category.photo.replace(/^public\//, '')
-    return `${apiBase}/storage/${cleanPath}`
-  }
-  // Default placeholder
-  return 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop'
-}
-
-// Fetch categories from API
-const fetchCategories = async () => {
-  try {
-    const response = await api.get('/categories')
-    const categories = response.data.categories || []
-
-    // Map categories to include image URL and count
-    destinationCategories.value = categories.map((cat: any) => ({
-      id: cat.id,
-      name: cat.name,
-      description: cat.description || '',
-      icon: cat.icon || 'mdi-map-marker',
-      image: getCategoryImageUrl(cat),
-      count: cat.destinations_count || 0
-    }))
-  } catch (error) {
-    console.error('Error fetching categories:', error)
-  }
-}
 
 
 // Fetch activation detail
@@ -510,6 +423,73 @@ const scrollToAbout = () => {
   }
 }
 
+// Smooth scroll to events or navigate to registration
+const scrollToEventsOrRegister = () => {
+  const eventsSection = document.getElementById('upcoming-events')
+  if (eventsSection) {
+    eventsSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  } else {
+    navigateTo('/#registrasi')
+  }
+}
+
+// Computed properties for EduFlex-inspired Hero Section
+const heroCard1Image = computed(() => {
+  if (activation.value?.slug === 'jalan-bareng-makassar' || activation.value?.city?.toLowerCase() === 'makassar') {
+    return '/images/activations/hero_makassar.jpg'
+  }
+  if (activation.value?.hero_image) {
+    return `${apiBase}/storage/${activation.value.hero_image}`
+  }
+  return '/images/hero/walk_2.jpg'
+})
+
+const heroCard2Image = computed(() => {
+  if (activation.value?.slug === 'jalan-bareng-makassar' || activation.value?.city?.toLowerCase() === 'makassar') {
+    return '/images/hero/walk_1.jpg'
+  }
+  if (activation.value?.media && activation.value.media.length > 0) {
+    const photo = activation.value.media[0]
+    return photo?.file_path ? `${apiBase}/storage/${photo.file_path}` : '/images/hero/walk_1.jpg'
+  }
+  return '/images/hero/walk_1.jpg'
+})
+
+const heroCard3Image = computed(() => {
+  if (activation.value?.slug === 'jalan-bareng-makassar' || activation.value?.city?.toLowerCase() === 'makassar') {
+    return '/images/hero/walk_5.jpg'
+  }
+  if (activation.value?.media && activation.value.media.length > 1) {
+    const photo = activation.value.media[1]
+    return photo?.file_path ? `${apiBase}/storage/${photo.file_path}` : '/images/hero/walk_5.jpg'
+  }
+  return '/images/hero/walk_5.jpg'
+})
+
+const heroTitleLine1 = computed(() => {
+  if (activation.value?.slug === 'jalan-bareng-makassar' || activation.value?.city?.toLowerCase() === 'makassar') {
+    return 'Langkah Santai &'
+  }
+  return 'Ruang Berjalan &'
+})
+
+const heroTitleLine2 = computed(() => {
+  if (activation.value?.slug === 'jalan-bareng-makassar' || activation.value?.city?.toLowerCase() === 'makassar') {
+    return 'Teman Baru di Makassar'
+  }
+  return activation.value?.name || 'Jalan Bareng'
+})
+
+const heroDescription = computed(() => {
+  if (activation.value?.tagline) {
+    return activation.value.tagline
+  }
+  if (activation.value?.slug === 'jalan-bareng-makassar' || activation.value?.city?.toLowerCase() === 'makassar') {
+    return 'Berbagi kesenangan menyusuri sudut-sudut kota dengan berjalan kaki sambil menyapa wajah-wajah baru tanpa beban ekspektasi. Gerakan ruang bersama yang telah berdenyut dan melangkah bersama selama lebih dari dua tahun di Makassar.'
+  }
+  return stripHtml(activation.value?.description || '').substring(0, 180) + '...'
+})
+
 
 // Helper functions
 const getCategoryColor = (category: string) => {
@@ -566,7 +546,6 @@ const hexToRgba = (hex: string, alpha: number) => {
 // Initial fetch
 onMounted(() => {
   fetchActivation()
-  fetchCategories()
 })
 
 // SEO
@@ -582,84 +561,349 @@ useSeoMeta({
 </script>
 
 <style scoped>
-.activation-hero {
+/* ==========================================================================
+   EDUFLEX-INSPIRED HERO SECTION FOR JALAN BARENG
+   ========================================================================== */
+.activation-hero-section {
   position: relative;
+  background: #FFFFFF;
+  padding: 48px 0 64px 0;
   overflow: hidden;
-  margin-top: -70px;
+  border-bottom: 1px solid #F1F5F9;
 }
 
-.hero-background {
-  filter: blur(2px);
-}
-
-.hero-bg-shapes {
+.hero-ambient-glow {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
+  top: -120px;
+  right: -100px;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(254, 226, 226, 0.45) 0%, rgba(240, 253, 250, 0.25) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.shape {
-  position: absolute;
+.hero-inner-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Eyebrow Chip */
+.hero-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+}
+
+.hero-ig-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.hero-ig-badge:hover {
+  background: #FFF1F2;
+  border-color: #FECDD3;
+  color: #E11D48;
+  transform: translateY(-1px);
+}
+
+.eyebrow-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  animation: float 20s infinite ease-in-out;
+  background-color: #DC2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+  animation: pulseSlow 2.5s infinite ease-in-out;
 }
 
-.shape-1 {
-  width: 300px;
-  height: 300px;
-  top: -100px;
-  left: -100px;
-  animation-delay: 0s;
+.eyebrow-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #DC2626;
+  text-transform: uppercase;
 }
 
-.shape-2 {
-  width: 200px;
-  height: 200px;
-  bottom: -50px;
-  right: 100px;
-  animation-delay: 5s;
+/* Headline: Same font & typography as Home Page */
+.hero-main-title {
+  font-size: clamp(2.35rem, 4.2vw, 3.45rem);
+  font-weight: 900 !important;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: #111827;
 }
 
-.shape-3 {
-  width: 150px;
-  height: 150px;
-  top: 50%;
-  right: -50px;
-  animation-delay: 10s;
+.hero-main-title .title-line {
+  letter-spacing: -0.035em;
 }
 
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0) translateX(0);
-  }
-
-  33% {
-    transform: translateY(-30px) translateX(20px);
-  }
-
-  66% {
-    transform: translateY(20px) translateX(-20px);
-  }
+/* Lead text */
+.hero-lead-text {
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: #475569;
+  max-width: 520px;
 }
 
-.wave-divider {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
+/* Action Buttons */
+.hero-actions-group {
+  margin-bottom: 36px;
+}
+
+.hero-primary-btn {
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
+  padding: 0 28px !important;
+  height: 48px !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.01em !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.28) !important;
+  transition: all 0.25s ease !important;
+}
+
+.hero-primary-btn:hover {
+  background-color: #B91C1C !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.38) !important;
+}
+
+.hero-secondary-btn {
+  border: 1.5px solid #CBD5E1 !important;
+  color: #1E293B !important;
+  background: #FFFFFF !important;
+  padding: 0 24px !important;
+  height: 48px !important;
+  font-size: 0.95rem !important;
+  transition: all 0.25s ease !important;
+}
+
+.hero-secondary-btn:hover {
+  border-color: #94A3B8 !important;
+  background: #F8FAFC !important;
+  transform: translateY(-2px);
+}
+
+.hero-instagram-btn {
+  color: #475569 !important;
+  font-weight: 600 !important;
+  font-size: 0.92rem !important;
+}
+
+/* Stats Counter Row */
+.hero-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding-top: 24px;
+  border-top: 1px solid #E2E8F0;
+  max-width: 500px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #64748B;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 38px;
+  background-color: #E2E8F0;
+}
+
+/* --------------------------------------------------------------------------
+   RIGHT COLUMN: 2-COLUMN COLLAGE (Home Columns 3 & 4 Style)
+   -------------------------------------------------------------------------- */
+.hero-visual-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.activation-hero-collage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   width: 100%;
-  z-index: 2;
+  max-width: 530px;
+  margin: 0 auto;
 }
 
-.wave-divider svg {
+/* Lane 1: Tall Vertical Card (Lane 3 style) */
+.collage-lane-tall {
+  flex: 1.15;
+  height: 420px;
+}
+
+.card-tall {
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  background-color: #F3F4F6;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.12) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.card-tall:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.16) !important;
+}
+
+/* Lane 2: Two Stacked Cards (Lane 4 style) */
+.collage-lane-stacked {
+  flex: 1.45;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.card-stacked-top,
+.card-stacked-bottom {
+  width: 100%;
+  height: calc((100% - 16px) / 2);
+  border-radius: 22px;
+  overflow: hidden;
+  background-color: #F3F4F6;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.card-stacked-top:hover,
+.card-stacked-bottom:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.14) !important;
+}
+
+.card-img-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.collage-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  width: 100%;
-  height: auto;
+  border-radius: inherit;
+  transition: transform 0.4s ease;
+}
+
+.card-tall:hover .collage-card-img,
+.card-stacked-top:hover .collage-card-img,
+.card-stacked-bottom:hover .collage-card-img {
+  transform: scale(1.04);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 960px) {
+  .activation-hero-section {
+    padding: 32px 0 48px 0;
+  }
+
+  .hero-main-title {
+    font-size: 2.35rem;
+    line-height: 1.1;
+  }
+
+  .activation-hero-collage {
+    margin-top: 32px;
+    max-width: 480px;
+  }
+
+  .collage-lane-tall,
+  .collage-lane-stacked {
+    height: 340px;
+  }
+
+  .card-tall {
+    border-radius: 22px;
+  }
+
+  .card-stacked-top,
+  .card-stacked-bottom {
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .activation-hero-collage {
+    max-width: 100%;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .collage-lane-tall,
+  .collage-lane-stacked {
+    height: 240px;
+  }
+
+  .collage-lane-stacked {
+    gap: 12px;
+  }
+
+  .card-stacked-top,
+  .card-stacked-bottom {
+    height: calc((100% - 12px) / 2);
+    border-radius: 14px;
+  }
+
+  .card-tall {
+    border-radius: 18px;
+  }
+
+  .hero-main-title {
+    font-size: 2.05rem;
+    line-height: 1.12;
+  }
+
+  .hero-stats-row {
+    gap: 16px;
+  }
+
+  .stat-value {
+    font-size: 1.4rem;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+  }
 }
 
 /* About Section - Modern & Informative */

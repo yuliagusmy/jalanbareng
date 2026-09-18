@@ -1,246 +1,358 @@
 <template>
-  <div>
-    <v-sheet class="hero-section mb-8" :style="{
-      background: 'linear-gradient(135deg, #d084e8 0%, #e05167 100%)',
-      position: 'relative',
-      overflow: 'hidden',
-      height: '500px'
-    }">
-      <!-- Animated Background Shapes -->
-      <div class="hero-bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-      </div>
-
-      <v-container class="hero-content" style="position: relative; z-index: 2; padding-top: 100px;">
-        <v-row align="center" class="pt-16 pb-16 pb-md-20">
-          <v-col cols="12" md="8" class="text-white pb-8 pb-md-12">
-            <div class="animate-fade-in">
-              <h1 class="text-h3 text-md-h2 font-weight-bold mb-6" style="line-height: 1.2;">
-                Gabung Dalam Kegiatan Seru<br>
-                <span class="gradient-text-white">Bersama Jalan Bareng</span>
-              </h1>
-              <p class="text-h6 mb-0" style="opacity: 0.95; max-width: 650px; line-height: 1.6;">
-                Bergabunglah dalam kegiatan jalan kaki, workshop, dan acara seru lainnya bersama Jalan Bareng Makassar
-              </p>
+  <div class="events-index-page">
+    <!-- Editorial Hero Section -->
+    <section class="events-hero">
+      <v-container class="hero-content">
+        <v-row align="center" justify="center">
+          <v-col cols="12" md="10" lg="8" class="text-center">
+            <!-- Eyebrow Badge -->
+            <div class="hero-badge-pill mb-4">
+              <v-icon start size="16" color="#DC2626">mdi-calendar-multiselect</v-icon>
+              <span>AGENDA &amp; JADWAL JALAN</span>
             </div>
-          </v-col>
-          <v-col cols="12" md="4" class="text-md-right">
-            <v-btn v-if="authStore.isCommunityAdmin || authStore.isAdmin" color="white" size="x-large"
-              to="/events/create" prepend-icon="mdi-plus" rounded="pill" elevation="8" class="px-8">Buat Event
-              Baru</v-btn>
-            <v-btn v-else color="white" size="x-large" href="#events-list" prepend-icon="mdi-arrow-down" rounded="pill"
-              elevation="8" class="px-8">Lihat Event</v-btn>
+
+            <!-- Main Headline -->
+            <h1 class="hero-title font-weight-black text-grey-darken-4 mb-4">
+              Langkah Bersama,
+              <span class="text-primary-red">Jadwal &amp; Teman Baru</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="hero-subtitle text-grey-darken-1 mx-auto mb-8">
+              Temukan agenda jalan santai mingguan, eksplorasi sudut kota bersejarah, dan kegiatan tematik ramah pejalan di sekitarmu.
+            </p>
+
+            <!-- Actions Row -->
+            <div class="d-flex align-center justify-center flex-wrap ga-3">
+              <v-btn
+                v-if="authStore.isCommunityAdmin || authStore.isAdmin"
+                to="/events/create"
+                color="#DC2626"
+                size="large"
+                rounded="pill"
+                elevation="0"
+                class="font-weight-bold px-6 text-white"
+              >
+                <v-icon start size="18">mdi-plus</v-icon>
+                Buat Event Baru
+              </v-btn>
+
+              <button
+                type="button"
+                class="btn-outline-pill"
+                @click="scrollToEvents"
+              >
+                <v-icon start size="18">mdi-arrow-down</v-icon>
+                Lihat Semua Jadwal
+              </button>
+            </div>
           </v-col>
         </v-row>
       </v-container>
+    </section>
 
-      <!-- Wave Divider -->
-      <div class="wave-divider">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
-            fill="white" />
-        </svg>
+    <!-- Main Events Container -->
+    <v-container id="events-content" class="py-10">
+      <!-- Filter & Tabs Bar -->
+      <div class="filter-bar-card pa-4 pa-md-6 mb-8">
+        <v-row align="center" justify="space-between" class="ga-y-4">
+          <!-- Status Tabs (Pill Switcher) -->
+          <v-col cols="12" sm="7" md="6">
+            <div class="tab-switcher-pill">
+              <button
+                type="button"
+                :class="['tab-pill-btn', { active: tab === 'upcoming' }]"
+                @click="tab = 'upcoming'"
+              >
+                <v-icon start size="18">mdi-calendar-clock-outline</v-icon>
+                Event Mendatang
+                <span v-if="upcomingPagination.total > 0" class="counter-badge">
+                  {{ upcomingPagination.total }}
+                </span>
+              </button>
+              <button
+                type="button"
+                :class="['tab-pill-btn', { active: tab === 'past' }]"
+                @click="tab = 'past'"
+              >
+                <v-icon start size="18">mdi-calendar-check-outline</v-icon>
+                Telah Terlaksana
+              </button>
+            </div>
+          </v-col>
+
+          <!-- Filter Dropdown by Activation -->
+          <v-col cols="12" sm="5" md="4">
+            <v-select
+              v-model="selectedActivation"
+              :items="activations"
+              item-title="name"
+              item-value="id"
+              placeholder="Semua Aktivasi / Chapter"
+              prepend-inner-icon="mdi-filter-variant"
+              variant="outlined"
+              rounded="pill"
+              density="compact"
+              hide-details
+              clearable
+              class="filter-select"
+              @update:model-value="handleActivationChange"
+            />
+          </v-col>
+        </v-row>
       </div>
-    </v-sheet>
 
-    <v-container>
-      <!-- Filter Section -->
-      <v-row class="mb-6">
-        <v-col cols="12" md="4">
-          <v-select v-model="selectedActivation" :items="activations" item-title="name" item-value="id"
-            label="Filter berdasarkan Aktivasi" prepend-inner-icon="mdi-star-four-points" variant="outlined"
-            rounded="lg" density="comfortable" clearable @update:model-value="handleActivationChange"></v-select>
-        </v-col>
-      </v-row>
-
-      <!-- Tabs -->
-      <div id="events-list" class="mb-8">
-        <v-tabs v-model="tab" color="primary" rounded="lg" class="mb-6" height="60">
-          <v-tab value="upcoming" class="text-h6">
-            <v-icon start>mdi-calendar-clock</v-icon>
-            Event Mendatang
-          </v-tab>
-          <v-tab value="past" class="text-h6">
-            <v-icon start>mdi-calendar-check</v-icon>
-            Event Selesai
-          </v-tab>
-        </v-tabs>
-      </div>
-
-      <!-- Events Grid -->
+      <!-- Events Listing Window -->
       <v-window v-model="tab">
+        <!-- Upcoming Events Tab -->
         <v-window-item value="upcoming">
           <div>
-            <v-row v-if="!loadingUpcoming" class="pb-6">
-              <v-col v-for="event in upcomingEvents" :key="event.id" cols="12" sm="6" md="4">
-                <v-card elevation="0" class="event-card h-100" :to="`/events/${event.id}`">
+            <!-- Events Grid -->
+            <v-row v-if="!loadingUpcoming && upcomingEvents.length > 0">
+              <v-col
+                v-for="event in upcomingEvents"
+                :key="event.id"
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-card
+                  elevation="0"
+                  class="event-card h-100 d-flex flex-column"
+                  :to="`/events/${event.id}`"
+                >
+                  <!-- Poster Wrapper -->
                   <div class="event-image-wrapper">
-                    <img :src="getImageUrl(event.poster)" :alt="event.name" class="event-image" />
+                    <img
+                      :src="getImageUrl(event.poster)"
+                      :alt="event.name"
+                      class="event-poster-img"
+                    />
                     <div class="event-overlay"></div>
-                    <div class="event-badge">
-                      <v-chip :color="event.type === 'walking' ? 'success' : 'primary'" size="small">
-                        <v-icon start size="small">
-                          {{ event.type === 'walking' ? 'mdi-walk' : 'mdi-calendar' }}
+
+                    <!-- Category Badge -->
+                    <div class="event-tag-badge">
+                      <span :class="['type-pill', event.type === 'walking' ? 'walking' : 'regular']">
+                        <v-icon start size="14">
+                          {{ event.type === 'walking' ? 'mdi-walk' : 'mdi-calendar-text-outline' }}
                         </v-icon>
-                        {{ event.type === 'walking' ? 'Jalan Kaki' : 'Regular' }}
-                      </v-chip>
+                        {{ event.type === 'walking' ? 'Jalan Santai' : 'Tematik' }}
+                      </span>
                     </div>
                   </div>
-                  <v-card-text class="pa-6">
-                    <h4 class="text-h6 font-weight-bold mb-3">{{ event.name }}</h4>
-                    <div class="d-flex align-center text-grey-darken-1 mb-2">
-                      <v-icon size="small" class="mr-2">mdi-calendar</v-icon>
-                      <span class="text-caption">{{ formatDate(event.date) }}</span>
+
+                  <!-- Event Details Body -->
+                  <div class="pa-6 d-flex flex-column flex-grow-1">
+                    <!-- Date & Time Row -->
+                    <div class="d-flex align-center date-row mb-2">
+                      <v-icon size="16" color="#DC2626" class="mr-2">mdi-calendar-blank-outline</v-icon>
+                      <span class="date-text">{{ formatDate(event.date) }}</span>
                     </div>
-                    <p class="text-caption text-grey-darken-1 mb-0">{{ stripHtml(event.description)?.substring(0, 80)
-                    }}...</p>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-              <v-col v-if="upcomingEvents.length === 0" cols="12">
-                <v-card elevation="0" class="text-center pa-8" rounded="xl">
-                  <v-icon size="64" color="grey">mdi-calendar-blank</v-icon>
-                  <h3 class="text-h5 mt-4">Tidak ada event mendatang</h3>
-                  <p class="text-body-1 mt-2">Nantikan event menarik dari komunitas!</p>
+
+                    <!-- Event Name -->
+                    <h3 class="card-title text-h6 font-weight-bold text-grey-darken-4 mb-2">
+                      {{ event.name }}
+                    </h3>
+
+                    <!-- Excerpt Description -->
+                    <p class="card-desc text-body-2 text-grey-darken-1 mb-4 flex-grow-1">
+                      {{ stripHtml(event.description) }}
+                    </p>
+
+                    <!-- Footer Details -->
+                    <div class="pt-3 border-top d-flex align-center justify-space-between mt-auto">
+                      <span class="status-indicator">
+                        <span class="pulse-dot"></span>
+                        Pendaftaran Terbuka
+                      </span>
+                      <span class="action-link-text">
+                        Detail Jadwal
+                        <v-icon size="14" class="ml-1">mdi-arrow-right</v-icon>
+                      </span>
+                    </div>
+                  </div>
                 </v-card>
               </v-col>
             </v-row>
+
+            <!-- Loading Skeletons -->
             <v-row v-else-if="loadingUpcoming">
               <v-col v-for="n in 6" :key="n" cols="12" sm="6" md="4">
-                <v-skeleton-loader type="card"></v-skeleton-loader>
+                <v-skeleton-loader type="image, article" class="rounded-xl border" />
               </v-col>
             </v-row>
-            <v-row v-if="upcomingPagination.last_page > 1" class="mt-8">
-              <v-col cols="12" class="d-flex justify-center">
-                <v-pagination v-model="upcomingPagination.current_page" :length="upcomingPagination.last_page"
-                  color="primary" rounded="circle"
-                  @update:model-value="(page) => fetchEvents('upcoming', page)"></v-pagination>
-              </v-col>
-            </v-row>
+
+            <!-- Empty State for Upcoming -->
+            <div v-else class="empty-state-box text-center py-16">
+              <v-icon size="56" color="grey-lighten-1" class="mb-3">mdi-calendar-blank-outline</v-icon>
+              <h3 class="text-h6 font-weight-bold text-grey-darken-3 mb-2">Belum ada agenda mendatang</h3>
+              <p class="text-body-2 text-grey-darken-1 mx-auto mb-4" style="max-width: 420px;">
+                Agenda jalan berikutnya sedang disiapkan oleh komunitas. Silakan pantau berkala atau lihat dokumentasi event yang telah selesai.
+              </p>
+              <button
+                type="button"
+                class="btn-outline-pill"
+                @click="tab = 'past'"
+              >
+                Lihat Event Terdahulu
+              </button>
+            </div>
+
+            <!-- Pagination -->
+            <div v-if="upcomingPagination.last_page > 1" class="d-flex justify-center mt-10">
+              <v-pagination
+                v-model="upcomingPagination.current_page"
+                :length="upcomingPagination.last_page"
+                color="#DC2626"
+                rounded="circle"
+                @update:model-value="(page) => fetchEvents('upcoming', page)"
+              />
+            </div>
           </div>
-        </v-window-item> <v-window-item value="past">
+        </v-window-item>
+
+        <!-- Past Events Tab -->
+        <v-window-item value="past">
           <div>
-            <v-row v-if="!loadingPast" class="pb-6">
-              <v-col v-for="event in pastEvents" :key="event.id" cols="12" sm="6" md="4">
-                <v-card elevation="0" class="event-card h-100" :to="`/events/${event.id}`">
+            <!-- Events Grid -->
+            <v-row v-if="!loadingPast && pastEvents.length > 0">
+              <v-col
+                v-for="event in pastEvents"
+                :key="event.id"
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-card
+                  elevation="0"
+                  class="event-card past-card h-100 d-flex flex-column"
+                  :to="`/events/${event.id}`"
+                >
+                  <!-- Poster Wrapper -->
                   <div class="event-image-wrapper">
-                    <img :src="getImageUrl(event.poster)" :alt="event.name" class="event-image" />
+                    <img
+                      :src="getImageUrl(event.poster)"
+                      :alt="event.name"
+                      class="event-poster-img"
+                    />
                     <div class="event-overlay"></div>
-                    <div class="event-badge">
-                      <v-chip :color="event.type === 'walking' ? 'success' : 'primary'" size="small">
-                        <v-icon start size="small">
-                          {{ event.type === 'walking' ? 'mdi-walk' : 'mdi-calendar' }}
-                        </v-icon>
-                        {{ event.type === 'walking' ? 'Jalan Kaki' : 'Regular' }}
-                      </v-chip>
+
+                    <!-- Category Badge -->
+                    <div class="event-tag-badge">
+                      <span class="type-pill completed">
+                        <v-icon start size="14">mdi-check</v-icon>
+                        Selesai
+                      </span>
                     </div>
                   </div>
-                  <v-card-text class="pa-6">
-                    <h4 class="text-h6 font-weight-bold mb-3">{{ event.name }}</h4>
-                    <div class="d-flex align-center text-grey-darken-1 mb-2">
-                      <v-icon size="small" class="mr-2">mdi-calendar</v-icon>
-                      <span class="text-caption">{{ formatDate(event.date) }}</span>
+
+                  <!-- Event Details Body -->
+                  <div class="pa-6 d-flex flex-column flex-grow-1">
+                    <!-- Date & Time Row -->
+                    <div class="d-flex align-center date-row mb-2">
+                      <v-icon size="16" color="grey" class="mr-2">mdi-calendar-check-outline</v-icon>
+                      <span class="date-text text-grey">{{ formatDate(event.date) }}</span>
                     </div>
-                    <p class="text-caption text-grey-darken-1 mb-0">{{ stripHtml(event.description)?.substring(0, 80)
-                    }}...</p>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-              <v-col v-if="pastEvents.length === 0" cols="12">
-                <v-card elevation="0" class="text-center pa-8" rounded="xl">
-                  <v-icon size="64" color="grey">mdi-calendar-check</v-icon>
-                  <h3 class="text-h5 mt-4">Tidak ada event yang selesai</h3>
+
+                    <!-- Event Name -->
+                    <h3 class="card-title text-h6 font-weight-bold text-grey-darken-3 mb-2">
+                      {{ event.name }}
+                    </h3>
+
+                    <!-- Excerpt Description -->
+                    <p class="card-desc text-body-2 text-grey-darken-1 mb-4 flex-grow-1">
+                      {{ stripHtml(event.description) }}
+                    </p>
+
+                    <!-- Footer Details -->
+                    <div class="pt-3 border-top d-flex align-center justify-space-between mt-auto">
+                      <span class="text-caption text-grey">Dokumentasi Arsip</span>
+                      <span class="action-link-text text-grey-darken-2">
+                        Lihat Rangkuman
+                        <v-icon size="14" class="ml-1">mdi-arrow-right</v-icon>
+                      </span>
+                    </div>
+                  </div>
                 </v-card>
               </v-col>
             </v-row>
+
+            <!-- Loading Skeletons -->
             <v-row v-else-if="loadingPast">
               <v-col v-for="n in 6" :key="n" cols="12" sm="6" md="4">
-                <v-skeleton-loader type="card"></v-skeleton-loader>
+                <v-skeleton-loader type="image, article" class="rounded-xl border" />
               </v-col>
             </v-row>
-            <v-row v-if="pastPagination.last_page > 1" class="mt-8">
-              <v-col cols="12" class="d-flex justify-center">
-                <v-pagination v-model="pastPagination.current_page" :length="pastPagination.last_page" color="primary"
-                  rounded="circle" @update:model-value="(page) => fetchEvents('past', page)"></v-pagination>
-              </v-col>
-            </v-row>
+
+            <!-- Empty State for Past -->
+            <div v-else class="empty-state-box text-center py-16">
+              <v-icon size="56" color="grey-lighten-1" class="mb-3">mdi-calendar-check-outline</v-icon>
+              <h3 class="text-h6 font-weight-bold text-grey-darken-3 mb-2">Belum ada rekaman arsip event</h3>
+            </div>
+
+            <!-- Pagination -->
+            <div v-if="pastPagination.last_page > 1" class="d-flex justify-center mt-10">
+              <v-pagination
+                v-model="pastPagination.current_page"
+                :length="pastPagination.last_page"
+                color="#DC2626"
+                rounded="circle"
+                @update:model-value="(page) => fetchEvents('past', page)"
+              />
+            </div>
           </div>
         </v-window-item>
       </v-window>
 
-      <!-- Event Types Showcase Section -->
-      <v-row class="mt-16 mb-8">
-        <v-col cols="12">
-          <div class="text-center mb-8 px-4">
-            <v-chip color="secondary" variant="flat" class="mb-4">
-              <v-icon start>mdi-star</v-icon>
-              Jenis Event
-            </v-chip>
-            <h2 class="text-h3 font-weight-bold mb-3">Beragam Kegiatan untuk Anda</h2>
-            <p class="text-h6 text-grey-darken-1">Temukan event yang sesuai dengan minat Anda</p>
+      <!-- Walk Participation Guide (Antislop: Honest & Editorial) -->
+      <section class="mt-16">
+        <div class="guide-card pa-8 pa-md-12">
+          <div class="text-center max-w-xl mx-auto mb-10">
+            <div class="d-inline-flex align-center ga-1 text-caption font-weight-bold text-primary-red text-uppercase tracking-wider mb-2">
+              <v-icon size="14" color="#DC2626">mdi-walk</v-icon>
+              <span>ALUR PARTISIPASI</span>
+            </div>
+            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-3">
+              Cara Ikut Jalan Bareng
+            </h2>
+            <p class="text-body-1 text-grey-darken-1 mb-0">
+              Kegiatan kami terbuka untuk siapa saja tanpa syarat rumit. Ikuti langkah sederhana ini untuk bergabung:
+            </p>
           </div>
+
           <v-row>
-            <v-col cols="12" md="6">
-              <v-card elevation="0" rounded="xl" class="event-type-card overflow-hidden"
-                style="background: linear-gradient(135deg, #3ec770 0%, #2dcdb8 100%);">
-                <v-card-text class="pa-8 pa-md-12 text-white">
-                  <v-icon size="72" color="white" class="mb-4">mdi-walk</v-icon>
-                  <h3 class="text-h4 font-weight-bold mb-4">Event Jalan Kaki</h3>
-                  <p class="text-h6 mb-6" style="opacity: 0.95;">Jelajahi sudut-sudut kota Makassar sambil berjalan kaki
-                    bersama komunitas</p>
-                  <v-chip color="white" variant="flat" size="large" class="mt-4">
-                    <v-icon start>mdi-check-circle</v-icon>
-                    Gratis & Terbuka
-                  </v-chip>
-                </v-card-text>
-              </v-card>
+            <v-col cols="12" md="4">
+              <div class="guide-step-card pa-6 h-100">
+                <div class="step-badge mb-4">1</div>
+                <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-2">Pilih Jadwal &amp; Rute</h3>
+                <p class="text-body-2 text-grey-darken-1 mb-0">
+                  Telusuri daftar event di atas dan temukan rute jalan santai yang cocok dengan waktu luangmu.
+                </p>
+              </div>
             </v-col>
-            <v-col cols="12" md="6">
-              <v-card elevation="0" rounded="xl" class="event-type-card overflow-hidden"
-                style="background: linear-gradient(135deg, #e06488 0%, #e8c742 100%);">
-                <v-card-text class="pa-8 pa-md-12 text-white">
-                  <v-icon size="72" color="white" class="mb-4">mdi-calendar-star</v-icon>
-                  <h3 class="text-h4 font-weight-bold mb-4">Event Regular</h3>
-                  <p class="text-h6 mb-6" style="opacity: 0.95;">Workshop, seminar, dan kegiatan sosial lainnya yang
-                    bermanfaat</p>
-                  <v-chip color="white" variant="flat" size="large" class="mt-4">
-                    <v-icon start>mdi-form-select</v-icon>
-                    Pendaftaran Online
-                  </v-chip>
-                </v-card-text>
-              </v-card>
+
+            <v-col cols="12" md="4">
+              <div class="guide-step-card pa-6 h-100">
+                <div class="step-badge mb-4">2</div>
+                <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-2">Daftar Tanpa Biaya</h3>
+                <p class="text-body-2 text-grey-darken-1 mb-0">
+                  Buka detail event untuk konfirmasi kehadiran melalui tautan formulir pendaftaran terbuka.
+                </p>
+              </div>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <div class="guide-step-card pa-6 h-100">
+                <div class="step-badge mb-4">3</div>
+                <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-2">Hadir &amp; Nikmati Waktu</h3>
+                <p class="text-body-2 text-grey-darken-1 mb-0">
+                  Kenakan pakaian santai serta sepatu jalan yang nyaman, dan nikmati interaksi hangat bersama warga pejalan.
+                </p>
+              </div>
             </v-col>
           </v-row>
-        </v-col>
-      </v-row>
-
-      <!-- How to Join Section -->
-      <v-row class="mt-16 mb-8">
-        <v-col cols="12">
-          <v-card elevation="0" rounded="xl" class="pa-8 pa-md-12"
-            style="background: linear-gradient(135deg, #5d71c9 0%, #6b4591 100%);">
-            <div class="text-center text-white mb-8">
-              <h2 class="text-h3 font-weight-bold mb-3">Cara Bergabung dalam Event</h2>
-              <p class="text-h6" style="opacity: 0.95;">Mudah dan cepat! Ikuti 3 langkah sederhana ini</p>
-            </div>
-            <v-row justify="center">
-              <v-col cols="12" md="4" v-for="(step, index) in howToJoinSteps" :key="index" class="d-flex">
-                <v-card elevation="0" rounded="xl" class="pa-6 text-center how-to-step d-flex flex-column"
-                  color="rgba(255,255,255,0.1)" style="width: 100%;">
-                  <div class="d-flex align-center justify-center mb-4">
-                    <v-icon size="48" color="white" class="mr-4">{{ step.icon }}</v-icon>
-                    <h4 class="text-h5 font-weight-bold text-white">{{ step.title }}</h4>
-                  </div>
-                  <p class="text-body-1 text-white" style="opacity: 0.9;">{{ step.description }}</p>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
+        </div>
+      </section>
     </v-container>
   </div>
 </template>
@@ -249,17 +361,17 @@
 import { ref, onMounted, watch } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
-import { useRuntimeConfig } from '#app'
+import { useRuntimeConfig, useRoute, useSeoMeta, definePageMeta } from '#imports'
 
 definePageMeta({
-  layout: 'hero'
+  layout: 'default'
 })
 
 useSeoMeta({
-  title: 'Event Komunitas - Jalan Bareng',
-  ogTitle: 'Event Komunitas - Jalan Bareng',
-  description: 'Gabung dalam kegiatan seru bersama Jalan Bareng.',
-  ogDescription: 'Gabung dalam kegiatan seru bersama Jalan Bareng.',
+  title: 'Agenda Event Komunitas - Jalan Bareng',
+  ogTitle: 'Agenda Event Komunitas - Jalan Bareng',
+  description: 'Jadwal dan agenda jalan kaki santai, rute tematik, dan pertemuan komunitas pejalan kaki.',
+  ogDescription: 'Jadwal dan agenda jalan kaki santai, rute tematik, dan pertemuan komunitas pejalan kaki.',
   ogImage: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1200&h=630&fit=crop',
   twitterCard: 'summary_large_image',
 })
@@ -267,30 +379,18 @@ useSeoMeta({
 const authStore = useAuthStore()
 const { api } = useApi()
 const config = useRuntimeConfig()
+const { getImageUrl } = useImageUrl()
 
 const tab = ref('upcoming')
-const upcomingEvents = ref([])
-const pastEvents = ref([])
+const upcomingEvents = ref<any[]>([])
+const pastEvents = ref<any[]>([])
 const loadingUpcoming = ref(true)
 const loadingPast = ref(false)
 
 const upcomingPagination = ref({ current_page: 1, per_page: 6, total: 0, last_page: 1 })
 const pastPagination = ref({ current_page: 1, per_page: 6, total: 0, last_page: 1 })
-const selectedActivation = ref(null)
-const activations = ref([])
-
-const eventStats = ref([
-  { icon: 'mdi-calendar-check', value: '0', label: 'Event Mendatang', image: 'https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?w=400&h=300&fit=crop', overlay: ['rgba(240, 147, 251, 0.8)', 'rgba(245, 87, 108, 0.8)'] },
-  { icon: 'mdi-calendar-clock', value: '0', label: 'Event Selesai', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop', overlay: ['rgba(79, 172, 254, 0.75)', 'rgba(0, 242, 254, 0.75)'] },
-  { icon: 'mdi-walk', value: '0', label: 'Jalan Kaki', image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=400&h=300&fit=crop', overlay: ['rgba(67, 233, 123, 0.75)', 'rgba(56, 249, 215, 0.75)'] },
-  { icon: 'mdi-account-multiple', value: '500+', label: 'Partisipan', image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop', overlay: ['rgba(102, 126, 234, 0.8)', 'rgba(118, 75, 162, 0.8)'] },
-])
-
-const howToJoinSteps = ref([
-  { icon: 'mdi-calendar-search', title: 'Pilih Event', description: 'Browse dan pilih event yang sesuai dengan minat dan jadwal Anda' },
-  { icon: 'mdi-form-select', title: 'Daftar Online', description: 'Klik tombol daftar dan isi form pendaftaran melalui Google Form' },
-  { icon: 'mdi-party-popper', title: 'Ikuti Event', description: 'Datang di waktu dan tempat yang ditentukan, nikmati kegiatan bersama!' }
-])
+const selectedActivation = ref<number | null>(null)
+const activations = ref<any[]>([])
 
 const fetchEvents = async (status = 'upcoming', page = 1) => {
   const loading = status === 'upcoming' ? loadingUpcoming : loadingPast
@@ -299,7 +399,6 @@ const fetchEvents = async (status = 'upcoming', page = 1) => {
   try {
     const params: any = { status, page, per_page: 6 }
 
-    // Add activation filter if selected
     if (selectedActivation.value) {
       params.activation_id = selectedActivation.value
     }
@@ -308,13 +407,11 @@ const fetchEvents = async (status = 'upcoming', page = 1) => {
     const { data, ...pagination } = response.data
 
     if (status === 'upcoming') {
-      upcomingEvents.value = data
+      upcomingEvents.value = data || []
       upcomingPagination.value = pagination
-      eventStats.value[0].value = pagination.total.toString()
     } else {
-      pastEvents.value = data
+      pastEvents.value = data || []
       pastPagination.value = pagination
-      eventStats.value[1].value = pagination.total.toString()
     }
   } catch (error) {
     console.error(`Error fetching ${status} events:`, error)
@@ -333,12 +430,18 @@ const fetchActivations = async () => {
 }
 
 const handleActivationChange = () => {
-  // Reset to first page and fetch both tabs
   upcomingPagination.value.current_page = 1
   pastPagination.value.current_page = 1
   fetchEvents('upcoming', 1)
   if (tab.value === 'past') {
     fetchEvents('past', 1)
+  }
+}
+
+const scrollToEvents = () => {
+  const target = document.getElementById('events-content')
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' })
   }
 }
 
@@ -349,7 +452,6 @@ watch(tab, (newTab) => {
 })
 
 onMounted(() => {
-  // Read activation_id from URL query parameter
   const route = useRoute()
   if (route.query.activation_id) {
     selectedActivation.value = Number.parseInt(route.query.activation_id as string)
@@ -359,146 +461,179 @@ onMounted(() => {
   fetchEvents('upcoming', 1)
 })
 
-const { getImageUrl } = useImageUrl()
-
 const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('id-ID', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
 }
 
 const stripHtml = (html: string) => {
   if (!html) return ''
-  return html.replace(/<[^>]*>/g, '')
+  return html.replace(/<[^>]*>/g, '').trim()
 }
 </script>
 
 <style scoped>
-.hero-section {
-  position: relative;
-  overflow: hidden;
-  margin-top: -80px !important;
+.events-index-page {
+  background-color: #FFFFFF;
+  min-height: 100vh;
 }
 
-.hero-bg-shapes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
+/* Editorial Hero Section */
+.events-hero {
+  background: #FAFAFA;
+  border-bottom: 1px solid #F1F5F9;
+  padding-top: 48px;
+  padding-bottom: 50px;
 }
 
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  animation: float 20s infinite ease-in-out;
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  color: #DC2626;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
-.shape-1 {
-  width: 250px;
-  height: 250px;
-  top: -80px;
-  right: 10%;
-  animation-delay: 0s;
+.hero-title {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  color: #111827;
 }
 
-.shape-2 {
-  width: 180px;
-  height: 180px;
-  bottom: -60px;
-  left: 15%;
-  animation-delay: 7s;
+.text-primary-red {
+  color: #DC2626;
 }
 
-.shape-3 {
-  width: 200px;
-  height: 200px;
-  top: 40%;
-  left: -80px;
-  animation-delay: 3s;
+.hero-subtitle {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 680px;
 }
 
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-  }
-
-  33% {
-    transform: translateY(-25px) translateX(25px) rotate(120deg);
-  }
-
-  66% {
-    transform: translateY(15px) translateX(-15px) rotate(240deg);
-  }
-}
-
-.wave-divider {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-}
-
-.wave-divider svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.animate-fade-in {
-  animation: fadeIn 1s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.gradient-text-white {
-  background: linear-gradient(135deg, #fff 0%, #ffe0f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Event Cards - Consistent with Home Page */
-.event-card {
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  overflow: hidden;
+/* Button styles */
+.btn-outline-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #374151;
+  font-size: 0.92rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-pill:hover {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #111827;
+}
+
+/* Filter Bar */
+.filter-bar-card {
+  background: #FAFAFA;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+}
+
+.tab-switcher-pill {
+  display: inline-flex;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 9999px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.tab-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: #4B5563;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-pill-btn.active {
+  background: #DC2626;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+}
+
+.counter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.tab-pill-btn:not(.active) .counter-badge {
+  background: #F1F5F9;
+  color: #4B5563;
+}
+
+/* Event Cards */
+.event-card {
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #FFFFFF;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  text-decoration: none;
 }
 
 .event-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.08);
+  border-color: #CBD5E1;
+}
+
+.past-card {
+  opacity: 0.9;
 }
 
 .event-image-wrapper {
   position: relative;
-  height: 220px;
+  width: 100%;
+  height: 210px;
   overflow: hidden;
+  background: #F3F4F6;
 }
 
-.event-image {
+.event-poster-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.4s ease;
 }
 
-.event-card:hover .event-image {
-  transform: scale(1.1);
+.event-card:hover .event-poster-img {
+  transform: scale(1.05);
 }
 
 .event-overlay {
@@ -507,41 +642,155 @@ const stripHtml = (html: string) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.05) 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.35) 0%, transparent 60%);
 }
 
-.event-badge {
+.event-tag-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 14px;
+  left: 14px;
   z-index: 2;
 }
 
-/* Event Type Cards */
-.event-type-card {
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+.type-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
 }
 
-.event-type-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+.type-pill.walking {
+  background: rgba(16, 185, 129, 0.9);
+  color: #FFFFFF;
 }
 
-/* How to Join Steps */
-.how-to-step {
-  transition: all 0.3s ease;
+.type-pill.regular {
+  background: rgba(220, 38, 38, 0.9);
+  color: #FFFFFF;
 }
 
-.how-to-step:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.15) !important;
+.type-pill.completed {
+  background: rgba(107, 114, 128, 0.85);
+  color: #FFFFFF;
 }
 
-/* Responsive adjustments */
+.date-row {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #DC2626;
+}
+
+.card-title {
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.card-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+.border-top {
+  border-top: 1px solid #F1F5F9;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #059669;
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+}
+
+.action-link-text {
+  display: inline-flex;
+  align-items: center;
+  color: #DC2626;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.event-card:hover .action-link-text {
+  transform: translateX(3px);
+}
+
+/* Empty State */
+.empty-state-box {
+  background: #FAFAFA;
+  border: 1px dashed #CBD5E1;
+  border-radius: 20px;
+}
+
+/* Guide Section */
+.guide-card {
+  background: #FAFAFA;
+  border: 1px solid #E2E8F0;
+  border-radius: 24px;
+}
+
+.guide-step-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 18px;
+}
+
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #FEF2F2;
+  color: #DC2626;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+/* Responsive */
 @media (max-width: 600px) {
+  .events-hero {
+    padding-top: 32px;
+    padding-bottom: 35px;
+  }
+
+  .hero-title {
+    font-size: 1.95rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
   .event-image-wrapper {
-    height: 180px;
+    height: 175px;
+  }
+
+  .tab-switcher-pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tab-pill-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 7px 10px;
+    font-size: 0.78rem;
   }
 }
 </style>

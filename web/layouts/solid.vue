@@ -5,22 +5,22 @@
       <template v-slot:extension>
         <v-container class="d-flex align-center header-container" style="height: 70px;">
           <!-- Mobile Menu Icon -->
-          <v-app-bar-nav-icon v-if="$vuetify.display.mobile" @click="drawer = !drawer"
+          <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer"
             color="primary"></v-app-bar-nav-icon>
 
           <!-- Logo/Brand -->
-          <v-toolbar-title>
-            <NuxtLink to="/" class="text-decoration-none">
-              <span class="font-weight-bold text-h6 brand-text text-primary">
-                Jalan Bareng
-              </span>
-            </NuxtLink>
-          </v-toolbar-title>
+          <NuxtLink to="/" class="text-decoration-none d-flex align-center mr-4">
+            <img
+              src="/images/logo-jalan-bareng.png"
+              alt="Jalan Bareng"
+              style="height: 38px; width: auto; object-fit: contain;"
+            />
+          </NuxtLink>
 
           <v-spacer></v-spacer>
 
           <!-- Desktop Navigation -->
-          <NavigationMenu text-color="primary" admin-color="secondary" />
+          <NavigationMenu text-color="secondary" admin-color="primary" />
 
           <v-spacer></v-spacer>
 
@@ -92,68 +92,8 @@
     </v-main>
 
     <!-- Modern Footer with Gradient -->
-    <v-footer class="modern-footer pa-0">
-      <div class="footer-gradient w-100">
-        <v-container class="py-16">
-          <v-row justify="space-between">
-            <!-- Brand Section -->
-            <v-col cols="12" md="4" class="mb-8 mb-md-0">
-              <h2 class="text-h5 text-white font-weight-bold mb-4" style="position: relative;">
-                {{ brandTitle }}
-              </h2>
-              <p class="text-white mb-6" style="opacity: 0.9; line-height: 1.8; font-size: 15px;">
-                {{ brandDescription }}
-              </p>
-              <div class="d-flex" style="gap: 12px;">
-                <v-btn v-if="footerSettings.footer_social_facebook" icon variant="outlined" color="white"
-                  class="social-btn" size="default" :href="footerSettings.footer_social_facebook" target="_blank">
-                  <v-icon size="20">mdi-facebook</v-icon>
-                </v-btn>
-                <v-btn v-if="footerSettings.footer_social_instagram" icon variant="outlined" color="white"
-                  class="social-btn" size="default" :href="footerSettings.footer_social_instagram" target="_blank">
-                  <v-icon size="20">mdi-instagram</v-icon>
-                </v-btn>
-                <v-btn v-if="footerSettings.footer_social_twitter" icon variant="outlined" color="white"
-                  class="social-btn" size="default" :href="footerSettings.footer_social_twitter" target="_blank">
-                  <v-icon size="20">mdi-twitter</v-icon>
-                </v-btn>
-              </div>
-            </v-col>
-
-            <!-- Quick Links -->
-            <v-col cols="6" md="3" class="mb-8 mb-md-0">
-              <h4 class="text-white font-weight-bold mb-4" style="font-size: 16px; position: relative;">Menu</h4>
-              <div class="footer-links">
-                <NuxtLink to="/" class="footer-link">Home</NuxtLink>
-                <NuxtLink to="/destinations" class="footer-link">Destinasi</NuxtLink>
-                <NuxtLink to="/events" class="footer-link">Event</NuxtLink>
-                <NuxtLink to="/map" class="footer-link">Peta</NuxtLink>
-              </div>
-            </v-col>
-
-            <!-- Community Links -->
-            <v-col cols="6" md="3" class="mb-8 mb-md-0">
-              <h4 class="text-white font-weight-bold mb-4" style="font-size: 16px; position: relative;">Komunitas</h4>
-              <div class="footer-links">
-                <NuxtLink to="/profile" class="footer-link">Profil</NuxtLink>
-                <NuxtLink v-for="page in footerPages" :key="page.id" :to="`/pages/${page.slug}`" class="footer-link">
-                  {{ page.title }}
-                </NuxtLink>
-              </div>
-            </v-col>
-          </v-row>
-
-          <v-divider class="my-8" style="border-color: rgba(255, 255, 255, 0.2);"></v-divider>
-
-          <div class="text-center">
-            <p class="text-white mb-0" style="opacity: 0.85; font-size: 14px;">
-              © {{ new Date().getFullYear() }} Jalan Bareng. Dibuat dengan <span style="color: #ff6b9d;">❤</span> untuk
-              Indonesia.
-            </p>
-          </div>
-        </v-container>
-      </div>
-    </v-footer>
+    <!-- Centralized Modern Footer Component -->
+    <Footer />
   </v-app>
 </template>
 
@@ -363,7 +303,7 @@ onBeforeUnmount(() => {
 }
 
 .footer-gradient {
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  background: #09090B;
   position: relative;
   overflow: hidden;
   width: 100%;

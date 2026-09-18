@@ -1,0 +1,10 @@
+{
+  "name": "jalan-bareng-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Jalan Bareng Monorepo Root",
+  "scripts": {
+    "dev": "npm --prefix web run dev",
+    "build": "npm --prefix web run build"
+  }
+}

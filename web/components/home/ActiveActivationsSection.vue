@@ -20,8 +20,8 @@
             <img :src="getImageUrl(activation.hero_image)" :alt="activation.name" class="activation-image" />
             <div class="activation-overlay"></div>
             <div class="activation-badge">
-              <v-chip :color="activation.color_theme || 'primary'" size="small" class="font-weight-medium">
-                {{ activation.city_name }}
+              <v-chip :color="activation.color_theme || 'primary'" size="small" class="font-weight-bold text-white">
+                {{ getBadgeLabel(activation) }}
               </v-chip>
             </div>
           </div>
@@ -58,6 +58,13 @@ const props = defineProps({
 })
 
 const { getImageUrl } = useImageUrl()
+
+const getBadgeLabel = (activation: any) => {
+  if (activation.city) return activation.city
+  if (activation.category === 'theme') return 'Tematik'
+  if (activation.category === 'space') return 'Ruang Kreatif'
+  return 'Jalan Bareng'
+}
 </script>
 
 <style scoped>

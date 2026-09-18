@@ -39,6 +39,11 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
+        'guzzle' => [
+            'verify' => file_exists(base_path('../php82/extras/ssl/cacert.pem'))
+                ? base_path('../php82/extras/ssl/cacert.pem')
+                : env('GUZZLE_VERIFY_SSL', true),
+        ],
     ],
 
 ];

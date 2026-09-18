@@ -27,10 +27,15 @@ class GoogleAuthController extends Controller
     public function handleGoogleCallback(Request $request)
     {
         try {
+            $caPath = base_path('../php82/extras/ssl/cacert.pem');
+            $verify = file_exists($caPath) ? $caPath : false;
+            $client = new \GuzzleHttp\Client(['verify' => $verify]);
+
+            $driver = Socialite::driver('google')->stateless();
+            $driver->setHttpClient($client);
+
             // Get user from Google using the code
-            $googleUser = Socialite::driver('google')
-                ->stateless()
-                ->user();
+            $googleUser = $driver->user();
 
             \Log::info('Google user retrieved', [
                 'email' => $googleUser->getEmail(),

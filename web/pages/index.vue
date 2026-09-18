@@ -1,67 +1,17 @@
 <template>
   <div>
-    <!-- Authentic Community Hero Section -->
-    <v-sheet class="hero-section" :style="{
-      background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.78) 0%, rgba(15, 23, 42, 0.92) 100%), url(\'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1600&auto=format&fit=crop\') center/cover no-repeat',
-      position: 'relative',
-      overflow: 'hidden'
-    }">
-      <v-container class="hero-content"
-        style="position: relative; z-index: 2; padding-top: 110px; padding-bottom: 90px">
-        <v-row align="center" justify="center" class="pt-16 pb-16 pb-md-20">
-          <v-col cols="12" md="9" lg="8" class="text-center pb-8 pb-md-12">
-            <div class="animate-fade-in">
-              <!-- Community Pill Badge -->
-              <div class="d-inline-flex align-center ga-2 px-4 py-1 rounded-pill mb-4 hero-pill-badge">
-                <v-icon size="small" color="#FBBF24">mdi-compass-outline</v-icon>
-                <span>KOMUNITAS PEJALAN KAKI & PENJELAJAH KOTA</span>
-              </div>
+    <v-container class="py-4 py-md-8">
+      <!-- Editorial Collage Hero Section (Inside same container for 100% width consistency) -->
+      <EditorialCollageHero @scroll-to-registration="scrollToRegistration" />
 
-              <!-- Human & Grounded Headline -->
-              <h1 class="text-h4 text-sm-h3 text-md-h2 text-lg-h1 font-weight-black text-white mb-4 hero-main-heading">
-                Setiap Sudut Kota Punya Cerita,<br>
-                <span class="hero-highlight-text">Mari Menjelajah Bareng</span>
-              </h1>
-
-              <!-- Honest, Warm Community Copy -->
-              <p class="text-body-1 text-sm-h6 text-white mb-8 mx-auto px-4 hero-main-subtitle">
-                Temukan kawan jalan baru, susuri trotoar dan lorong tersembunyi, ikuti agenda jalan santai, serta bagikan catatan perjalananmu di berbagai kota.
-              </p>
-
-              <!-- Purposeful Actions -->
-              <div class="d-flex flex-column flex-sm-row justify-center align-center ga-3 px-4">
-                <v-btn :size="$vuetify.display.mobile ? 'large' : 'x-large'" color="primary" class="px-8 font-weight-bold elevation-4"
-                  rounded="pill" to="/aktivasi" :block="$vuetify.display.mobile">
-                  <v-icon start>mdi-map-marker-radius</v-icon>
-                  Lihat Aktivasi & Event
-                </v-btn>
-                <v-btn :size="$vuetify.display.mobile ? 'large' : 'x-large'" color="white" variant="outlined" class="px-8 font-weight-bold"
-                  rounded="pill" to="/cerita" :block="$vuetify.display.mobile">
-                  <v-icon start>mdi-feather</v-icon>
-                  Baca Cerita Jalan Bareng
-                </v-btn>
-              </div>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-
-      <!-- Wave Divider -->
-      <div class="wave-divider">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
-            fill="white" />
-        </svg>
-      </div>
-    </v-sheet>
-
-    <v-container class="py-8 py-md-12">
       <!-- Stats Section -->
-      <HomeStatsSection :stats="stats" />
+      <HomeStatsSection :stats="stats" class="mt-8 mt-md-14" />
 
       <!-- Community Stories Section (Cerita Jalan Bareng) -->
       <HomeCommunityStoriesSection />
+
+      <!-- Weekly Registration Hub (Drop Link Pendaftaran Pekan Ini) -->
+      <WeeklyRegistrationHub />
 
       <!-- Featured Activation Section -->
       <HomeFeaturedActivationSection :featured-activation="featuredActivation" />
@@ -74,8 +24,8 @@
 
       <!-- Purposeful Bottom CTA Section -->
       <v-card v-if="!authStore.isLoggedIn" elevation="0" rounded="xl" class="pa-6 pa-md-12 text-center border antislop-cta-card">
-        <v-avatar color="white" size="64" class="mb-4 elevation-2">
-          <v-icon size="36" color="primary">mdi-foot-print</v-icon>
+        <v-avatar color="#FACC15" size="64" class="mb-4 elevation-2">
+          <v-icon size="36" color="#111827">mdi-foot-print</v-icon>
         </v-avatar>
         <h2 :class="$vuetify.display.mobile ? 'text-h5' : 'text-h3'" class="text-white font-weight-bold mb-3">
           Langkah Pertama Dimulai Bersama Kami
@@ -97,7 +47,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: 'hero'
+  layout: 'default'
 })
 
 useSeoMeta({
@@ -109,6 +59,8 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
+import EditorialCollageHero from '~/components/home/EditorialCollageHero.vue'
+import WeeklyRegistrationHub from '~/components/home/WeeklyRegistrationHub.vue'
 import HomeStatsSection from '~/components/home/StatsSection.vue'
 import HomeCommunityStoriesSection from '~/components/home/CommunityStoriesSection.vue'
 import HomeFeaturedActivationSection from '~/components/home/FeaturedActivationSection.vue'
@@ -119,14 +71,21 @@ const { api } = useApi()
 const authStore = useAuthStore()
 const config = useRuntimeConfig()
 
+const scrollToRegistration = () => {
+  const el = document.getElementById('registrasi')
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
 const featuredActivation = ref(null)
 const activeActivations = ref([])
 
 const stats = ref([
-  { icon: 'mdi-map-marker-radius', value: '0', label: 'Aktivasi', color: '#667eea' },
-  { icon: 'mdi-map-marker', value: '0', label: 'Destinasi', color: '#764ba2' },
-  { icon: 'mdi-calendar-star', value: '0', label: 'Event', color: '#f093fb' },
-  { icon: 'mdi-account-group', value: '0', label: 'Anggota', color: '#4facfe' },
+  { icon: 'mdi-account-multiple-check', value: '10.000+', label: 'Pendaftar Database', color: '#DC2626' },
+  { icon: 'mdi-account-group', value: '1.000+', label: 'Anggota Aktif', color: '#111827' },
+  { icon: 'mdi-handshake-outline', value: '80+', label: 'Mitra Strategis', color: '#D97706' },
+  { icon: 'mdi-calendar-check', value: '0', label: 'Agenda & Event', color: '#059669' },
 ])
 
 const destinationCategories = ref([])
@@ -175,37 +134,20 @@ onMounted(async () => {
     // Set active activations (limit to 6)
     activeActivations.value = active.slice(0, 6)
 
-    // Update stats - activations count
-    stats.value[0].value = active.length.toString()
+    // Dynamic events count for stats
+    try {
+      const eventsResponse = await api.get('/events')
+      const totalEvents = eventsResponse.data.total ?? eventsResponse.data.data?.length ?? (Array.isArray(eventsResponse.data) ? eventsResponse.data.length : 0)
+      if (totalEvents > 0) {
+        stats.value[3].value = totalEvents.toString() + '+'
+      } else {
+        stats.value[3].value = '50+'
+      }
+    } catch (error) {
+      stats.value[3].value = '50+'
+    }
   } catch (error) {
     console.error('Error fetching activations:', error)
-  }
-
-  // Fetch destinations for stats
-  try {
-    const destinationsResponse = await api.get('/destinations')
-    const totalDest = destinationsResponse.data.total ?? destinationsResponse.data.data?.length ?? (Array.isArray(destinationsResponse.data) ? destinationsResponse.data.length : 0)
-    stats.value[1].value = totalDest.toString()
-  } catch (error) {
-    console.error('Error fetching destinations:', error)
-  }
-
-  // Fetch events for stats
-  try {
-    const eventsResponse = await api.get('/events')
-    const totalEvents = eventsResponse.data.total ?? eventsResponse.data.data?.length ?? (Array.isArray(eventsResponse.data) ? eventsResponse.data.length : 0)
-    stats.value[2].value = totalEvents.toString()
-  } catch (error) {
-    console.error('Error fetching events:', error)
-  }
-
-  // Fetch users for stats
-  try {
-    const usersResponse = await api.get('/users')
-    const totalUsers = usersResponse.data.total ?? usersResponse.data.data?.length ?? (Array.isArray(usersResponse.data) ? usersResponse.data.length : 0)
-    stats.value[3].value = totalUsers.toString()
-  } catch (error) {
-    console.error('Error fetching users:', error)
   }
 
   // Fetch categories
@@ -234,34 +176,44 @@ onMounted(async () => {
 .hero-section {
   position: relative;
   overflow: hidden;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #F3F4F6;
 }
 
-.hero-pill-badge {
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  font-size: 0.725rem;
-  letter-spacing: 0.75px;
-  color: #F8FAFC;
+.hero-pill-tag {
+  background: #FEE2E2;
+  color: #991B1B;
+  font-weight: 800;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  border: 1px solid #FECACA;
 }
 
-.hero-main-heading {
-  line-height: 1.15;
-  letter-spacing: -1px;
+.hero-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #DC2626;
+  display: inline-block;
 }
 
-.hero-highlight-text {
-  color: #FBBF24;
+.hero-subtitle {
+  color: #4B5563;
+  line-height: 1.65;
 }
 
-.hero-main-subtitle {
-  max-width: 680px;
-  line-height: 1.6;
-  opacity: 0.92;
+.hero-primary-btn {
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+
+.hero-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3) !important;
 }
 
 .antislop-cta-card {
-  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  background: #111827;
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -292,10 +244,6 @@ onMounted(async () => {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.hero-section {
-  margin-top: -80px !important;
 }
 
 /* Consistent Card Styles - Clean Design System */

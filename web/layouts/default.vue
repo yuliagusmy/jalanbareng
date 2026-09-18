@@ -1,27 +1,26 @@
 <template>
-  <v-app>
+  <v-app class="default-layout">
     <!-- Modern Simple Header -->
-    <v-app-bar elevation="0" height="0" class="modern-header" :class="appBarClass">
+    <v-app-bar elevation="0" height="0" class="modern-header default-header" :class="appBarClass">
       <template v-slot:extension>
         <v-container class="d-flex align-center header-container" style="height: 70px;">
           <!-- Mobile Menu Icon -->
-          <v-app-bar-nav-icon v-if="$vuetify.display.mobile" @click="drawer = !drawer"
-            :color="isScrolled ? 'primary' : 'white'"></v-app-bar-nav-icon>
+          <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer"
+            color="secondary"></v-app-bar-nav-icon>
 
           <!-- Logo/Brand -->
-          <v-toolbar-title>
-            <NuxtLink to="/" class="text-decoration-none">
-              <span class="font-weight-bold text-h6 brand-text" :class="isScrolled ? 'text-primary' : 'text-white'">
-                Jalan Bareng
-              </span>
-            </NuxtLink>
-          </v-toolbar-title>
+          <NuxtLink to="/" class="text-decoration-none d-flex align-center mr-4">
+            <img
+              src="/images/logo-jalan-bareng.png"
+              alt="Jalan Bareng"
+              style="height: 38px; width: auto; object-fit: contain; transition: all 0.25s ease;"
+            />
+          </NuxtLink>
 
           <v-spacer></v-spacer>
 
           <!-- Desktop Navigation -->
-          <NavigationMenu :text-color="isScrolled ? 'primary' : 'white'"
-            :admin-color="isScrolled ? 'secondary' : 'white'" />
+          <NavigationMenu text-color="secondary" admin-color="primary" />
 
           <v-spacer></v-spacer>
 
@@ -78,7 +77,7 @@
             </v-menu>
           </template>
           <template v-else>
-            <v-btn to="/login" :variant="isScrolled ? 'flat' : 'outlined'" :color="isScrolled ? 'primary' : 'white'"
+            <v-btn to="/login" variant="flat" color="primary"
               class="ml-3 login-btn" rounded="pill" size="default">
               Masuk
             </v-btn>
@@ -156,8 +155,8 @@ const api = useApi()
 </script>
 
 <style>
-/* Modern Header Styles - Global to override Vuetify */
-.modern-header {
+/* Modern Header Styles - Scoped strictly to default layout */
+.default-layout .default-header {
   background: transparent !important;
   background-color: transparent !important;
   position: fixed !important;
@@ -166,44 +165,43 @@ const api = useApi()
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
-.modern-header.app-bar-hidden {
+.default-layout .default-header.app-bar-hidden {
   transform: translateY(-100%);
 }
 
-.modern-header .v-toolbar__content {
+.default-layout .default-header .v-toolbar__content {
   display: none !important;
 }
 
-.modern-header .v-toolbar__extension {
+.default-layout .default-header .v-toolbar__extension {
   padding: 0 !important;
   height: 70px !important;
   transition: background 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
 }
 
 /* Style when scrolled down */
-.modern-header.app-bar-scrolled .v-toolbar__extension {
-  background: rgba(255, 255, 255, 0.85) !important;
+.default-layout .default-header.app-bar-scrolled .v-toolbar__extension {
+  background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 /* Style when at the top of the page */
-.modern-header.app-bar-top .v-toolbar__extension {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: none !important;
+.default-layout .default-header.app-bar-top .v-toolbar__extension {
+  background: #FFFFFF !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 1px solid #E5E7EB;
 }
 
-.header-container {
+.default-layout .header-container {
   background: transparent !important;
 }
 
-/* Ensure main content has proper top spacing */
-.v-main {
+/* Ensure main content in default layout has proper top spacing */
+.default-layout .v-main {
   padding-top: 70px !important;
-  /* Add fixed padding back */
 }
 </style>
 
@@ -239,36 +237,38 @@ const api = useApi()
 
 .nav-link {
   text-transform: none !important;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  transition: all 0.2s ease;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  border-radius: 9999px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-shadow: none !important;
 }
 
-:deep(.app-bar-scrolled) .nav-link {
-  text-shadow: none;
-}
-
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-}
-
+.nav-link:hover,
 :deep(.app-bar-scrolled) .nav-link:hover {
-  background: rgba(103, 58, 183, 0.08) !important;
+  background: #FEF2F2 !important;
+  color: #DC2626 !important;
+  transform: translateY(-1px);
+}
+
+.nav-link.router-link-active,
+:deep(.app-bar-scrolled) .nav-link.router-link-active {
+  background: #FEF2F2 !important;
+  color: #DC2626 !important;
+  font-weight: 700 !important;
 }
 
 .login-btn {
   text-transform: none !important;
-  font-weight: 600;
+  font-weight: 700;
   padding: 0 24px !important;
-  transition: all 0.3s ease;
-  border: 2px solid white !important;
-  text-shadow: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2) !important;
 }
 
 .login-btn:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
   transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35) !important;
 }
 
 .avatar-btn {
