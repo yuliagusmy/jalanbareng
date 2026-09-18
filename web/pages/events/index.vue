@@ -52,7 +52,7 @@
     </section>
 
     <!-- Main Events Container -->
-    <v-container id="events-content" class="py-10">
+    <v-container id="events-content" class="py-6 py-md-10">
       <!-- Filter & Tabs Bar -->
       <div class="filter-bar-card pa-4 pa-md-6 mb-8">
         <v-row align="center" justify="space-between" class="ga-y-4">
@@ -766,7 +766,7 @@ const stripHtml = (html: string) => {
 @media (max-width: 600px) {
   .events-hero {
     padding-top: 32px;
-    padding-bottom: 35px;
+    padding-bottom: 32px;
   }
 
   .hero-title {

@@ -63,7 +63,7 @@
     </section>
 
     <!-- Main Content Container -->
-    <v-container class="py-10">
+    <v-container class="py-6 py-md-10">
       <!-- Featured Activations (When 'Semua' is active) -->
       <section v-if="featuredActivations.length > 0" class="mb-14">
         <div class="section-header-row mb-6">
@@ -378,8 +378,7 @@ useSeoMeta({
 .aktivasi-hero {
   background: #FAFAFA;
   border-bottom: 1px solid #F1F5F9;
-  padding-top: 48px;
-  padding-bottom: 50px;
+  padding: 56px 0 48px;
 }
 
 .hero-badge-pill {
@@ -686,7 +685,7 @@ useSeoMeta({
 @media (max-width: 600px) {
   .aktivasi-hero {
     padding-top: 32px;
-    padding-bottom: 35px;
+    padding-bottom: 32px;
   }
 
   .hero-title {

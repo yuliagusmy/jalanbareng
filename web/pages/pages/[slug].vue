@@ -1,7 +1,7 @@
 <template>
   <div class="community-page-wrapper">
     <!-- 1. HERO HEADER SECTION -->
-    <div class="community-hero-section py-10 py-md-14">
+    <div class="community-hero-section py-6 py-md-12">
       <v-container>
         <!-- Breadcrumbs -->
         <nav class="d-flex align-center ga-2 text-caption mb-4" aria-label="Breadcrumb">
@@ -48,7 +48,7 @@
     </div>
 
     <!-- 2. MAIN 2-COLUMN CONTENT SECTION -->
-    <v-container class="py-8 py-md-12">
+    <v-container class="py-6 py-md-10">
       <v-row>
         <!-- LEFT COLUMN: Sticky Navigation & Help Sidebar -->
         <v-col cols="12" md="4" lg="3">

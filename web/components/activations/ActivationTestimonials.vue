@@ -1,18 +1,12 @@
 <template>
   <v-row>
-    <v-col cols="12">
-      <h2 class="text-h4 font-weight-bold mb-4">Apa Kata Mereka?</h2>
-    </v-col>
-
-    <v-col cols="12">
-      <v-row>
-        <v-col
-          v-for="testimonial in testimonials"
-          :key="testimonial.id"
-          cols="12"
-          md="6"
-          lg="4"
-        >
+    <v-col
+      v-for="testimonial in testimonials"
+      :key="testimonial.id"
+      cols="12"
+      md="6"
+      lg="4"
+    >
           <v-card height="100%" variant="outlined">
             <v-card-text class="d-flex flex-column h-100">
               <!-- Quote Icon -->
@@ -50,8 +44,6 @@
             </v-card-text>
           </v-card>
         </v-col>
-      </v-row>
-    </v-col>
   </v-row>
 </template>
 

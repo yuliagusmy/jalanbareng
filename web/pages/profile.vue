@@ -640,8 +640,7 @@ onMounted(() => {
 .profile-hero {
   position: relative;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 80px 0 60px;
-  margin-top: -80px;
+  padding: 48px 0 40px;
   overflow: hidden;
 }
 
@@ -1057,7 +1056,7 @@ onMounted(() => {
 
 @media (max-width: 600px) {
   .profile-hero {
-    padding: 60px 0 40px;
+    padding: 32px 0 32px;
   }
 
   .user-stats {

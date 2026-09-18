@@ -21,7 +21,7 @@
             hover
           >
             <v-img
-              :src="`${apiBase}/storage/${item.file_url}`"
+              :src="getImageUrl(item.file_url)"
               :alt="item.description"
               aspect-ratio="1"
               cover
@@ -61,7 +61,7 @@
         <v-card-text class="pa-0">
           <v-img
             v-if="currentMedia && currentMedia.file_url"
-            :src="`${apiBase}/storage/${currentMedia.file_url}`"
+            :src="getImageUrl(currentMedia.file_url)"
             :alt="currentMedia.description"
             max-height="80vh"
             contain
@@ -119,6 +119,12 @@ const nextImage = () => {
 
 const previousImage = () => {
   currentIndex.value = (currentIndex.value - 1 + photoMedia.value.length) % photoMedia.value.length
+}
+
+const getImageUrl = (url?: string) => {
+  if (!url) return ''
+  if (url.startsWith('http') || url.startsWith('/')) return url
+  return `${apiBase}/storage/${url}`
 }
 
 const getYouTubeEmbedUrl = (url: string) => {

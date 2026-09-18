@@ -57,9 +57,12 @@ class ActivationSeeder extends Seeder
         ]);
 
         $this->seedMedia($makassar->id, [
-            ['file' => 'activations/media/media_walking_2.jpg', 'desc' => 'Walking tour menyusuri kawasan heritage Makassar'],
-            ['file' => 'activations/media/media_heritage_1.jpg', 'desc' => 'Eksplorasi bangunan cagar budaya bersama kawan pejalan'],
-            ['file' => 'activations/media/media_walking_3.jpg', 'desc' => 'Suasana hangat peserta saat jeda istirahat di trotoar kota'],
+            ['file' => 'activations/media/makassar_walking_crowd.jpg', 'desc' => 'Keceriaan kawan pejalan menyusuri jalanan kota Makassar'],
+            ['file' => 'activations/media/makassar_sign_group.jpg', 'desc' => 'Foto kawan pejalan di plang rambu pejalan kaki Jl. Mawas'],
+            ['file' => 'activations/media/makassar_morning_walk.jpg', 'desc' => 'Langkah pagi bersama di bawah hangatnya mentari Edisi 111'],
+            ['file' => 'activations/media/makassar_circle_sharing.jpg', 'desc' => 'Lingkaran diskusi hangat dan berbagi cerita di atas rumput taman'],
+            ['file' => 'activations/media/makassar_baroncong_culture.jpg', 'desc' => 'Menyapa penjaja kuliner tradisional kue baroncong keliling'],
+            ['file' => 'activations/media/makassar_book_circle.jpg', 'desc' => 'Sesi sharing buku dan obrolan reflektif kawan pejalan'],
         ]);
 
         // 3. Jalan Bareng Palopo (City Chapter)

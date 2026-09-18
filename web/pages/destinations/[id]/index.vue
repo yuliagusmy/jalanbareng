@@ -907,9 +907,8 @@ onMounted(() => {
 /* Hero Section with Background Image */
 .hero-section {
   position: relative;
-  min-height: 550px;
-  margin-top: -80px;
-  padding-top: 80px;
+  min-height: 480px;
+  padding-top: 36px;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -1015,6 +1014,7 @@ onMounted(() => {
 
 /* Content Section */
 .content-section {
+  padding-top: 48px;
   padding-bottom: 80px;
 }
 
@@ -1606,7 +1606,13 @@ onMounted(() => {
 
 @media (max-width: 600px) {
   .hero-section {
-    min-height: 400px;
+    min-height: 380px;
+    padding-top: 24px;
+  }
+
+  .content-section {
+    padding-top: 24px;
+    padding-bottom: 48px;
   }
 
   .hero-title {

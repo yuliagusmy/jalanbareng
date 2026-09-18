@@ -137,11 +137,11 @@
       </v-container>
     </section>
 
-    <v-container class="py-12">
+    <v-container class="py-6 py-md-12">
       <!-- 1. ABOUT SECTION (URUTAN 1) - Modern & Informative with Gallery -->
-      <div id="about-section" class="about-section mb-16">
+      <div id="about-section" class="about-section mb-10 mb-md-16">
         <v-row>
-          <v-col cols="12" lg="10" xl="9" class="mx-auto">
+          <v-col cols="12">
             <!-- About Header -->
             <div class="mb-12">
               <h2 class="text-h3 text-md-h2 font-weight-bold mb-6"
@@ -162,7 +162,7 @@
       </div>
 
       <!-- Featured Event Section -->
-      <div v-if="activation.featured_event" class="mb-16">
+      <div v-if="activation.featured_event" class="mb-10 mb-md-16">
         <div class="text-center mb-8">
           <h2 class="text-h3 font-weight-bold mb-3">Event Pilihan Minggu Ini</h2>
           <p class="text-h6 text-grey-darken-1 font-weight-regular">Jangan lewatkan event menarik dari komunitas</p>
@@ -214,7 +214,7 @@
       <!-- UPCOMING EVENTS SECTION - Moved here, limited to 3 -->
       <div v-if="activation.upcoming_events && activation.upcoming_events.length > 0"
         id="upcoming-events"
-        class="upcoming-events-section mb-16">
+        class="upcoming-events-section mb-10 mb-md-16">
         <div class="text-center mb-10">
           <h2 class="text-h3 font-weight-bold mb-3">Event Mendatang</h2>
           <p class="text-h6 text-grey-darken-1 font-weight-regular">Ikuti kegiatan seru bersama komunitas</p>
@@ -278,7 +278,7 @@
 
       <!-- Testimonials Section -->
       <div v-if="activation.show_testimonials && activation.testimonials && activation.testimonials.length > 0"
-        class="mb-16">
+        class="mb-10 mb-md-16">
         <div class="text-center mb-8">
           <h2 class="text-h3 font-weight-bold mb-3">Kata Mereka</h2>
           <p class="text-h6 text-grey-darken-1 font-weight-regular">Pengalaman dari peserta aktivitas kami</p>
@@ -287,7 +287,7 @@
       </div>
 
       <!-- 4. FAQ SECTION - Adjusted Width -->
-      <div v-if="activation.show_faq && activation.faqs && activation.faqs.length > 0" class="mb-16">
+      <div v-if="activation.show_faq && activation.faqs && activation.faqs.length > 0" class="mb-10 mb-md-16">
         <div class="text-center mb-8">
           <h2 class="text-h3 font-weight-bold mb-3">Pertanyaan Umum</h2>
           <p class="text-h6 text-grey-darken-1 font-weight-regular">Temukan jawaban untuk pertanyaan Anda</p>
@@ -301,30 +301,53 @@
 
       <!-- CTA Section -->
       <v-card v-if="activation.cta_primary_label || activation.cta_secondary_label" elevation="0" rounded="xl"
-        class="pa-8 pa-md-12 text-center" :style="{
+        class="pa-5 pa-sm-8 pa-md-12 text-center" :style="{
           background: `linear-gradient(135deg, ${activation.color_theme || '#667eea'} 0%, ${darkenColor(activation.color_theme || '#764ba2', 20)} 100%)`
         }">
-        <v-icon size="64" color="white" class="mb-4">mdi-account-group</v-icon>
-        <h2 class="text-h4 text-white font-weight-bold mb-4">
+        <v-icon size="56" color="white" class="mb-4">mdi-account-group</v-icon>
+        <h2 class="text-h5 text-md-h4 text-white font-weight-bold mb-3">
           Siap Bergabung dengan {{ activation.name }}?
         </h2>
-        <p class="text-h6 text-white mb-8" style="opacity: 0.9;">
+        <p class="text-body-1 text-md-h6 text-white mb-6 mb-md-8 mx-auto" style="opacity: 0.95; max-width: 580px; line-height: 1.6;">
           Jangan lewatkan kesempatan untuk menjadi bagian dari komunitas kami
         </p>
-        <div class="d-flex flex-wrap justify-center align-center ga-4">
-          <v-btn v-if="activation.social_instagram" :href="`https://instagram.com/${activation.social_instagram}`" target="_blank"
-            rel="noopener noreferrer" color="white" size="x-large" rounded="pill" class="px-8 font-weight-bold" elevation="8">
-            <v-icon start>mdi-instagram</v-icon>
-            Instagram @{{ activation.social_instagram }}
+        <div class="d-flex flex-column flex-sm-row flex-wrap justify-center align-center ga-3 ga-md-4">
+          <v-btn
+            v-if="activation.social_instagram"
+            :href="`https://instagram.com/${activation.social_instagram}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            color="white"
+            rounded="pill"
+            class="activation-cta-btn font-weight-bold elevation-4"
+          >
+            <v-icon start size="20">mdi-instagram</v-icon>
+            <span class="cta-btn-text">Instagram @{{ activation.social_instagram }}</span>
           </v-btn>
-          <v-btn v-if="activation.cta_primary_label" :href="activation.cta_primary_url" target="_blank"
-            rel="noopener noreferrer" variant="outlined" color="white" size="x-large" rounded="pill" class="px-8 font-weight-bold">
-            {{ activation.cta_primary_label }}
-            <v-icon end>mdi-open-in-new</v-icon>
+          <v-btn
+            v-if="activation.cta_primary_label"
+            :href="activation.cta_primary_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="outlined"
+            color="white"
+            rounded="pill"
+            class="activation-cta-btn font-weight-bold"
+          >
+            <span class="cta-btn-text">{{ activation.cta_primary_label }}</span>
+            <v-icon end size="18">mdi-open-in-new</v-icon>
           </v-btn>
-          <v-btn v-if="activation.cta_secondary_label" :href="activation.cta_secondary_url" target="_blank"
-            rel="noopener noreferrer" variant="text" color="white" size="x-large" rounded="pill" class="px-8">
-            {{ activation.cta_secondary_label }}
+          <v-btn
+            v-if="activation.cta_secondary_label"
+            :href="activation.cta_secondary_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="text"
+            color="white"
+            rounded="pill"
+            class="activation-cta-btn"
+          >
+            <span class="cta-btn-text">{{ activation.cta_secondary_label }}</span>
           </v-btn>
         </div>
       </v-card>
@@ -446,22 +469,24 @@ const heroCard1Image = computed(() => {
 
 const heroCard2Image = computed(() => {
   if (activation.value?.slug === 'jalan-bareng-makassar' || activation.value?.city?.toLowerCase() === 'makassar') {
-    return '/images/hero/walk_1.jpg'
+    return '/images/activations/makassar/makassar_sign_group.jpg'
   }
   if (activation.value?.media && activation.value.media.length > 0) {
     const photo = activation.value.media[0]
-    return photo?.file_path ? `${apiBase}/storage/${photo.file_path}` : '/images/hero/walk_1.jpg'
+    const path = photo?.file_url || photo?.file_path
+    return path ? `${apiBase}/storage/${path}` : '/images/hero/walk_1.jpg'
   }
   return '/images/hero/walk_1.jpg'
 })
 
 const heroCard3Image = computed(() => {
   if (activation.value?.slug === 'jalan-bareng-makassar' || activation.value?.city?.toLowerCase() === 'makassar') {
-    return '/images/hero/walk_5.jpg'
+    return '/images/activations/makassar/makassar_circle_sharing.jpg'
   }
   if (activation.value?.media && activation.value.media.length > 1) {
     const photo = activation.value.media[1]
-    return photo?.file_path ? `${apiBase}/storage/${photo.file_path}` : '/images/hero/walk_5.jpg'
+    const path = photo?.file_url || photo?.file_path
+    return path ? `${apiBase}/storage/${path}` : '/images/hero/walk_5.jpg'
   }
   return '/images/hero/walk_5.jpg'
 })
@@ -769,7 +794,7 @@ useSeoMeta({
   border-radius: 28px;
   overflow: hidden;
   background-color: #F3F4F6;
-  border: 2px solid #FFFFFF;
+  border: none;
   box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.12) !important;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
   cursor: pointer;
@@ -797,7 +822,7 @@ useSeoMeta({
   border-radius: 22px;
   overflow: hidden;
   background-color: #F3F4F6;
-  border: 2px solid #FFFFFF;
+  border: none;
   box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.1) !important;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
   cursor: pointer;
@@ -863,6 +888,10 @@ useSeoMeta({
 }
 
 @media (max-width: 600px) {
+  .activation-hero-section {
+    padding: 28px 0 32px 0;
+  }
+
   .activation-hero-collage {
     max-width: 100%;
     gap: 12px;
@@ -1301,5 +1330,48 @@ useSeoMeta({
   .event-title {
     min-height: auto;
   }
+}
+
+.activation-cta-btn {
+  min-height: 48px;
+  height: auto !important;
+  padding: 12px 28px !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.02em !important;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.activation-cta-btn:hover {
+  transform: translateY(-2px);
+}
+
+.activation-cta-btn .cta-btn-text {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+@media (max-width: 600px) {
+  .activation-cta-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 12px 18px !important;
+    font-size: 0.88rem !important;
+  }
+}
+
+.about-content {
+  max-width: 960px;
+  line-height: 1.85 !important;
+  color: #334155 !important;
+}
+
+.about-content :deep(p) {
+  margin-bottom: 1.25rem;
+  line-height: 1.85;
 }
 </style>

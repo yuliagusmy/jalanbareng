@@ -53,10 +53,10 @@
           </div>
         </div>
 
-        <!-- THE 5 LANES COLLAGE (All 5 lanes vertically centered) -->
+        <!-- THE 5 LANES COLLAGE (All 5 lanes vertically centered; 3 lanes on mobile, 5 lanes on tablet & desktop) -->
         <div class="cards-collage-grid">
-          <!-- Lane 1: Left Outer Card (Centered) -->
-          <div class="collage-lane lane-outer">
+          <!-- Lane 1: Left Outer Card (Hidden on mobile <600px, visible on tablet/desktop) -->
+          <div class="collage-lane lane-outer d-none d-sm-flex">
             <div class="color-card card-amber elevation-1">
               <div class="card-img-wrapper">
                 <img :src="cards[0].prev" class="card-img img-back" alt="Dokumentasi jalan" />
@@ -107,8 +107,8 @@
             </div>
           </div>
 
-          <!-- Lane 5: Right Outer Card (Centered) -->
-          <div class="collage-lane lane-outer">
+          <!-- Lane 5: Right Outer Card (Hidden on mobile <600px, visible on tablet/desktop) -->
+          <div class="collage-lane lane-outer d-none d-sm-flex">
             <div class="color-card card-mint elevation-1">
               <div class="card-img-wrapper">
                 <img :src="cards[6].prev" class="card-img img-back" alt="Dokumentasi jalan" />
@@ -129,7 +129,7 @@
             Nggak nyangka perjumpaan santai di trotoar malah bikin dapet sahabat baru seperti keluarga sendiri.
           </p>
           <div class="quote-author font-weight-bold text-primary">
-            Rifky Pratama <span class="author-sub text-grey-darken-1">— Pejalan Makassar</span>
+            Rifky Pratama <span class="author-sub text-grey-darken-1">· Pejalan Makassar</span>
           </div>
           <span class="sticker sticker-flower-bottom" aria-hidden="true">🌸</span>
         </div>
@@ -543,6 +543,8 @@ onUnmounted(() => {
   justify-content: center;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
   cursor: pointer;
+  border: none !important;
+  outline: none !important;
 }
 
 .color-card:hover {
@@ -555,6 +557,8 @@ onUnmounted(() => {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .card-img {
@@ -604,8 +608,8 @@ onUnmounted(() => {
 .card-center-hero {
   height: 415px; /* Longest center hero! */
   border-radius: 32px;
-  background-color: #FDE047;
-  border: 2px solid #FFFFFF;
+  background-color: transparent;
+  border: none !important;
 }
 
 .card-stacked-top-tall {
@@ -697,70 +701,57 @@ onUnmounted(() => {
   }
 }
 
-/* Mobile Adjustments (320px - 599px): 100% Width Fit, NO horizontal scroll */
+/* Mobile Adjustments (320px - 599px): Clean 3-Lane Hero Fit, NO horizontal scroll */
 @media (max-width: 599px) {
   .editorial-hero-wrapper {
-    padding: 16px 8px 28px;
+    padding: 8px 0 24px;
   }
 
   .top-headline-wrapper {
     margin-bottom: 20px;
+    padding: 0 8px;
   }
 
   .main-headline {
-    font-size: clamp(1.6rem, 5.8vw, 2.2rem);
+    font-size: clamp(1.55rem, 5.2vw, 1.95rem) !important;
+    line-height: 1.2 !important;
   }
 
   .cards-collage-grid {
     align-items: center;
-    gap: 5px;
-  }
-
-  .lane-outer, .lane-left, .lane-right {
-    align-items: center;
     justify-content: center;
+    gap: 8px;
+    padding: 0 4px;
   }
 
   .lane-stacked {
-    gap: 5px;
+    flex: 1;
+    gap: 8px;
     align-items: center;
     justify-content: center;
-  }
-
-  .card-amber, .card-mint {
-    height: 135px;
-    border-radius: 12px;
-  }
-
-  .card-stacked-top, .card-stacked-bottom-short {
-    height: 68px;
-    border-radius: 10px;
-  }
-
-  .card-stacked-bottom, .card-stacked-top-tall {
-    height: 92px;
-    border-radius: 10px;
-  }
-
-  .card-center-hero {
-    height: 195px;
-    border-radius: 16px;
   }
 
   .lane-center {
+    flex: 1.25;
     align-items: center;
     justify-content: center;
-    margin-top: -10px;
+    margin-top: 0;
     margin-bottom: 0;
   }
 
-  .center-star-badge {
-    top: -11px;
+  .card-stacked-top, .card-stacked-bottom-short {
+    height: 86px;
+    border-radius: 12px;
   }
 
-  .center-star-badge svg {
-    width: 18px;
-    height: 18px;
+  .card-stacked-bottom, .card-stacked-top-tall {
+    height: 112px;
+    border-radius: 12px;
+  }
+
+  .card-center-hero {
+    height: 206px;
+    border-radius: 18px;
   }
 
   .card-tag-bottom {
@@ -878,24 +869,24 @@ onUnmounted(() => {
   }
 
   .headline-container {
-    padding: 0 14px;
+    padding: 0 10px;
   }
 
   .main-headline {
-    font-size: 1.95rem !important;
-    line-height: 1.18 !important;
+    font-size: 1.85rem !important;
+    line-height: 1.2 !important;
     letter-spacing: -0.025em !important;
   }
 
   .typewriter-line {
-    font-size: 0.88em !important;
+    font-size: 0.9em !important;
   }
 
   .sub-headline {
     font-size: 0.88rem !important;
     line-height: 1.55 !important;
-    padding: 0 8px;
-    margin-top: 10px;
+    padding: 0 6px;
+    margin-top: 8px;
   }
 
   /* Scaled-down subtle stickers on mobile */
@@ -921,7 +912,18 @@ onUnmounted(() => {
     width: 100%;
     max-width: 320px;
     padding: 14px 20px;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+  }
+
+  .bottom-left-quote {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .weekly-teaser-card {
+    max-width: 320px;
+    width: 100%;
+    margin: 0 auto;
   }
 }
 

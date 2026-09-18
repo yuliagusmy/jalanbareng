@@ -25,7 +25,7 @@
         class="story-hero-section"
         :class="`theme-${story.card_style || 'coral'}`"
       >
-        <v-container class="py-10 py-md-16">
+        <v-container class="py-6 py-md-12">
           <!-- Back Link -->
           <v-btn
             to="/"
@@ -82,11 +82,11 @@
       </section>
 
       <!-- Main Reading Container -->
-      <v-container class="py-10 py-md-14">
+      <v-container class="py-6 py-md-12">
         <v-row justify="center">
           <v-col cols="12" md="8" lg="7">
             <!-- Excerpt Highlight -->
-            <div v-if="story.excerpt" class="story-excerpt-box mb-8 pa-6 pa-md-8">
+            <div v-if="story.excerpt" class="story-excerpt-box mb-8 pa-4 pa-sm-6 pa-md-8">
               <v-icon color="primary" size="32" class="mb-2">mdi-format-quote-open</v-icon>
               <p class="text-h6 text-md-h5 font-weight-medium text-grey-darken-3 mb-0 font-italic" style="line-height: 1.5;">
                 {{ story.excerpt }}

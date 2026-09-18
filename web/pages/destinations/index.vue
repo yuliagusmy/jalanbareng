@@ -77,7 +77,7 @@
     </section>
 
     <!-- Main Content Container -->
-    <v-container class="py-10">
+    <v-container class="py-6 py-md-10">
       <!-- Search, City Filter & View Switcher Bar -->
       <div class="search-filter-bar pa-4 pa-md-5 mb-8">
         <v-row dense align="center" justify="space-between">
@@ -894,7 +894,7 @@ onMounted(() => {
 @media (max-width: 600px) {
   .destinations-hero {
     padding-top: 32px;
-    padding-bottom: 35px;
+    padding-bottom: 32px;
   }
 
   .hero-title {

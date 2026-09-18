@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="py-4 py-md-8">
+    <v-container class="pt-6 pt-md-10 pb-8 pb-md-14 homepage-container">
       <!-- Editorial Collage Hero Section (Inside same container for 100% width consistency) -->
       <EditorialCollageHero @scroll-to-registration="scrollToRegistration" />
 
@@ -23,23 +23,28 @@
       <HomeActiveActivationsSection :activations="activeActivations" />
 
       <!-- Purposeful Bottom CTA Section -->
-      <v-card v-if="!authStore.isLoggedIn" elevation="0" rounded="xl" class="pa-6 pa-md-12 text-center border antislop-cta-card">
+      <v-card v-if="!authStore.isLoggedIn" elevation="0" rounded="xl" class="pa-5 pa-sm-8 pa-md-12 text-center border antislop-cta-card">
         <v-avatar color="#FACC15" size="64" class="mb-4 elevation-2">
           <v-icon size="36" color="#111827">mdi-foot-print</v-icon>
         </v-avatar>
         <h2 :class="$vuetify.display.mobile ? 'text-h5' : 'text-h3'" class="text-white font-weight-bold mb-3">
           Langkah Pertama Dimulai Bersama Kami
         </h2>
-        <p :class="$vuetify.display.mobile ? 'text-body-2' : 'text-h6'" class="text-white mb-6 mb-md-8 mx-auto px-4"
+        <p :class="$vuetify.display.mobile ? 'text-body-2' : 'text-h6'" class="text-white mb-6 mb-md-8 mx-auto px-2 px-md-4"
           style="max-width: 620px; opacity: 0.92; line-height: 1.6;">
           Daftar gratis untuk mulai terhubung dengan sesama penjelajah kota di kotamu. Ikuti jalan santai mingguan dan bagikan catatan perjalananmu.
         </p>
-        <v-btn to="/register" color="primary"
-          :size="$vuetify.display.mobile ? 'large' : 'x-large'" rounded="pill" class="px-8 px-md-10 font-weight-bold elevation-4"
-          :block="$vuetify.display.mobile">
-          <v-icon start>mdi-account-plus</v-icon>
-          Gabung Bersama Jalan Bareng
-        </v-btn>
+        <div class="d-flex justify-center">
+          <v-btn
+            to="/register"
+            color="primary"
+            rounded="pill"
+            class="join-community-btn font-weight-bold elevation-4"
+          >
+            <v-icon start size="20">mdi-account-plus</v-icon>
+            <span class="btn-label">Gabung Bersama Jalan Bareng</span>
+          </v-btn>
+        </div>
       </v-card>
     </v-container>
   </div>
@@ -215,6 +220,39 @@ onMounted(async () => {
 .antislop-cta-card {
   background: #111827;
   border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.join-community-btn {
+  max-width: 100%;
+  width: auto;
+  min-height: 48px;
+  height: auto !important;
+  padding: 12px 32px !important;
+  font-size: 1rem !important;
+  letter-spacing: 0.02em !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.join-community-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4) !important;
+}
+
+.join-community-btn .btn-label {
+  white-space: normal;
+  line-height: 1.25;
+}
+
+@media (max-width: 600px) {
+  .join-community-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 12px 18px !important;
+    font-size: 0.88rem !important;
+  }
 }
 
 .wave-divider {

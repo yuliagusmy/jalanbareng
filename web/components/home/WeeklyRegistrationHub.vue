@@ -1,5 +1,5 @@
 <template>
-  <section id="registrasi" class="weekly-registration-section mb-16 pt-4">
+  <section id="registrasi" class="weekly-registration-section mb-10 mb-md-16 pt-4">
     <!-- Header Box with Grounded Antislop Aesthetic -->
     <div class="registration-header text-center mb-8">
       <div class="d-inline-flex align-center ga-2 px-4 py-1 rounded-pill status-pill mb-3">

@@ -201,7 +201,7 @@ const api = useApi()
 
 /* Ensure main content in default layout has proper top spacing */
 .default-layout .v-main {
-  padding-top: 70px !important;
+  padding-top: 74px !important;
 }
 </style>
 

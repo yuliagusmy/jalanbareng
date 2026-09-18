@@ -1,39 +1,48 @@
 <template>
   <div class="stories-archive-page">
-    <!-- Header Hero -->
-    <v-sheet class="py-12 py-md-16 bg-grey-lighten-4 border-b">
-      <v-container>
-        <v-row align="center" justify="space-between">
-          <v-col cols="12" md="7">
-            <v-chip size="small" color="primary" variant="tonal" class="font-weight-bold mb-3">
-              Koleksi Tulisan Komunitas
-            </v-chip>
-            <h1 class="text-h4 text-md-h3 font-weight-bold text-grey-darken-4 mb-3">
-              Cerita & Kabar Jalan Bareng
+    <!-- Editorial Hero Section -->
+    <section class="stories-hero">
+      <v-container class="hero-content">
+        <v-row align="center" justify="center">
+          <v-col cols="12" md="10" lg="8" class="text-center">
+            <!-- Eyebrow Badge -->
+            <div class="hero-badge-pill mb-4">
+              <v-icon start size="16" color="#DC2626">mdi-feather</v-icon>
+              <span>KOLEKSI TULISAN KOMUNITAS</span>
+            </div>
+
+            <!-- Main Headline -->
+            <h1 class="hero-title font-weight-black text-grey-darken-4 mb-4">
+              Cerita &amp; Kabar
+              <span class="text-primary-red">Jalan Bareng</span>
             </h1>
-            <p class="text-body-1 text-grey-darken-1 mb-0" style="max-width: 600px;">
+
+            <!-- Subtitle -->
+            <p class="hero-subtitle text-grey-darken-1 mx-auto mb-8">
               Temukan refleksi perjalanan, kisah inklusi warga, dan laporan observasi lorong perkotaan dari sudut pandang pejalan kaki.
             </p>
-          </v-col>
 
-          <v-col cols="12" md="5" class="text-md-right mt-4 mt-md-0">
-            <v-btn
-              color="primary"
-              size="x-large"
-              rounded="pill"
-              elevation="3"
-              class="px-6 font-weight-bold"
-              @click="showSubmitDialog = true"
-            >
-              <v-icon start>mdi-feather</v-icon>
-              Kirim Tulisan Anda
-            </v-btn>
+            <!-- Actions Row -->
+            <div class="d-flex align-center justify-center flex-wrap ga-3">
+              <v-btn
+                color="#DC2626"
+                size="large"
+                rounded="pill"
+                elevation="0"
+                class="font-weight-bold px-6 text-white"
+                @click="showSubmitDialog = true"
+              >
+                <v-icon start size="18">mdi-feather</v-icon>
+                Kirim Tulisan Anda
+              </v-btn>
+            </div>
           </v-col>
         </v-row>
       </v-container>
-    </v-sheet>
+    </section>
 
-    <v-container class="py-10">
+    <!-- Main Container -->
+    <v-container class="py-6 py-md-10">
       <!-- Search & Filters -->
       <v-row class="mb-6" align="center">
         <v-col cols="12" sm="8" md="6">
@@ -204,6 +213,58 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.stories-hero {
+  background: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+  padding: 56px 0 48px;
+}
+
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  color: #DC2626;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.hero-title {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  color: #111827;
+}
+
+.text-primary-red {
+  color: #DC2626;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 680px;
+}
+
+@media (max-width: 600px) {
+  .stories-hero {
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+
+  .hero-title {
+    font-size: 1.95rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+}
+
 .story-archive-card {
   transition: all 0.25s ease;
   cursor: pointer;

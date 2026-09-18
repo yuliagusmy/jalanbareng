@@ -19,28 +19,28 @@
         </p>
       </div>
 
-      <div class="d-flex align-center ga-2">
+      <div class="d-flex align-center ga-2 flex-wrap">
         <v-btn
           variant="outlined"
           color="primary"
           rounded="pill"
-          size="large"
-          class="px-5 font-weight-bold"
+          :size="$vuetify.display.mobile ? 'default' : 'large'"
+          class="px-4 font-weight-bold"
           @click="showSubmitDialog = true"
         >
-          <v-icon start>mdi-pencil-plus-outline</v-icon>
-          Kirim Tulisan
+          <v-icon start size="18">mdi-pencil-plus-outline</v-icon>
+          <span>Kirim Tulisan</span>
         </v-btn>
         <v-btn
           to="/cerita"
           variant="text"
           color="grey-darken-2"
           rounded="pill"
-          size="large"
-          class="px-4"
+          :size="$vuetify.display.mobile ? 'default' : 'large'"
+          class="px-3 font-weight-bold"
         >
-          Lihat Semua
-          <v-icon end>mdi-arrow-right</v-icon>
+          <span>Lihat Semua</span>
+          <v-icon end size="18">mdi-arrow-right</v-icon>
         </v-btn>
       </div>
     </div>
@@ -52,12 +52,12 @@
       </v-col>
     </v-row>
 
-    <!-- Cards Grid (Inspired by Kota Kita Updates) -->
+    <!-- Cards Grid (1 column on mobile, 2 columns on tablet, 3 columns on desktop) -->
     <v-row v-else-if="stories.length > 0" class="stories-grid">
       <v-col
         v-for="(story, index) in stories"
         :key="story.id"
-        cols="6"
+        cols="12"
         sm="6"
         :md="getColSpan(index, stories.length)"
       >
@@ -582,28 +582,28 @@ onMounted(() => {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Mobile 2-column layout refinements */
+/* Mobile 1-column layout refinements */
 @media (max-width: 600px) {
   .story-card {
-    height: 285px;
-    border-radius: 16px;
+    height: 380px;
+    border-radius: 18px;
   }
 
   .card-inner-report {
-    padding: 12px 10px;
+    padding: 20px 18px;
   }
 
   .book-mockup-wrapper {
-    transform: scale(0.65);
+    transform: scale(0.85);
     transform-origin: center center;
-    margin-top: -12px;
-    margin-bottom: -18px;
+    margin-top: 0;
+    margin-bottom: 6px;
   }
 
   .card-headline {
-    font-size: 0.8rem !important;
-    line-height: 1.25 !important;
-    margin-bottom: 4px !important;
+    font-size: 1.05rem !important;
+    line-height: 1.35 !important;
+    margin-bottom: 6px !important;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -611,13 +611,19 @@ onMounted(() => {
   }
 
   .card-subtext {
-    display: none !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.8rem !important;
+    line-height: 1.45 !important;
+    margin-bottom: 8px !important;
   }
 
   .card-footer-meta {
-    font-size: 0.68rem !important;
-    margin-top: 4px;
-    padding-top: 4px;
+    font-size: 0.78rem !important;
+    margin-top: auto;
+    padding-top: 8px;
   }
 
   .author-label {
@@ -625,30 +631,30 @@ onMounted(() => {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    max-width: 80px;
+    max-width: 140px;
   }
 
   .read-more-link {
-    font-size: 0.68rem !important;
+    font-size: 0.78rem !important;
   }
 
   .read-more-link :deep(.v-icon) {
-    font-size: 14px !important;
+    font-size: 16px !important;
   }
 
   .card-inner-photo-compact {
-    padding: 10px;
+    padding: 16px;
   }
 
   .compact-photo-wrapper {
-    height: 110px;
-    margin-bottom: 8px;
-    border-radius: 10px;
+    height: 160px;
+    margin-bottom: 12px;
+    border-radius: 12px;
   }
 
   .photo-headline {
-    font-size: 0.8rem !important;
-    line-height: 1.25 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.35 !important;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -660,7 +666,18 @@ onMounted(() => {
   }
 
   .photo-footer-meta {
-    font-size: 0.68rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Tablet (601px - 959px) refinements for 2-column layout */
+@media (min-width: 601px) and (max-width: 959px) {
+  .story-card {
+    height: 420px;
+  }
+
+  .book-mockup-wrapper {
+    transform: scale(0.9);
   }
 }
 </style>

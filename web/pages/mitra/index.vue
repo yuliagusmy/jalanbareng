@@ -47,10 +47,10 @@
     </section>
 
     <!-- Main Container -->
-    <v-container class="py-10">
+    <v-container class="py-6 py-md-10">
       <!-- 1. Featured Spotlight Partnership: Infinix x Jalan Bareng -->
       <section class="mb-14">
-        <div class="spotlight-card pa-6 pa-md-10">
+        <div class="spotlight-card pa-4 pa-sm-6 pa-md-10">
           <v-row align="center">
             <v-col cols="12" md="7">
               <div class="d-inline-flex align-center ga-1 text-caption font-weight-bold text-primary-red text-uppercase tracking-wider mb-2">
@@ -240,7 +240,7 @@
 
       <!-- 3. Partnership Opportunities / Cara Berkolaborasi -->
       <section id="kolaborasi" class="mb-14">
-        <div class="kolaborasi-card pa-8 pa-md-12">
+        <div class="kolaborasi-card pa-5 pa-sm-8 pa-md-12">
           <div class="text-center max-w-700 mx-auto mb-10">
             <div class="hero-badge-pill mb-3 d-inline-flex">
               <v-icon start size="16" color="#DC2626">mdi-briefcase-outline</v-icon>
@@ -371,7 +371,7 @@ const partnersList = ref<Partner[]>([
     role: 'Official Technology & Visual Storytelling Partner', 
     collabType: 'Brand Sponsor & Co-Creator', 
     initial: 'IFX', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Infinix_logo.svg/320px-Infinix_logo.svg.png',
+    logo: '/images/partners/infinix.svg',
     bgColor: '#FEF2F2', 
     textColor: '#DC2626' 
   },
@@ -382,7 +382,7 @@ const partnersList = ref<Partner[]>([
     role: 'Outdoor & Walking Apparel Support', 
     collabType: 'Apparel Partner', 
     initial: 'EGR', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Logo_Eiger.png/320px-Logo_Eiger.png',
+    logo: '/images/partners/eiger.svg',
     bgColor: '#FEF3C7', 
     textColor: '#D97706' 
   },
@@ -393,7 +393,7 @@ const partnersList = ref<Partner[]>([
     role: 'Official Hydration Partner', 
     collabType: 'Event Sponsor', 
     initial: 'HYD', 
-    logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/7/70/Hydro_Coco.svg/320px-Hydro_Coco.svg.png',
+    logo: '/images/partners/hydro-coco.svg',
     bgColor: '#ECFDF5', 
     textColor: '#059669' 
   },
@@ -404,7 +404,7 @@ const partnersList = ref<Partner[]>([
     role: 'Community Coffee Break Partner', 
     collabType: 'F&B Partner', 
     initial: 'KK', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Kopi_Kenangan_logo.svg/320px-Kopi_Kenangan_logo.svg.png',
+    logo: '/images/partners/kopi-kenangan.svg',
     bgColor: '#FFFBEB', 
     textColor: '#B45309' 
   },
@@ -415,6 +415,7 @@ const partnersList = ref<Partner[]>([
     role: 'Pemberian Buah Segar Pejalan', 
     collabType: 'Nutrition Partner', 
     initial: 'SP', 
+    logo: '/images/partners/sunpride.svg',
     bgColor: '#FEF9C3', 
     textColor: '#A16207' 
   },
@@ -425,7 +426,7 @@ const partnersList = ref<Partner[]>([
     role: 'Dukungan Transportasi Titik Kumpul', 
     collabType: 'Mobility Partner', 
     initial: 'GRB', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Grab_Logo.svg/320px-Grab_Logo.svg.png',
+    logo: '/images/partners/grab.svg',
     bgColor: '#F0FDF4', 
     textColor: '#16A34A' 
   },
@@ -436,7 +437,7 @@ const partnersList = ref<Partner[]>([
     role: 'Skincare & Sun Protection Walk Partner', 
     collabType: 'Brand Sponsor', 
     initial: 'WRD', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Wardah_logo.svg/320px-Wardah_logo.svg.png',
+    logo: '/images/partners/wardah.svg',
     bgColor: '#FDF2F8', 
     textColor: '#DB2777' 
   },
@@ -447,7 +448,7 @@ const partnersList = ref<Partner[]>([
     role: 'Perlengkapan Olahraga & Jalan Santai', 
     collabType: 'Equipment Partner', 
     initial: 'DCT', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Decathlon_Logo.svg/320px-Decathlon_Logo.svg.png',
+    logo: '/images/partners/decathlon.svg',
     bgColor: '#EFF6FF', 
     textColor: '#2563EB' 
   },
@@ -460,7 +461,7 @@ const partnersList = ref<Partner[]>([
     role: 'Dukungan Pengembangan Wisata Jalan Kaki & Budaya', 
     collabType: 'Institutional Partner', 
     initial: 'KPK', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Kemenparekraf_Logo.png/320px-Kemenparekraf_Logo.png',
+    logo: '/images/partners/kemenparekraf.svg',
     bgColor: '#FEF2F2', 
     textColor: '#DC2626' 
   },
@@ -471,7 +472,7 @@ const partnersList = ref<Partner[]>([
     role: 'Dukungan Ruang Terbuka Hijau & Pejalan Kaki', 
     collabType: 'Government Partner', 
     initial: 'MKS', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Lambang_Kota_Makassar.png/240px-Lambang_Kota_Makassar.png',
+    logo: '/images/partners/pemkot-makassar.svg',
     bgColor: '#F8FAFC', 
     textColor: '#334155' 
   },
@@ -482,6 +483,7 @@ const partnersList = ref<Partner[]>([
     role: 'Eksplorasi Warisan Sejarah & Rute Wisata Kota', 
     collabType: 'Tourism Partner', 
     initial: 'DP', 
+    logo: '/images/partners/dispar-makassar.svg',
     bgColor: '#F1F5F9', 
     textColor: '#475569' 
   },
@@ -492,6 +494,7 @@ const partnersList = ref<Partner[]>([
     role: 'Gerakan Kebugaran Fisik Masyarakat Produktif', 
     collabType: 'Sports Partner', 
     initial: 'DSP', 
+    logo: '/images/partners/dispora-sulsel.svg',
     bgColor: '#F0FDF4', 
     textColor: '#15803D' 
   },
@@ -502,6 +505,7 @@ const partnersList = ref<Partner[]>([
     role: 'Advokasi Trotoar & Ramah Difabel', 
     collabType: 'Urban Planning', 
     initial: 'DTR', 
+    logo: '/images/partners/dinas-tataruang.svg',
     bgColor: '#EFF6FF', 
     textColor: '#1D4ED8' 
   },
@@ -512,7 +516,7 @@ const partnersList = ref<Partner[]>([
     role: 'Fasilitasi Ruang Aktivasi Pejalan di Palopo', 
     collabType: 'Regional Partner', 
     initial: 'PLP', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Lambang_Kota_Palopo.png/240px-Lambang_Kota_Palopo.png',
+    logo: '/images/partners/pemkot-palopo.svg',
     bgColor: '#F8FAFC', 
     textColor: '#1E293B' 
   },
@@ -523,7 +527,7 @@ const partnersList = ref<Partner[]>([
     role: 'Dukungan Rute Sejarah Somba Opu & Benteng', 
     collabType: 'Regional Partner', 
     initial: 'GWA', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lambang_Kabupaten_Gowa.png/240px-Lambang_Kabupaten_Gowa.png',
+    logo: '/images/partners/pemkab-gowa.svg',
     bgColor: '#FEF3C7', 
     textColor: '#B45309' 
   },
@@ -534,7 +538,7 @@ const partnersList = ref<Partner[]>([
     role: 'Eksplorasi Budaya Bugis & Ruang Terbuka Hijau', 
     collabType: 'Regional Partner', 
     initial: 'BNE', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Lambang_Kabupaten_Bone.png/240px-Lambang_Kabupaten_Bone.png',
+    logo: '/images/partners/pemkab-bone.svg',
     bgColor: '#FDF2F8', 
     textColor: '#BE185D' 
   },
@@ -547,7 +551,7 @@ const partnersList = ref<Partner[]>([
     role: 'Dukungan Transaksi UMKM Digital & Kemitraan', 
     collabType: 'BUMN Partner', 
     initial: 'BM', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/320px-Bank_Mandiri_logo_2016.svg.png',
+    logo: '/images/partners/bank-mandiri.svg',
     bgColor: '#EFF6FF', 
     textColor: '#1E40AF' 
   },
@@ -558,7 +562,7 @@ const partnersList = ref<Partner[]>([
     role: 'Konektivitas & Ruang Diskusi Digital', 
     collabType: 'Digital Partner', 
     initial: 'TLK', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Telkom_Indonesia_2013.svg/320px-Telkom_Indonesia_2013.svg.png',
+    logo: '/images/partners/telkom-indonesia.svg',
     bgColor: '#FEF2F2', 
     textColor: '#DC2626' 
   },
@@ -569,7 +573,7 @@ const partnersList = ref<Partner[]>([
     role: 'Titik Kumpul & Creative Hub Pejalan Kaki', 
     collabType: 'Venue & Creative Hub', 
     initial: 'POS', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Logo_Pos_Indonesia_%282023%29.svg/320px-Logo_Pos_Indonesia_%282023%29.svg.png',
+    logo: '/images/partners/pos-indonesia.svg',
     bgColor: '#FFF7ED', 
     textColor: '#EA580C' 
   },
@@ -580,7 +584,7 @@ const partnersList = ref<Partner[]>([
     role: 'Dukungan Program Ramah Iklim & Nol Emisi', 
     collabType: 'CSR & Eco Partner', 
     initial: 'PLN', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_PLN.svg/320px-Logo_PLN.svg.png',
+    logo: '/images/partners/pln.svg',
     bgColor: '#F0FDF4', 
     textColor: '#16A34A' 
   },
@@ -591,7 +595,7 @@ const partnersList = ref<Partner[]>([
     role: 'Riset Tata Ruang, Inklusi & Relawan Mahasiswa', 
     collabType: 'Academic Partner', 
     initial: 'UNH', 
-    logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/7/72/Logo_Universitas_Hasanuddin.svg/320px-Logo_Universitas_Hasanuddin.svg.png',
+    logo: '/images/partners/unhas.svg',
     bgColor: '#FEF2F2', 
     textColor: '#B91C1C' 
   },
@@ -602,7 +606,7 @@ const partnersList = ref<Partner[]>([
     role: 'Pemberdayaan Literasi Ruang Publik & Kriya', 
     collabType: 'Academic Partner', 
     initial: 'UNM', 
-    logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/15/Logo_UNM.png/240px-Logo_UNM.png',
+    logo: '/images/partners/unm.svg',
     bgColor: '#FFFBEB', 
     textColor: '#D97706' 
   },
@@ -613,6 +617,7 @@ const partnersList = ref<Partner[]>([
     role: 'Aktivasi Budaya, Instalasi Seni & Musik Lorong', 
     collabType: 'Arts Partner', 
     initial: 'IKM', 
+    logo: '/images/partners/ikm.svg',
     bgColor: '#FAF5FF', 
     textColor: '#7E22CE' 
   },
@@ -625,6 +630,7 @@ const partnersList = ref<Partner[]>([
     role: 'Solidaritas Advokasi Hak Pejalan Kaki Nasional', 
     collabType: 'Advocacy Network', 
     initial: 'KPK', 
+    logo: '/images/partners/koalisi-pejalan-kaki.svg',
     bgColor: '#F8FAFC', 
     textColor: '#0F172A' 
   },
@@ -635,6 +641,7 @@ const partnersList = ref<Partner[]>([
     role: 'Eksplorasi Urban Farming & Kelestarian Ruang', 
     collabType: 'Green Community', 
     initial: 'MB', 
+    logo: '/images/partners/makassar-berkebun.svg',
     bgColor: '#ECFDF5', 
     textColor: '#047857' 
   },
@@ -645,6 +652,7 @@ const partnersList = ref<Partner[]>([
     role: 'Kolaborator Diskusi Buku Bareng di Taman Kota', 
     collabType: 'Literacy Partner', 
     initial: 'RBM', 
+    logo: '/images/partners/rumah-buku.svg',
     bgColor: '#FFF7ED', 
     textColor: '#C2410C' 
   },
@@ -655,6 +663,7 @@ const partnersList = ref<Partner[]>([
     role: 'Publikasi & Liputan Kegiatan Rutin Pejalan', 
     collabType: 'Media Partner', 
     initial: 'TRB', 
+    logo: '/images/partners/tribun-timur.svg',
     bgColor: '#EFF6FF', 
     textColor: '#1D4ED8' 
   },
@@ -665,6 +674,7 @@ const partnersList = ref<Partner[]>([
     role: 'Dokumentasi & Kanal Narasi Sudut Kota', 
     collabType: 'Media Partner', 
     initial: 'FJR', 
+    logo: '/images/partners/fajar.svg',
     bgColor: '#FEF2F2', 
     textColor: '#BE123C' 
   },
@@ -675,6 +685,7 @@ const partnersList = ref<Partner[]>([
     role: 'Sosialisasi Agenda Pekanan & Panduan Acara', 
     collabType: 'Media Partner', 
     initial: 'MT', 
+    logo: '/images/partners/makassar-terkini.svg',
     bgColor: '#F0FDF4', 
     textColor: '#15803D' 
   },
@@ -685,6 +696,7 @@ const partnersList = ref<Partner[]>([
     role: 'Inklusi Bahasa Isyarat dalam Walking Tour', 
     collabType: 'Inclusion Partner', 
     initial: 'KTM', 
+    logo: '/images/partners/komunitas-tuli.svg',
     bgColor: '#FEF3C7', 
     textColor: '#B45309' 
   },
@@ -695,6 +707,7 @@ const partnersList = ref<Partner[]>([
     role: 'Aksi Lingkungan & Berjalan Kaki Minim Emisi', 
     collabType: 'Eco Partner', 
     initial: 'EHM', 
+    logo: '/images/partners/earth-hour.svg',
     bgColor: '#ECFDF5', 
     textColor: '#059669' 
   },
@@ -705,6 +718,7 @@ const partnersList = ref<Partner[]>([
     role: 'Kolaborasi Ramah Anak bersama Lanjut Bergerak', 
     collabType: 'Social Impact', 
     initial: 'STC', 
+    logo: '/images/partners/save-the-children.svg',
     bgColor: '#FEF2F2', 
     textColor: '#DC2626' 
   },
@@ -736,8 +750,7 @@ const getCategoryLabel = (category: string) => {
 /* Hero Section - Editorial Light */
 .partners-hero {
   background: #FAFAFA;
-  padding-top: 48px;
-  padding-bottom: 56px;
+  padding: 56px 0 48px;
   border-bottom: 1px solid #F1F5F9;
 }
 
@@ -896,26 +909,37 @@ const getCategoryLabel = (category: string) => {
 }
 
 .partner-logo-wrapper {
-  height: 54px;
+  height: 52px;
   display: flex;
   align-items: center;
 }
 
 .partner-logo-box {
-  height: 48px;
-  max-width: 140px;
-  display: flex;
+  height: 44px;
+  width: auto;
+  max-width: 170px;
+  display: inline-flex;
   align-items: center;
   justify-content: flex-start;
+  padding: 4px 10px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.partner-card:hover .partner-logo-box {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .partner-logo-img {
-  max-height: 42px;
-  max-width: 130px;
+  height: 32px;
+  max-width: 145px;
   width: auto;
-  height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.04));
+  display: block;
 }
 
 .partner-emblem {
@@ -1065,8 +1089,7 @@ const getCategoryLabel = (category: string) => {
 /* Mobile Responsiveness */
 @media (max-width: 600px) {
   .partners-hero {
-    padding-top: 32px;
-    padding-bottom: 35px;
+    padding: 32px 0 32px;
   }
 
   .hero-title {
