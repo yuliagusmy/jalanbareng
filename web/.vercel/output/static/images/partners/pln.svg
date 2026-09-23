@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 50" width="170" height="50">
-    <rect x="4" y="9" width="30" height="32" rx="4" fill="#FBBF24"/>
-    <path d="M20 11L10 25H18L14 37L26 23H18L20 11Z" fill="#DC2626"/>
-    <text x="44" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="28" letter-spacing="2" fill="#0284C7">PLN</text>
-  </svg>

@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 50" width="210" height="50">
-    <circle cx="20" cy="25" r="16" fill="#FEF2F2"/>
-    <path d="M10 23C14 15 26 15 30 23C26 31 14 31 10 23Z" fill="#DC2626"/>
-    <circle cx="20" cy="23" r="4" fill="#FBBF24"/>
-    <text x="44" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="14" fill="#111827">Kemenparekraf</text>
-    <text x="44" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="10" fill="#DC2626">REPUBLIK INDONESIA</text>
-  </svg>

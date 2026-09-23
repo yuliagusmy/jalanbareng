@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" width="200" height="50">
-    <rect x="4" y="11" width="28" height="28" rx="6" fill="#1D4ED8"/>
-    <path d="M8 31L18 15L28 31H8Z" fill="#FBBF24"/>
-    <text x="40" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="13" fill="#1D4ED8">Dinas Tata Ruang</text>
-    <text x="40" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="11" fill="#64748B">& Pemukiman Kota</text>
-  </svg>
