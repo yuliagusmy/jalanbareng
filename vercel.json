@@ -1,6 +1,5 @@
 {
-  "framework": "nuxtjs",
-  "rootDirectory": "web",
-  "buildCommand": "npm run build",
-  "installCommand": "npm install"
+  "buildCommand": "cd web && npm run build",
+  "outputDirectory": "web/.vercel/output",
+  "installCommand": "cd web && npm install"
 }
