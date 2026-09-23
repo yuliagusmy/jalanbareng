@@ -175,56 +175,31 @@
         </div>
 
         <!-- Partners Grid -->
-        <v-row v-if="filteredPartners.length > 0">
+        <v-row v-if="filteredPartners.length > 0" dense class="ma-n1">
           <v-col
             v-for="partner in filteredPartners"
             :key="partner.id"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
+            cols="3"
+            sm="2"
+            md="2"
+            class="pa-1"
           >
-            <div class="partner-card h-100 pa-5 d-flex flex-column justify-space-between">
-              <div>
-                <!-- Top Pill / Role -->
-                <div class="d-flex align-center justify-space-between mb-3">
-                  <span :class="['role-pill', partner.category]">
-                    {{ getCategoryLabel(partner.category) }}
+            <div class="partner-logo-item" @click="openPartnerDetail(partner)">
+              <div class="partner-logo-wrapper">
+                <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
+                  <img
+                    :src="partner.logo"
+                    :alt="partner.name"
+                    class="partner-logo-img"
+                    loading="lazy"
+                    @error="failedLogos[partner.id] = true"
+                  />
+                </div>
+                <div v-else class="partner-emblem" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
+                  <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
+                    {{ partner.initial }}
                   </span>
-                  <v-icon size="16" color="#94A3B8">mdi-handshake</v-icon>
                 </div>
-
-                <!-- Partner Logo or Emblem -->
-                <div class="partner-logo-wrapper mb-3">
-                  <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
-                    <img
-                      :src="partner.logo"
-                      :alt="partner.name + ' Logo'"
-                      class="partner-logo-img"
-                      loading="lazy"
-                      @error="failedLogos[partner.id] = true"
-                    />
-                  </div>
-                  <div v-else class="partner-emblem" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
-                    <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
-                      {{ partner.initial }}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Partner Name & Detail -->
-                <h3 class="partner-name text-subtitle-1 font-weight-bold text-grey-darken-4 mb-1">
-                  {{ partner.name }}
-                </h3>
-                <p class="partner-desc text-caption text-grey-darken-1 mb-0">
-                  {{ partner.role }}
-                </p>
-              </div>
-
-              <!-- Bottom Tag -->
-              <div class="pt-4 mt-4 border-t d-flex align-center justify-space-between">
-                <span class="text-caption text-grey font-weight-medium">Bentuk Kolaborasi</span>
-                <span class="collab-type-text">{{ partner.collabType }}</span>
               </div>
             </div>
           </v-col>
@@ -236,6 +211,20 @@
           <h3 class="text-h6 font-weight-bold text-grey-darken-3 mt-4 mb-2">Mitra tidak ditemukan</h3>
           <p class="text-body-2 text-grey-darken-1 mb-0">Coba ubah kata kunci pencarian Anda</p>
         </div>
+
+        <!-- Partner Detail Dialog -->
+        <v-dialog v-model="isDetailOpen" max-width="450" rounded="xl">
+          <v-card v-if="selectedPartner" class="pa-4 text-center">
+            <div class="partner-logo-box-large mx-auto mb-4">
+              <img v-if="selectedPartner.logo" :src="selectedPartner.logo" :alt="selectedPartner.name" class="partner-logo-img" />
+              <div v-else class="partner-emblem-large">{{ selectedPartner.initial }}</div>
+            </div>
+            <h2 class="text-h6 font-weight-bold mb-1">{{ selectedPartner.name }}</h2>
+            <p class="text-caption text-primary-red font-weight-bold mb-3">{{ getCategoryLabel(selectedPartner.category) }}</p>
+            <p class="text-body-2 text-grey-darken-2 mb-4">{{ selectedPartner.role }}</p>
+            <v-btn block color="primary" rounded="pill" variant="flat" @click="isDetailOpen = false">Tutup</v-btn>
+          </v-card>
+        </v-dialog>
       </section>
 
       <!-- 3. Partnership Opportunities / Cara Berkolaborasi -->
@@ -348,6 +337,13 @@ useSeoMeta({
 const selectedCategory = ref<'all' | 'brand' | 'government' | 'bumn' | 'community'>('all')
 const searchQuery = ref('')
 const failedLogos = ref<Record<number, boolean>>({})
+const isDetailOpen = ref(false)
+const selectedPartner = ref<Partner | null>(null)
+
+const openPartnerDetail = (partner: Partner) => {
+  selectedPartner.value = partner
+  isDetailOpen.value = true
+}
 
 interface Partner {
   id: number
@@ -747,6 +743,72 @@ const getCategoryLabel = (category: string) => {
 </script>
 
 <style scoped>
+/* New Partner Logo Grid Style */
+.partner-logo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.partner-logo-item:hover {
+  transform: translateY(-4px);
+}
+
+.partner-logo-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  overflow: hidden;
+}
+
+.partner-logo-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.partner-logo-img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.partner-name-simple {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.2;
+}
+
+.partner-logo-box-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 20px;
+  background: #F8FAFC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #E2E8F0;
+}
+
+.partner-emblem-large {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #111827;
+}
+
 /* Hero Section - Editorial Light */
 .partners-hero {
   background: #FAFAFA;

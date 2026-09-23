@@ -1,0 +1,1 @@
+import{e,c as t,o as r,b as s,V as a}from"#entry";const o={class:"d-flex align-center justify-center py-16"},l=e({__name:"map",setup(c){return(n,i)=>(r(),t("div",o,[s(a,{indeterminate:"",color:"#DC2626",size:"36"})]))}});export{l as default};

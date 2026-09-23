@@ -88,16 +88,16 @@
       v-model="drawer"
       :permanent="$vuetify.display.mdAndUp"
       app
-      width="280"
+      :width="$vuetify.display.smAndDown ? 260 : 280"
       class="admin-drawer"
     >
       <!-- Sidebar Header -->
-      <div class="pa-6 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-        <v-icon size="48" color="white" class="mb-3">mdi-shield-crown</v-icon>
-        <h3 class="text-h6 font-weight-bold text-white mb-1">
+      <div class="pa-6 text-center" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+        <v-icon size="44" color="white" class="mb-3">mdi-shield-crown</v-icon>
+        <h3 class="text-subtitle-1 font-weight-bold text-white mb-1">
           {{ authStore.isAdmin ? 'Administrator' : 'Community Admin' }}
         </h3>
-        <p class="text-caption text-white mb-0" style="opacity: 0.9;">
+        <p class="text-caption text-grey-lighten-2 mb-0">
           Panel Manajemen
         </p>
       </div>
@@ -250,9 +250,12 @@
 </template>
 
 <script setup lang="ts">
+import { useDisplay } from 'vuetify'
+
 const authStore = useAuthStore()
 const router = useRouter()
-const drawer = ref(true)
+const display = useDisplay()
+const drawer = ref(display.mdAndUp.value)
 
 const handleLogout = async () => {
   await authStore.logout()
@@ -268,20 +271,27 @@ onMounted(() => {
 
 <style scoped>
 .admin-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .admin-drawer {
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .admin-main {
-  background-color: #f5f5f5;
-    padding-top: 100px !important;
+  background-color: #f8fafc;
+  padding-top: 76px !important;
+}
+
+@media (min-width: 960px) {
+  .admin-main {
+    padding-top: 86px !important;
+  }
 }
 
 /* Active menu item styling */
 .v-list-item--active {
-  background-color: rgba(103, 58, 183, 0.08);
+  background-color: rgba(220, 38, 38, 0.08);
+  color: #dc2626 !important;
 }
 </style>

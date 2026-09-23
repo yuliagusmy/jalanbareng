@@ -4,9 +4,9 @@
     <v-app-bar elevation="0" height="0" class="modern-header default-header" :class="appBarClass">
       <template v-slot:extension>
         <v-container class="d-flex align-center header-container" style="height: 70px;">
-          <!-- Mobile Menu Icon -->
-          <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer"
-            color="secondary"></v-app-bar-nav-icon>
+          <!-- Mobile Menu Icon — disembunyikan, navigasi mobile kini via BottomNav -->
+          <!-- <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer"
+            color="secondary"></v-app-bar-nav-icon> -->
 
           <!-- Logo/Brand -->
           <NuxtLink to="/" class="text-decoration-none d-flex align-center mr-4">
@@ -26,10 +26,23 @@
 
           <!-- User Menu / Login Button -->
           <template v-if="authStore.isLoggedIn">
+            <!-- Quick Admin Panel Button (mobile & desktop) -->
+            <v-btn
+              v-if="authStore.isAdmin"
+              to="/manage/activations"
+              icon
+              variant="flat"
+              class="mr-1 admin-badge-btn"
+              title="Panel Admin"
+              aria-label="Panel Admin"
+            >
+              <v-icon color="#DC2626" size="22">mdi-shield-crown</v-icon>
+            </v-btn>
+
             <NotificationBell class="mr-1" />
             <v-menu offset-y>
               <template v-slot:activator="{ props }">
-                <v-btn icon v-bind="props" class="ml-3 avatar-btn">
+                <v-btn icon v-bind="props" class="ml-2 avatar-btn">
                   <v-avatar size="40" class="avatar-shadow">
                     <v-img v-if="authStore.user?.photo" :src="getImageUrl(authStore.user.photo)"
                       :alt="authStore.user.name"></v-img>
@@ -48,6 +61,18 @@
                   <v-list-item-title class="font-weight-bold">{{ authStore.user?.name }}</v-list-item-title>
                   <v-list-item-subtitle class="text-caption">{{ authStore.user?.email }}</v-list-item-subtitle>
                 </v-list-item>
+
+                <!-- Admin Link in User Dropdown for Quick Access -->
+                <template v-if="authStore.isAdmin">
+                  <v-divider class="my-2"></v-divider>
+                  <v-list-item to="/manage/activations" rounded="lg" class="mx-2 bg-red-lighten-5">
+                    <template v-slot:prepend>
+                      <v-icon color="#DC2626">mdi-shield-crown</v-icon>
+                    </template>
+                    <v-list-item-title class="font-weight-bold text-red-darken-3">Panel Admin</v-list-item-title>
+                    <v-list-item-subtitle class="text-caption text-red-darken-1">Kelola website & konten</v-list-item-subtitle>
+                  </v-list-item>
+                </template>
 
                 <v-divider class="my-2"></v-divider>
 
@@ -88,7 +113,10 @@
 
     <MobileNavigation v-model="drawer" />
 
-    <v-main>
+    <!-- Bottom Nav hanya muncul di mobile, hidden di md+ -->
+    <BottomNav />
+
+    <v-main class="default-main">
       <slot />
     </v-main>
 
@@ -351,5 +379,12 @@ const api = useApi()
 .social-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-3px);
+}
+
+/* Padding bawah di mobile agar konten tidak tertutup bottom nav */
+@media (max-width: 959px) {
+  .default-layout .default-main {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }
 </style>

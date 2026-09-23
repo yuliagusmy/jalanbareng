@@ -2,55 +2,6 @@
   <v-footer class="modern-footer pa-0">
     <div class="footer-wrapper w-100">
       <v-container class="py-12 py-md-16">
-        <!-- 1. TOP COMMUNITY BANNER -->
-        <div class="footer-community-banner pa-6 pa-md-8 rounded-2xl mb-12 mb-md-16">
-          <v-row align="center" justify="space-between">
-            <v-col cols="12" lg="7" xl="8">
-              <div class="d-flex align-center ga-2 mb-2">
-                <span class="community-tag px-3 py-1 rounded-pill">
-                  ✦ #LANJUTBERGERAK
-                </span>
-                <span class="text-caption text-grey-lighten-1">Inisiatif Ruang Terbuka Warga</span>
-              </div>
-              <h3 class="text-h5 text-md-h4 font-weight-bold text-white mb-3 footer-banner-title">
-                Mari Menjelajah Kota Lebih Lambat & Lebih Dekat
-              </h3>
-              <p class="text-body-2 text-md-body-1 text-grey-lighten-2 mb-0" style="max-width: 620px; line-height: 1.65;">
-                Jalan Bareng terbuka bagi siapa saja yang ingin berjalan santai, merespon ruang pejalan kaki, dan menjalin kawan baru di kotamu.
-              </p>
-            </v-col>
-
-            <v-col cols="12" lg="5" xl="4" class="text-lg-right mt-5 mt-lg-0">
-              <div class="d-flex flex-wrap justify-start justify-lg-end align-center ga-3">
-                <v-btn
-                  href="https://instagram.com/jalanbarengind"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  color="white"
-                  size="large"
-                  rounded="pill"
-                  class="font-weight-bold text-grey-darken-4 elevation-3 instagram-cta-btn footer-banner-btn"
-                >
-                  <v-icon start color="#E1306C">mdi-instagram</v-icon>
-                  @jalanbarengind
-                </v-btn>
-
-                <v-btn
-                  to="/#registrasi"
-                  variant="outlined"
-                  color="white"
-                  size="large"
-                  rounded="pill"
-                  class="font-weight-bold footer-banner-btn"
-                >
-                  <v-icon start size="18">mdi-calendar-check</v-icon>
-                  Jadwal Pekan Ini
-                </v-btn>
-              </div>
-            </v-col>
-          </v-row>
-        </div>
-
         <!-- 2. MAIN 4-COLUMN NAVIGATION -->
         <v-row justify="space-between" class="footer-main-nav">
           <!-- Col 1: Brand & Bio -->

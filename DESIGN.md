@@ -1,0 +1,184 @@
+# Jalan Bareng Design System
+
+## Brand Identity
+
+**Product**: Jalan Bareng — Platform komunitas untuk menjelajah kota bersama, berbagi destinasi, dan mengikuti event.
+
+**Visual Language**: Warm, inclusive, community-driven. Inspired by urban exploration, walking culture, and authentic local experiences.
+
+---
+
+## Color Palette
+
+### Core Colors
+- **Primary Red**: `#DC2626` — Bold, energetic, call-to-action. Represents movement and community energy.
+- **Secondary Dark**: `#111827` — Text, headers, structured content. Professional yet approachable.
+- **Accent Yellow**: `#FACC15` — Highlights, playful moments, discovery moments.
+
+### Supporting Colors
+- **Success Green**: `#16A34A` — Active status, confirmation, positive actions.
+- **Info Blue**: `#0284C7` — Information, secondary actions, details.
+- **Warning Orange**: `#F59E0B` — Alerts, collaboration badges, partner highlights.
+- **Error Red**: `#EF4444` — Errors, blocked states, warnings.
+
+### Neutral Scale
+- **Background**: `#FAFAF9` — Clean, light, breathing room.
+- **Surface**: `#FFFFFF` — Cards, containers, primary surfaces.
+- **Grey Scale**: `#9CA3AF` → `#6B7280` → `#4B5563` → `#1F2937` — Text hierarchy, borders, subtle elements.
+
+**Note**: Dark theme not shipped; light-only for now.
+
+---
+
+## Typography
+
+### Typeface Choices
+- **Sans-serif (body/UI)**: Inter or equivalent. Clean, modern, highly legible. Used for: body text, buttons, labels, UI.
+- **Serif (display moments)**: Georgia or equivalent for pull quotes, testimonials. Adds warmth and humanity.
+- **Monospace (none for now)**: Reserved for future code/terminal features.
+
+### Font Hierarchy
+- **H1 (Hero Headlines)**: 2.4rem–4.85rem, font-weight 900, line-height 1.08. Tight, impactful. Example: "Setiap Sudut Kota Punya Cerita"
+- **H2 (Section Headers)**: 1.875rem–2.25rem, font-weight 800, letter-spacing -0.035em.
+- **H3 (Card Titles)**: 1.25rem, font-weight 700.
+- **Body**: 1rem, font-weight 400, line-height 1.6.
+- **Caption/Small**: 0.875rem, font-weight 500.
+
+### Letter Spacing
+- Headlines: Tight (`-0.035em`) for impact.
+- Labels/Buttons: Wide (`0.05em`) for clarity and distinction.
+- Body: Normal (`0em`).
+
+---
+
+## Layout & Spacing
+
+### Grid & Breakpoints
+- **Mobile**: 320px–599px — Single-column, 3-lane hero collage, full-width stacking.
+- **Tablet**: 600px–959px — 2–3 column grids, collage with 5 lanes visible.
+- **Desktop**: 960px+, sections max 1200px centered.
+
+### Spacing System (8px base)
+- **xs**: 4px
+- **sm**: 8px
+- **md**: 16px
+- **lg**: 24px
+- **xl**: 32px
+- **2xl**: 48px
+
+### Border Radius
+- **Buttons & Pills**: 9999px (full pill).
+- **Cards & Containers**: 16–24px (rounded, not harsh).
+- **Small Elements (chips, badges)**: 8–12px.
+- **No pill-radius uniformity**: radius varies by purpose (buttons pill-shaped, cards rounded-xl, inputs rounded-lg).
+
+---
+
+## Components & Patterns
+
+### Buttons
+- **Primary CTA**: Red (`#DC2626`), pill-shaped, bold font, white text, shadow for elevation. Example: "Daftar Aktivasi Pekan Ini".
+- **Secondary**: Outlined or tonal variants, same pill shape.
+- **Ghost**: Text-only, minimal.
+- **Icon buttons**: 24–32px, centered icon.
+
+### Cards
+- **Activation/Event Cards**: Rounded corners (24px), shadow on hover, image overlay with gradient, badges for category.
+- **Feature Cards**: Varied heights & layouts based on content hierarchy, not identical copy-paste.
+- **Quote Cards**: Serif font, left-aligned, warm background tint.
+
+### Navigation
+- **Top Nav**: Sticky, split-button pattern for "Aktivasi" (link + dropdown). Logo + links + profile/auth.
+- **Mobile Nav**: Hamburger menu + bottom sheet for "Aktivasi" + BottomNav with 5 icons.
+- **BottomNav**: Beranda, Aktivasi, Destinasi, Cerita, Profil. Active state: color + label visible.
+
+### Badges & Labels
+- **Status Badges**: Pill-shaped, tonal color, icon + text. Example: "Open Registration", "4 Aktivasi Dibuka".
+- **Category Badges**: Colored chip on activation cards. Example: "Jalan Santai • City Chapter".
+- **Collaboration Badge**: Orange handshake icon + partner name. Example on activation cards.
+
+### Forms & Inputs
+- **Text Fields**: Outlined variant, rounded-lg, focus state with primary color border.
+- **Select/Dropdown**: Same outlined style.
+- **Checkbox/Radio**: Primary color accent.
+
+---
+
+## Motion & Animation
+
+### Principles
+- **Purpose-driven**: Motion guides attention, reveals content, confirms actions. No motion for decoration.
+- **Timing**: Fast transitions (0.2s–0.3s) for UI interactions. Slower (0.5s–1s) for scroll reveals.
+- **Easing**: Cubic-bezier for springy feel on hover; ease for fade/reveal.
+
+### Common Patterns
+- **Hover States**: Slight lift (`translateY(-4px)`), shadow increase, subtle scale (1.02–1.03).
+- **Scroll Reveal**: Fade in + slide up on page scroll.
+- **Button Press**: Quick scale down (0.98) + back to normal.
+- **Loading**: Spinner or skeleton with pulse animation.
+
+### Motion Dial
+**MOTION: 2 (Balanced)** — Scroll-reveal and transitions present but not excessive. No parallax or pin animations; hero collage auto-rotates photos smoothly.
+
+---
+
+## Liveliness Dials
+
+**ENERGY: 2 (Balanced)** — Warm, approachable community energy. Not flat/sterile (ENERGY 1), not maximalist/experimental (ENERGY 3). Primary red CTA pops; emoji stickers add playful moments.
+
+**RHYTHM: 2 (Balanced)** — Sections vary in composition (hero collage, card grids, quote blocks, teaser) but follow a cohesive structure. Not uniformly repetitive; intentional variety based on content.
+
+**MOTION: 2 (Balanced)** — Smooth scroll-reveal and hover transitions. Hero photo carousel rotates gently every 2.4s. No heavy parallax or choreography.
+
+---
+
+## Visual Identity Motifs
+
+### 1. Photo Collage Hero
+A 5-lane or 3-lane image collage (depending on breakpoint) with colored backgrounds (amber, cream, teal, yellow, coral, sky, mint). Auto-rotating photos every 2.4s for dynamic feel. **Purpose**: Authentic community moments, visual hierarchy through card height variation.
+
+### 2. Warm Color Accents & Stickers
+Playful emoji stickers (🌻 🌸 ✦ 🌼 🥀) placed near headlines and call-outs. **Purpose**: Humanizes the brand, adds local warmth without being childish.
+
+### 3. Quote Block with Serif Font
+Community testimonials in serif font (Georgia), left-aligned, with quotation mark. **Purpose**: Adds credibility, human voice, and design variation.
+
+### 4. Red Primary Button with Shadow
+Pill-shaped, bold font, red background with box-shadow. **Purpose**: High visibility, unmistakable CTA, energetic community spirit.
+
+### 5. Category Chips & Badges
+Tonal chips for filter tabs (e.g., "Jalan Santai", "Diskusi Buku"). Colored badges on cards for category (e.g., "Jalan Santai • City Chapter"). **Purpose**: Clear content organization, visual scanning, identity through color consistency.
+
+---
+
+## Accessibility & Contrast
+
+- **Text Contrast**: All body text meets WCAG AA (4.5:1 for normal, 3:1 for large).
+- **Focus States**: Visible focus outline on all interactive elements (buttons, links, form inputs).
+- **Keyboard Navigation**: All interactive elements reachable via Tab; Enter/Space to activate; Escape to close modals.
+- **Mobile Tap Targets**: Minimum 44px (buttons, links).
+- **Alt Text**: All images have descriptive alt text (e.g., "Dokumentasi jalan santai komunitas", not "img_123").
+
+---
+
+## Design Decisions & Reasoning (R-31)
+
+| Decision | Reason |
+|----------|--------|
+| Red (#DC2626) as primary | Energy, movement, matches brand name "Jalan Bareng" activism; warm and inviting for a community platform. |
+| Warm palette (yellow, orange, teal, mint) on cards | Reflects diverse, inclusive community. Each card color feels distinct yet cohesive. |
+| Pill-shaped buttons | Friendly, modern, clearly clickable. Consistent with community-forward brand. |
+| Photo collage hero with auto-rotate | Showcases authentic community moments; dynamic without being gimmicky. Variant heights create visual interest. |
+| No dark mode (for now) | Light theme aligns with outdoor exploration, walkability, and daytime activities. Can add later if needed. |
+| Serif for quotes | Adds humanity, credibility, and design texture to break rhythm. |
+| Emoji stickers | Playful, locally accessible (no design asset cost), humanizes brand without kitsch. |
+| Balanced (2/2/2) dials | Community-forward brand that's energetic but approachable; varied sections but cohesive; smooth motion but not overdone. |
+
+---
+
+## What This Enables
+
+- **Consistency**: All future components follow this palette, typography, spacing, and motion rules.
+- **Flexibility**: Designers/devs can apply these guidelines to new features without needing AI to re-invent the wheel.
+- **Liveliness**: Emoji, photo carousel, warm colors, and varied layouts prevent sterile/generic feel.
+- **Accessibility**: WCAG AA contrast, keyboard nav, focus states built in from the start.

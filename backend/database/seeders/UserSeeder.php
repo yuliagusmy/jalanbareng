@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin Jalan Bareng',
             'email' => 'admin@jalanbareng.com',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('JalanBareng2025!'),
             'role_id' => $adminRole->id,
             'email_verified_at' => now(),
         ]);
@@ -85,7 +85,7 @@ class UserSeeder extends Seeder
 
         $this->command->info('Users created successfully!');
         $this->command->info('Total: 1 Admin + 3 Community Admins + 15 Members');
-        $this->command->info('Admin: admin@jalanbareng.com / admin123');
+        $this->command->info('Admin: admin@jalanbareng.com / JalanBareng2025!');
         $this->command->info('Community Admin: community@jalanbareng.com / community123');
         $this->command->info('All passwords: password123');
     }

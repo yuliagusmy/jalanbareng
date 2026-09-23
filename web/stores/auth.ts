@@ -72,12 +72,13 @@ export const useAuthStore = defineStore('auth', {
         // Login
         const response = await api.post('/auth/login', credentials)
 
-        this.token = response.data.token
+        const token = response.data.token || response.data.access_token
+        this.token = token
         this.user = response.data.user
         this.isAuthenticated = true
 
         // Store token in cookie
-        authToken.value = response.data.token
+        authToken.value = token
 
         return response.data
       } catch (error: any) {
@@ -103,12 +104,13 @@ export const useAuthStore = defineStore('auth', {
         // Register
         const response = await api.post('/auth/register', data)
 
-        this.token = response.data.token
+        const token = response.data.token || response.data.access_token
+        this.token = token
         this.user = response.data.user
         this.isAuthenticated = true
 
         // Store token in cookie
-        authToken.value = response.data.token
+        authToken.value = token
 
         return response.data
       } catch (error: any) {

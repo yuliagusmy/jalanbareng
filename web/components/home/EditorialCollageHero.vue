@@ -138,7 +138,7 @@
         <div class="bottom-center-cta text-center">
           <button class="primary-highlighted-btn" @click="emitScroll" aria-label="Daftar aktivasi pekan ini">
             <v-icon start size="22" color="white">mdi-calendar-check</v-icon>
-            <span class="btn-text">DAFTAR AKTIVASI PEKAN INI</span>
+            <span class="btn-text">DAFTAR AKTIVASI<br>PEKAN INI</span>
             <v-icon end size="20" color="white" class="bouncing-arrow">mdi-chevron-down</v-icon>
           </button>
           

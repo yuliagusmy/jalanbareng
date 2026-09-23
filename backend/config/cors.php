@@ -25,11 +25,20 @@ return [
         'http://localhost:3001',
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001',
+        'https://jalanbareng.id',
+        'http://jalanbareng.id',
+        'https://www.jalanbareng.id',
+        'http://www.jalanbareng.id',
+        'https://api.jalanbareng.id',
+        'http://api.jalanbareng.id',
         'https://jalanbareng.net',
-        'https://www.jalanbareng.net'
+        'https://www.jalanbareng.net',
+        'https://jalanbareng-gilt.vercel.app',
     ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://.*\.vercel\.app$#',  // Semua Vercel preview deployments
+    ],
 
     'allowed_headers' => ['*'],
 

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" width="200" height="50">
+    <path d="M6 14L19 9L32 14V30C32 37 19 41 19 41C19 41 6 37 6 30V14Z" fill="#DC2626"/>
+    <path d="M11 29L19 18L27 29H11Z" fill="#FEF08A"/>
+    <text x="40" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="13" fill="#111827">Pemerintah Kota</text>
+    <text x="40" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="16" fill="#DC2626">MAKASSAR</text>
+  </svg>

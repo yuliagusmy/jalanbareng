@@ -1,33 +1,25 @@
 <template>
   <section id="registrasi" class="weekly-registration-section mb-10 mb-md-16 pt-4">
-    <!-- Header Box with Grounded Antislop Aesthetic -->
+    <!-- Header -->
     <div class="registration-header text-center mb-8">
       <div class="d-inline-flex align-center ga-2 px-4 py-1 rounded-pill status-pill mb-3">
         <span class="pulse-dot"></span>
         <span class="text-caption font-weight-bold tracking-wider text-uppercase">
-          Aktivasi & Agenda Pekan Ini
+          Aktivasi &amp; Agenda Pekan Ini
         </span>
       </div>
 
       <h2 class="text-h4 text-md-h3 font-weight-black text-grey-darken-4 mb-3">
-        Pilih Aktivasi & Registrasi
+        Pilih Aktivasi &amp; Registrasi
       </h2>
 
-      <p class="text-body-1 text-grey-darken-1 mx-auto" style="max-width: 680px; line-height: 1.6;">
-        Setiap pekan ada beragam agenda jalan dan aktivasi di berbagai sudut kota. Pilih agenda yang ingin kamu ikuti di bawah ini untuk mengisi formulir pendaftaran melalui Google Form masing-masing.
+      <p class="text-body-1 text-grey-darken-1 mx-auto" style="max-width: 600px; line-height: 1.6;">
+        Pilih agenda yang ingin kamu ikuti. Klik kartu untuk detail lengkap dan formulir pendaftaran.
       </p>
-
-      <!-- Multi-Registration Friendly Callout -->
-      <div class="d-inline-flex align-center ga-2 px-4 py-2 rounded-lg bg-grey-lighten-4 mt-2 info-badge">
-        <v-icon size="small" color="#16A34A">mdi-check-circle-outline</v-icon>
-        <span class="text-caption text-grey-darken-3 font-weight-medium">
-          Kamu boleh mendaftar di <strong>lebih dari satu aktivasi</strong> selama jadwalnya tidak bentrok!
-        </span>
-      </div>
     </div>
 
-    <!-- Category Filter Tabs -->
-    <div class="d-flex justify-center flex-wrap ga-2 mb-8 px-2">
+    <!-- Category Filter -->
+    <div class="category-filter-row mb-6">
       <v-chip
         v-for="filter in filters"
         :key="filter.value"
@@ -37,7 +29,7 @@
         class="font-weight-bold filter-chip"
         @click="selectedFilter = filter.value"
       >
-        <v-icon start size="18">{{ filter.icon }}</v-icon>
+        <v-icon start size="16">{{ filter.icon }}</v-icon>
         {{ filter.label }}
         <span class="count-badge ml-1" :class="{ 'count-active': selectedFilter === filter.value }">
           {{ getCountByFilter(filter.value) }}
@@ -45,160 +37,174 @@
       </v-chip>
     </div>
 
-    <!-- Activation Cards Grid -->
-    <v-row>
+    <!-- Cards Grid: 2 per baris di semua ukuran -->
+    <v-row dense>
       <v-col
         v-for="item in filteredActivations"
         :key="item.id"
-        cols="12"
+        cols="6"
         sm="6"
+        md="6"
         lg="6"
       >
-        <v-card
-          elevation="0"
-          rounded="xl"
-          class="registration-card h-100 d-flex flex-column border overflow-hidden"
-        >
-          <!-- Card Cover Image with Overlay Badges -->
-          <div v-if="item.image" class="card-cover-image position-relative">
-            <v-img :src="item.image" height="190" cover class="rounded-t-xl">
-              <div class="d-flex justify-space-between align-center pa-4">
-                <span
-                  class="activation-type-tag elevation-1"
-                  :style="{ backgroundColor: item.themeColorBg, color: item.themeColorText }"
-                >
-                  <v-icon size="14" class="mr-1">{{ item.icon }}</v-icon>
-                  {{ item.categoryLabel }}
-                </span>
+        <!-- Compact Card -->
+        <div class="compact-card" @click="openDetail(item)">
+          <!-- Image Header -->
+          <div class="compact-card-img">
+            <img v-if="item.image" :src="item.image" :alt="item.title" />
+            <div v-else class="compact-card-img-placeholder" :style="{ background: item.themeColorBg }"></div>
 
-                <span class="open-status-badge elevation-1">
-                  <span class="status-indicator-dot"></span>
-                  {{ item.statusText }}
-                </span>
-              </div>
-            </v-img>
+            <!-- Status Badge -->
+            <span class="compact-status-dot"></span>
           </div>
 
-          <!-- Card Header Info -->
-          <div class="card-top-bar pa-5 pb-3">
-            <div v-if="!item.image" class="d-flex justify-space-between align-center mb-2">
-              <span
-                class="activation-type-tag"
-                :style="{ backgroundColor: item.themeColorBg, color: item.themeColorText }"
-              >
-                <v-icon size="14" class="mr-1">{{ item.icon }}</v-icon>
-                {{ item.categoryLabel }}
-              </span>
-
-              <span class="open-status-badge">
-                <span class="status-indicator-dot"></span>
-                {{ item.statusText }}
-              </span>
-            </div>
-
-            <h3 class="text-h5 font-weight-bold text-grey-darken-4 mt-1">
-              {{ item.title }}
-            </h3>
-
-            <!-- Collaborator / Brand Partner Badge -->
-            <div v-if="item.collaborator" class="collaborator-badge d-flex align-center ga-2 px-3 py-1-5 rounded-lg my-2">
-              <v-icon size="16" color="#D97706">mdi-handshake-outline</v-icon>
-              <div class="text-caption font-weight-medium text-grey-darken-3 d-flex flex-wrap align-center ga-1">
-                <span>Kolaborasi bersama:</span>
-                <strong class="text-grey-darken-4">{{ item.collaborator.name }}</strong>
-                <span class="collaborator-role-pill">{{ item.collaborator.role }}</span>
-              </div>
-            </div>
-
-            <p class="text-body-2 text-grey-darken-1 mb-0 mt-1 line-clamp-2">
-              {{ item.description }}
-            </p>
-          </div>
-
-          <!-- Schedule & Location Details -->
-          <div class="card-meta-details px-5 py-3 bg-grey-lighten-5 my-1">
-            <div class="meta-row d-flex align-center ga-3 mb-2">
-              <div class="meta-icon-box">
-                <v-icon size="18" color="#DC2626">mdi-calendar-clock</v-icon>
-              </div>
-              <div>
-                <div class="text-caption text-grey-darken-1 font-weight-medium">Waktu Kegiatan</div>
-                <div class="text-body-2 font-weight-bold text-grey-darken-3">{{ item.schedule }}</div>
-              </div>
-            </div>
-
-            <div class="meta-row d-flex align-center ga-3 mb-2">
-              <div class="meta-icon-box">
-                <v-icon size="18" color="#0284C7">mdi-map-marker-radius</v-icon>
-              </div>
-              <div>
-                <div class="text-caption text-grey-darken-1 font-weight-medium">Titik Kumpul</div>
-                <div class="text-body-2 font-weight-bold text-grey-darken-3">{{ item.meetingPoint }}</div>
-              </div>
-            </div>
-
-            <div class="meta-row d-flex align-center ga-3">
-              <div class="meta-icon-box">
-                <v-icon size="18" color="#16A34A">mdi-ticket-outline</v-icon>
-              </div>
-              <div>
-                <div class="text-caption text-grey-darken-1 font-weight-medium">Biaya & Kuota</div>
-                <div class="text-body-2 font-weight-bold text-grey-darken-3">{{ item.feeAndQuota }}</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Actions (Direct to Google Form) -->
-          <div class="card-action-bar pa-5 mt-auto">
-            <v-btn
-              :href="item.gformUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              color="primary"
-              size="large"
-              block
-              rounded="pill"
-              class="font-weight-bold gform-btn elevation-2"
+          <!-- Card Body -->
+          <div class="compact-card-body">
+            <!-- Category Tag -->
+            <span
+              class="compact-cat-tag"
+              :style="{ backgroundColor: item.themeColorBg, color: item.themeColorText }"
             >
-              <v-icon start size="20">mdi-clipboard-edit-outline</v-icon>
-              <span>Daftar & Amankan Slot</span>
-              <v-icon end size="16">mdi-arrow-top-right</v-icon>
-            </v-btn>
+              <v-icon size="11">{{ item.icon }}</v-icon>
+              {{ item.shortCategory }}
+            </span>
 
-            <div class="d-flex justify-space-between align-center mt-2 px-1">
-              <span class="text-caption text-grey-darken-1">
-                <v-icon size="14" class="mr-1">mdi-clock-outline</v-icon>
-                Batas daftar: {{ item.deadline }}
-              </span>
+            <!-- Title -->
+            <h3 class="compact-title">{{ item.title }}</h3>
 
-              <NuxtLink
-                v-if="item.activationSlug"
-                :to="`/aktivasi/${item.activationSlug}`"
-                class="text-caption text-primary font-weight-bold text-decoration-none"
-              >
-                Tentang Aktivasi
-                <v-icon size="12">mdi-chevron-right</v-icon>
-              </NuxtLink>
+            <!-- Schedule & Location -->
+            <div class="compact-meta">
+              <div class="compact-meta-row">
+                <v-icon size="13" color="#DC2626">mdi-calendar-clock</v-icon>
+                <span>{{ item.scheduleShort }}</span>
+              </div>
+              <div class="compact-meta-row">
+                <v-icon size="13" color="#0284C7">mdi-map-marker-radius</v-icon>
+                <span>{{ item.locationShort }}</span>
+              </div>
             </div>
           </div>
-        </v-card>
+        </div>
       </v-col>
     </v-row>
 
-    <!-- Bottom Help Text for Registrants -->
-    <div class="text-center mt-8 px-4">
+    <!-- Bottom Help Text -->
+    <div class="text-center mt-6 px-4">
       <p class="text-caption text-grey-darken-1 mb-0">
-        Ada pertanyaan seputar registrasi atau aktivasi? Hubungi kami via Instagram
+        Ada pertanyaan? DM kami di Instagram
         <a
           href="https://instagram.com/jalanbarengind"
           target="_blank"
           rel="noopener noreferrer"
           class="text-primary font-weight-bold text-decoration-none"
-        >
-          @jalanbarengind
-        </a>
+        >@jalanbarengind</a>
       </p>
     </div>
+
+    <!-- ===== Detail Bottom Sheet ===== -->
+    <v-bottom-sheet v-model="showDetail" max-width="600">
+      <v-card v-if="selected" rounded="t-xl" class="detail-sheet">
+        <!-- Image Header -->
+        <div v-if="selected.image" class="detail-img-wrapper">
+          <img :src="selected.image" :alt="selected.title" class="detail-img" />
+          <div class="detail-img-overlay"></div>
+
+          <!-- Badges over image -->
+          <div class="detail-badges">
+            <span
+              class="activation-type-tag"
+              :style="{ backgroundColor: selected.themeColorBg, color: selected.themeColorText }"
+            >
+              <v-icon size="13" class="mr-1">{{ selected.icon }}</v-icon>
+              {{ selected.categoryLabel }}
+            </span>
+            <span class="open-status-badge">
+              <span class="status-indicator-dot"></span>
+              {{ selected.statusText }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="detail-content pa-5">
+          <!-- Title -->
+          <h2 class="detail-title text-grey-darken-4 mb-2">{{ selected.title }}</h2>
+
+          <!-- Collaborator -->
+          <div v-if="selected.collaborator" class="collaborator-badge d-flex align-center ga-2 px-3 py-2 rounded-lg mb-3">
+            <v-icon size="16" color="#D97706">mdi-handshake-outline</v-icon>
+            <div class="text-caption font-weight-medium text-grey-darken-3 d-flex flex-wrap align-center ga-1">
+              <span>Kolaborasi bersama:</span>
+              <strong class="text-grey-darken-4">{{ selected.collaborator.name }}</strong>
+              <span class="collaborator-role-pill">{{ selected.collaborator.role }}</span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p class="text-body-2 text-grey-darken-1 mb-4" style="line-height:1.6;">{{ selected.description }}</p>
+
+          <!-- Detail Meta -->
+          <div class="detail-meta-box mb-4">
+            <div class="detail-meta-row">
+              <v-icon size="18" color="#DC2626">mdi-calendar-clock</v-icon>
+              <div>
+                <div class="meta-label">Waktu Kegiatan</div>
+                <div class="meta-value">{{ selected.schedule }}</div>
+              </div>
+            </div>
+            <div class="detail-meta-row">
+              <v-icon size="18" color="#0284C7">mdi-map-marker-radius</v-icon>
+              <div>
+                <div class="meta-label">Titik Kumpul</div>
+                <div class="meta-value">{{ selected.meetingPoint }}</div>
+              </div>
+            </div>
+            <div class="detail-meta-row">
+              <v-icon size="18" color="#16A34A">mdi-ticket-outline</v-icon>
+              <div>
+                <div class="meta-label">Biaya &amp; Kuota</div>
+                <div class="meta-value">{{ selected.feeAndQuota }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deadline -->
+          <div class="deadline-note mb-5">
+            <v-icon size="15" color="#DC2626">mdi-clock-alert-outline</v-icon>
+            <span>Batas daftar: <strong>{{ selected.deadline }}</strong></span>
+          </div>
+
+          <!-- CTA Button -->
+          <v-btn
+            :href="selected.gformUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            color="primary"
+            size="large"
+            block
+            rounded="pill"
+            class="font-weight-bold gform-btn elevation-2 mb-3"
+          >
+            <v-icon start size="20">mdi-clipboard-edit-outline</v-icon>
+            <span>Daftar &amp; Amankan Slot</span>
+            <v-icon end size="16">mdi-arrow-top-right</v-icon>
+          </v-btn>
+
+          <!-- Detail Page Link -->
+          <div class="text-center">
+            <NuxtLink
+              v-if="selected.activationSlug"
+              :to="`/aktivasi/${selected.activationSlug}`"
+              class="text-caption text-primary font-weight-bold text-decoration-none"
+              @click="showDetail = false"
+            >
+              Lihat halaman lengkap aktivasi
+              <v-icon size="13">mdi-chevron-right</v-icon>
+            </NuxtLink>
+          </div>
+        </div>
+      </v-card>
+    </v-bottom-sheet>
   </section>
 </template>
 
@@ -206,34 +212,40 @@
 import { ref, computed } from 'vue'
 
 const selectedFilter = ref('all')
+const showDetail = ref(false)
+const selected = ref<any>(null)
+
+const openDetail = (item: any) => {
+  selected.value = item
+  showDetail.value = true
+}
 
 const filters = [
-  { value: 'all', label: 'Semua Dibuka', icon: 'mdi-view-grid-outline' },
+  { value: 'all', label: 'Semua', icon: 'mdi-view-grid-outline' },
   { value: 'walking', label: 'Jalan Santai', icon: 'mdi-walk' },
-  { value: 'book', label: 'Diskusi Buku', icon: 'mdi-book-open-page-variant' },
-  { value: 'culinary', label: 'Makan & Kuliner', icon: 'mdi-silverware-fork-knife' },
+  { value: 'book', label: 'Buku', icon: 'mdi-book-open-page-variant' },
+  { value: 'culinary', label: 'Kuliner', icon: 'mdi-silverware-fork-knife' },
   { value: 'explore', label: 'Eksplorasi', icon: 'mdi-compass-outline' }
 ]
 
-// Activations that open registration this week
 const weeklyActivations = ref([
   {
     id: 1,
     category: 'walking',
     categoryLabel: 'Jalan Santai • City Chapter',
+    shortCategory: 'Jalan Santai',
     icon: 'mdi-walk',
     themeColorBg: '#FEE2E2',
     themeColorText: '#DC2626',
     title: 'Jalan Bareng Makassar',
     activationSlug: 'jalan-bareng-makassar',
     image: '/images/hero/walk_2.jpg',
-    collaborator: {
-      name: 'Kolektif Trotoar Kota',
-      role: 'Komunitas Pejalan'
-    },
+    collaborator: { name: 'Kolektif Trotoar Kota', role: 'Komunitas Pejalan' },
     description: 'Jalan santai menyusuri trotoar dan lorong heritage kota Makassar. Terbuka untuk semua warga dan kawan perantau.',
     schedule: 'Sabtu pagi, 06.00 – 08.30 WITA',
+    scheduleShort: 'Sabtu, 06.00 WITA',
     meetingPoint: 'Anjungan Pantai Losari (Depan Masjid Amirul Mukminin)',
+    locationShort: 'Pantai Losari',
     feeAndQuota: 'Gratis • Terbuka untuk umum',
     deadline: 'Jumat malam, 22.00 WITA',
     statusText: 'Open Registration',
@@ -243,19 +255,19 @@ const weeklyActivations = ref([
     id: 2,
     category: 'book',
     categoryLabel: 'Literasi • Aktivasi Tematik',
+    shortCategory: 'Diskusi Buku',
     icon: 'mdi-book-open-page-variant',
     themeColorBg: '#E0F2FE',
     themeColorText: '#0284C7',
     title: 'Diskusi Buku Bareng',
     activationSlug: 'diskusi-buku-bareng',
     image: '/images/hero/walk_7.jpg',
-    collaborator: {
-      name: 'Pojok Baca & Penerbit Indie',
-      role: 'Partner Literasi'
-    },
+    collaborator: { name: 'Pojok Baca & Penerbit Indie', role: 'Partner Literasi' },
     description: 'Membawa buku bacaan favorit, jalan santai sore hari, dan sesi melingkar untuk saling bertukar refleksi bacaan.',
     schedule: 'Minggu sore, 16.00 – 18.00 WITA',
+    scheduleShort: 'Minggu, 16.00 WITA',
     meetingPoint: 'Taman Macan / Gazebo Ruang Publik Makassar',
+    locationShort: 'Taman Macan',
     feeAndQuota: 'Gratis • Bawa buku sendiri',
     deadline: 'Jumat malam, 22.00 WITA',
     statusText: 'Open Registration',
@@ -265,19 +277,19 @@ const weeklyActivations = ref([
     id: 3,
     category: 'culinary',
     categoryLabel: 'Kuliner • Cerita Rasa',
+    shortCategory: 'Kuliner',
     icon: 'mdi-silverware-fork-knife',
     themeColorBg: '#FEF3C7',
     themeColorText: '#B45309',
     title: 'Makan Bareng',
     activationSlug: 'makan-bareng',
     image: '/images/hero/walk_9.jpg',
-    collaborator: {
-      name: 'Kedai Kopi & Kuliner Pecinan',
-      role: 'F&B Partner'
-    },
+    collaborator: { name: 'Kedai Kopi & Kuliner Pecinan', role: 'F&B Partner' },
     description: 'Jalan kaki menyusuri gang kuliner lokal legendaris sembari menikmati santapan khas dan mendengar cerita penjual lokal.',
     schedule: 'Sabtu sore, 16.30 – 19.00 WITA',
+    scheduleShort: 'Sabtu, 16.30 WITA',
     meetingPoint: 'Kawasan Pecinan / Jalan Sulawesi Makassar',
+    locationShort: 'Kawasan Pecinan',
     feeAndQuota: 'Mandiri (Bayar makanan masing-masing)',
     deadline: 'Jumat malam, 22.00 WITA',
     statusText: 'Open Registration',
@@ -287,19 +299,19 @@ const weeklyActivations = ref([
     id: 4,
     category: 'explore',
     categoryLabel: 'Eksplorasi • Rute Khusus',
+    shortCategory: 'Eksplorasi',
     icon: 'mdi-compass-outline',
     themeColorBg: '#DCFCE7',
     themeColorText: '#15803D',
     title: 'Explore Bareng',
     activationSlug: 'explore-bareng',
     image: '/images/hero/walk_1.jpg',
-    collaborator: {
-      name: 'Inisiatif Heritage Makassar',
-      role: 'Knowledge Partner'
-    },
+    collaborator: { name: 'Inisiatif Heritage Makassar', role: 'Knowledge Partner' },
     description: 'Menelusuri sudut kota dengan rute tematik tersembunyi, cagar budaya, dan cerita sejarah yang jarang diangkat.',
     schedule: 'Minggu pagi, 06.15 – 09.00 WITA',
+    scheduleShort: 'Minggu, 06.15 WITA',
     meetingPoint: 'Benteng Rotterdam Makassar (Pintu Utama)',
+    locationShort: 'Benteng Rotterdam',
     feeAndQuota: 'Gratis • Kuota 25 orang',
     deadline: 'Jumat malam, 22.00 WITA',
     statusText: 'Open Registration',
@@ -308,16 +320,12 @@ const weeklyActivations = ref([
 ])
 
 const filteredActivations = computed(() => {
-  if (selectedFilter.value === 'all') {
-    return weeklyActivations.value
-  }
+  if (selectedFilter.value === 'all') return weeklyActivations.value
   return weeklyActivations.value.filter(item => item.category === selectedFilter.value)
 })
 
 const getCountByFilter = (filterVal: string) => {
-  if (filterVal === 'all') {
-    return weeklyActivations.value.length
-  }
+  if (filterVal === 'all') return weeklyActivations.value.length
   return weeklyActivations.value.filter(item => item.category === filterVal).length
 }
 </script>
@@ -339,33 +347,33 @@ const getCountByFilter = (filterVal: string) => {
   border-radius: 50%;
   background-color: #16A34A;
   display: inline-block;
-  box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
   animation: pulse-ring 1.8s infinite;
 }
 
 @keyframes pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgba(22, 163, 74, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
-  }
+  0%   { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+  70%  { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
 }
 
-.info-badge {
-  border: 1px solid #E5E7EB;
+.category-filter-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 16px;
 }
 
 .filter-chip {
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  min-height: 40px;
 }
 
 .count-badge {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   background: #E5E7EB;
   color: #374151;
   padding: 1px 6px;
@@ -377,20 +385,133 @@ const getCountByFilter = (filterVal: string) => {
   color: #FFFFFF;
 }
 
-/* Card Styling */
-.registration-card {
+/* ===== COMPACT CARD ===== */
+.compact-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #E5E7EB;
   background: #FFFFFF;
-  border: 1px solid #E5E7EB !important;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
-.registration-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08) !important;
+.compact-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px -4px rgba(0, 0, 0, 0.1);
+}
+
+.compact-card-img {
+  position: relative;
+  height: 100px;
+  overflow: hidden;
+}
+
+.compact-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.compact-card-img-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.compact-status-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #16A34A;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.4);
+  animation: pulse-ring 1.8s infinite;
+}
+
+.compact-card-body {
+  padding: 10px 12px 12px;
+}
+
+.compact-cat-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+
+.compact-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+  margin: 0 0 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.compact-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.compact-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: #6B7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== DETAIL BOTTOM SHEET ===== */
+.detail-sheet {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.detail-img-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.detail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detail-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.35) 100%);
+}
+
+.detail-badges {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .activation-type-tag {
-  font-size: 0.75rem;
+  font-size: 0.73rem;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 8px;
@@ -399,7 +520,7 @@ const getCountByFilter = (filterVal: string) => {
 }
 
 .open-status-badge {
-  font-size: 0.75rem;
+  font-size: 0.73rem;
   font-weight: 700;
   color: #166534;
   background: #F0FDF4;
@@ -418,30 +539,11 @@ const getCountByFilter = (filterVal: string) => {
   background-color: #16A34A;
 }
 
-.meta-icon-box {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  flex-shrink: 0;
-}
-
-.gform-btn {
-  height: 48px !important;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  text-transform: none;
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.detail-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 .collaborator-badge {
@@ -452,10 +554,83 @@ const getCountByFilter = (filterVal: string) => {
 .collaborator-role-pill {
   background: #FEF3C7;
   color: #92400E;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   padding: 1px 7px;
   border-radius: 9999px;
   border: 1px solid #FCD34D;
+}
+
+.detail-meta-box {
+  background: #F9FAFB;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-meta-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.meta-label {
+  font-size: 0.72rem;
+  color: #9CA3AF;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.meta-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.35;
+}
+
+.deadline-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #6B7280;
+}
+
+.gform-btn {
+  height: 50px !important;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+@media (max-width: 600px) {
+  .category-filter-row {
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .filter-chip {
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+
+  .compact-card-img {
+    height: 90px;
+  }
+
+  .compact-card-body {
+    padding: 10px 12px;
+  }
+
+  .compact-title {
+    font-size: 0.8rem;
+  }
+
+  .compact-meta-row {
+    font-size: 0.65rem;
+  }
 }
 </style>

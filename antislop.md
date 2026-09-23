@@ -1,3 +1,4 @@
+
 # antislop
 
 > Anti Slop: Rules for AI Coding Agents

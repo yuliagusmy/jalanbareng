@@ -276,6 +276,39 @@
 
         <!-- Sidebar -->
         <v-col cols="12" lg="4">
+          <!-- Admin Panel Quick Access (Khusus Administrator) -->
+          <v-card
+            v-if="authStore.isAdmin"
+            elevation="0"
+            rounded="xl"
+            class="sidebar-card mb-4"
+            style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white;"
+          >
+            <v-card-text class="pa-6">
+              <div class="d-flex align-center ga-3 mb-3">
+                <v-avatar color="rgba(255,255,255,0.12)" size="42">
+                  <v-icon color="#F59E0B" size="24">mdi-shield-crown</v-icon>
+                </v-avatar>
+                <div>
+                  <h3 class="text-subtitle-1 font-weight-bold text-white mb-0">Panel Administrator</h3>
+                  <p class="text-caption text-grey-lighten-2 mb-0">Kelola sistem, event, & aktivasi</p>
+                </div>
+              </div>
+              <v-btn
+                block
+                color="#DC2626"
+                variant="flat"
+                size="large"
+                rounded="lg"
+                to="/manage/activations"
+                class="font-weight-bold"
+              >
+                <v-icon start>mdi-view-dashboard-outline</v-icon>
+                Masuk ke Panel Admin
+              </v-btn>
+            </v-card-text>
+          </v-card>
+
           <!-- Quick Actions -->
           <v-card elevation="0" rounded="xl" class="sidebar-card mb-4">
             <v-card-text class="pa-6">

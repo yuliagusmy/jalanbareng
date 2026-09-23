@@ -57,7 +57,7 @@
       <v-col
         v-for="(story, index) in stories"
         :key="story.id"
-        cols="12"
+        cols="6"
         sm="6"
         :md="getColSpan(index, stories.length)"
       >
@@ -585,19 +585,19 @@ onMounted(() => {
 /* Mobile 1-column layout refinements */
 @media (max-width: 600px) {
   .story-card {
-    height: 380px;
-    border-radius: 18px;
+    height: 300px;
+    border-radius: 14px;
   }
 
   .card-inner-report {
-    padding: 20px 18px;
+    padding: 14px 12px;
   }
 
   .book-mockup-wrapper {
-    transform: scale(0.85);
+    transform: scale(0.62);
     transform-origin: center center;
-    margin-top: 0;
-    margin-bottom: 6px;
+    margin-top: -12px;
+    margin-bottom: -8px;
   }
 
   .card-headline {

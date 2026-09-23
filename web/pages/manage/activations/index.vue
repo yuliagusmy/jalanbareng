@@ -3,34 +3,36 @@
     <v-container class="py-8">
       <!-- Header -->
       <v-card elevation="0" rounded="lg" class="mb-6">
-        <v-card-title class="d-flex align-center px-6 py-4">
-          <v-icon class="mr-3" size="32" color="primary">mdi-star-four-points</v-icon>
-          <div>
-            <h1 class="text-h5 font-weight-bold">Kelola Aktivasi</h1>
-            <p class="text-caption text-grey mb-0">Manajemen aktivasi komunitas</p>
+        <div class="d-flex align-center justify-space-between flex-wrap ga-3 px-4 px-sm-6 py-4">
+          <div class="d-flex align-center">
+            <v-icon class="mr-3" size="32" color="primary">mdi-star-four-points</v-icon>
+            <div>
+              <h1 class="text-h6 text-sm-h5 font-weight-bold">Kelola Aktivasi</h1>
+              <p class="text-caption text-grey mb-0">Manajemen aktivasi komunitas</p>
+            </div>
           </div>
-          <v-spacer></v-spacer>
           <v-btn
             color="primary"
             variant="flat"
             rounded="lg"
             to="/manage/activations/create"
-            size="large"
+            :size="$vuetify.display.xs ? 'default' : 'large'"
           >
             <v-icon start>mdi-plus</v-icon>
-            Buat Aktivasi
+            <span v-if="!$vuetify.display.xs">Buat Aktivasi</span>
+            <span v-else>Aktivasi</span>
           </v-btn>
-        </v-card-title>
+        </div>
       </v-card>
 
       <!-- Stats Cards -->
       <v-row class="mb-6">
-        <v-col cols="12" sm="3" v-for="stat in stats" :key="stat.label">
-          <v-card elevation="0" rounded="lg" class="pa-4" :color="stat.bgColor">
+        <v-col cols="6" sm="6" md="3" v-for="stat in stats" :key="stat.label">
+          <v-card elevation="0" rounded="lg" class="pa-3 pa-sm-4" :color="stat.bgColor">
             <div class="d-flex align-center">
-              <v-icon size="40" :color="stat.color" class="mr-4">{{ stat.icon }}</v-icon>
+              <v-icon :size="$vuetify.display.xs ? 28 : 40" :color="stat.color" class="mr-3 mr-sm-4">{{ stat.icon }}</v-icon>
               <div>
-                <div class="text-h4 font-weight-bold" :class="`text-${stat.color}`">{{ stat.value }}</div>
+                <div class="text-h5 text-sm-h4 font-weight-bold" :class="`text-${stat.color}`">{{ stat.value }}</div>
                 <div class="text-caption text-grey-darken-1">{{ stat.label }}</div>
               </div>
             </div>
@@ -41,7 +43,7 @@
       <!-- Filter & Search -->
       <v-card elevation="0" rounded="lg" class="mb-6 pa-4">
         <v-row>
-          <v-col cols="12" md="4">
+          <v-col cols="12" sm="6" md="4">
             <v-text-field
               v-model="search"
               placeholder="Cari aktivasi..."
@@ -53,7 +55,7 @@
               hide-details
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="3">
+          <v-col cols="12" sm="6" md="3">
             <v-select
               v-model="filterCategory"
               :items="categoryOptions"
@@ -69,7 +71,7 @@
               </template>
             </v-select>
           </v-col>
-          <v-col cols="12" md="3">
+          <v-col cols="12" sm="6" md="3">
             <v-select
               v-model="filterStatus"
               :items="statusOptions"
@@ -85,7 +87,7 @@
               </template>
             </v-select>
           </v-col>
-          <v-col cols="12" md="2">
+          <v-col cols="12" sm="6" md="2">
             <v-select
               v-model="sortBy"
               :items="sortOptions"
@@ -105,7 +107,7 @@
       </v-card>
 
       <!-- Activations Table -->
-      <v-card elevation="0" rounded="lg">
+      <v-card elevation="0" rounded="lg" style="overflow-x: auto;">
         <v-data-table
           :headers="headers"
           :items="filteredActivations"
@@ -113,6 +115,7 @@
           :search="search"
           hide-default-footer
           class="elevation-0"
+          style="min-width: 640px;"
         >
           <!-- Name Column -->
           <template v-slot:item.name="{ item }">

@@ -37,18 +37,18 @@
               <v-col cols="12" sm="10" md="9" lg="8">
                 <div class="text-center mb-8">
                   <!-- Logo for Mobile -->
-                  <v-icon size="80" color="primary" class="mb-4 hidden-md-and-up">
+                  <v-icon size="60" color="primary" class="mb-3 mobile-logo hidden-md-and-up">
                     mdi-map-marker-multiple
                   </v-icon>
 
-                  <h2 class="text-h4 font-weight-bold mb-2">Masuk</h2>
-                  <p class="text-body-1 text-grey-darken-1">
+                  <h2 class="text-h5 font-weight-bold mb-1 login-title">Masuk</h2>
+                  <p class="text-body-2 text-grey-darken-1">
                     Masuk ke akun Anda untuk melanjutkan
                   </p>
                 </div>
 
                 <!-- Login Card -->
-                <v-card elevation="2" rounded="xl" class="pa-8">
+                <v-card elevation="2" rounded="xl" class="pa-5 pa-sm-8 login-card-box">
                   <!-- Loading State -->
                   <div v-if="loading" class="text-center py-12">
                     <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>

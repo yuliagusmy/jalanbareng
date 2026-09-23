@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" width="200" height="50">
+    <circle cx="20" cy="25" r="16" fill="#15803D"/>
+    <path d="M18 13H22V23L28 19L20 33L12 19L18 23V13Z" fill="#FEF08A"/>
+    <text x="44" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="15" fill="#15803D">DISPORA</text>
+    <text x="44" y="39" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="11" fill="#475569">Pemuda & Olahraga</text>
+  </svg>
