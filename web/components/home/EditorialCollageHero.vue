@@ -3,13 +3,10 @@
     <div class="editorial-artboard">
       <!-- 1. Top Section: Centered Full-Width Headline (No side elements squeezing it) -->
       <div class="top-headline-wrapper text-center">
-        <div class="headline-container position-relative d-inline-block">
-          <span class="sticker sticker-sunflower" aria-hidden="true">🌻</span>
-          <span class="sticker sticker-blossom" aria-hidden="true">🌸</span>
-          <span class="sticker sticker-sparkle" aria-hidden="true">✦</span>
-
-          <h1 class="main-headline font-weight-black text-grey-darken-4 mb-2">
-            Setiap Sudut Kota Punya Cerita,<br>
+        <div class="headline-container position-relative">
+          <h1 class="main-headline text-grey-darken-4 mb-2">
+            <span class="headline-lead">Setiap Sudut Kota</span>
+            <span class="headline-lead"> Punya Cerita</span>
             <span class="typewriter-line text-primary">
               {{ currentText }}<span class="cursor">|</span>
             </span>
@@ -120,52 +117,34 @@
         </div>
       </div>
 
-      <!-- 3. Bottom Row: Aligned Quote + HIGH-CONTRAST PRIMARY CTA BUTTON + Teaser Card -->
-      <div class="artboard-bottom-grid">
-        <!-- Bottom Left: Community Quote -->
-        <div class="bottom-left-quote">
-          <div class="quote-symbol">“</div>
-          <p class="quote-text text-grey-darken-3 mb-1">
-            Nggak nyangka perjumpaan santai di trotoar malah bikin dapet sahabat baru seperti keluarga sendiri.
-          </p>
-          <div class="quote-author font-weight-bold text-primary">
-            Rifky Pratama <span class="author-sub text-grey-darken-1">· Pejalan Makassar</span>
-          </div>
-          <span class="sticker sticker-flower-bottom" aria-hidden="true">🌸</span>
-        </div>
-
-        <!-- Bottom Center: HIGHLY HIGHLIGHTED PRIMARY ACTION BUTTON -->
+      <!-- 3. Bottom Row: Centered Clean Quote (No Card) + HIGH-CONTRAST PRIMARY CTA BUTTON -->
+      <div class="artboard-bottom-container">
+        <!-- Primary Action Button (Centered) -->
         <div class="bottom-center-cta text-center">
-          <button class="primary-highlighted-btn" @click="emitScroll" aria-label="Daftar aktivasi pekan ini">
-            <v-icon start size="22" color="white">mdi-calendar-check</v-icon>
-            <span class="btn-text">DAFTAR AKTIVASI<br>PEKAN INI</span>
-            <v-icon end size="20" color="white" class="bouncing-arrow">mdi-chevron-down</v-icon>
-          </button>
-          
-          <div class="cta-status-badge d-inline-flex align-center ga-2 mt-2">
-            <span class="pulse-green-dot"></span>
-            <span class="text-caption font-weight-bold text-grey-darken-2">
-              4 Aktivasi Dibuka • Klik untuk Memilih
-            </span>
+          <div class="cta-interactive-group">
+            <button class="primary-highlighted-btn" @click="emitScroll" aria-label="Daftar aktivasi pekan ini">
+              <v-icon start size="22" color="white">mdi-calendar-check</v-icon>
+              <span class="btn-text">DAFTAR AKTIVASI PEKAN INI</span>
+              <v-icon end size="20" color="white" class="bouncing-arrow">mdi-chevron-down</v-icon>
+            </button>
+            
+            <div class="cta-status-badge d-flex align-center justify-center ga-2 mt-2" @click="emitScroll">
+              <span class="pulse-green-dot"></span>
+              <span class="text-caption font-weight-bold text-grey-darken-2">
+                4 Aktivasi Dibuka • Klik untuk Memilih
+              </span>
+            </div>
           </div>
         </div>
 
-        <!-- Bottom Right: Weekly Teaser Box -->
-        <div class="bottom-right-teaser" @click="emitScroll">
-          <div class="weekly-teaser-card elevation-1">
-            <div class="teaser-meta text-grey-darken-1 font-weight-medium">
-              Pekan Ini • Pendaftaran Buka
-            </div>
-            <div class="d-flex align-center justify-space-between ga-3 mt-1">
-              <span class="teaser-num font-weight-black">01</span>
-              <span class="teaser-text font-weight-bold text-grey-darken-4">
-                4 Aktivasi siap kamu ikuti akhir pekan ini
-              </span>
-              <div class="teaser-arrow-circle">
-                <v-icon size="16" color="white">mdi-arrow-right</v-icon>
-              </div>
-            </div>
-            <span class="sticker sticker-rose" aria-hidden="true">🥀</span>
+        <!-- Suara Pejalan: Clean Centered Text (Card Removed on Mobile & Laptop) -->
+        <div class="bottom-quote-minimal text-center">
+          <p class="quote-text-clean text-grey-darken-3 mb-1">
+            <span class="quote-symbol-inline">“</span>Nggak nyangka perjumpaan santai di trotoar malah bikin dapet sahabat baru seperti keluarga sendiri.<span class="quote-symbol-inline">”</span>
+          </p>
+          <div class="quote-author-clean">
+            <span class="font-weight-bold text-primary">Rifky Pratama</span>
+            <span class="author-sub text-grey-darken-1"> · Pejalan Makassar</span>
           </div>
         </div>
       </div>
@@ -312,14 +291,22 @@ onUnmounted(() => {
 }
 
 .headline-container {
-  padding: 0 20px;
+  padding: 0;
+  width: 100%;
+  max-width: 920px;
 }
 
 .main-headline {
   font-size: clamp(2.4rem, 5.8vw, 4.85rem);
+  font-weight: 800 !important;
   line-height: 1.08;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.035em !important;
   white-space: normal;
+}
+
+.headline-lead,
+.headline-follow {
+  display: inline;
 }
 
 .typewriter-line {
@@ -708,13 +695,39 @@ onUnmounted(() => {
   }
 
   .top-headline-wrapper {
-    margin-bottom: 20px;
-    padding: 0 8px;
+    margin-bottom: 18px;
+    padding: 0 4px;
+    width: 100%;
+  }
+
+  .headline-container {
+    padding: 0;
+    width: 100%;
+  }
+
+  .headline-lead {
+    display: block;
+    font-size: clamp(2.15rem, 9.2vw, 2.45rem) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.04em !important;
+    white-space: nowrap;
+    text-align: center;
+    width: 100%;
+  }
+
+  .headline-follow {
+    display: block;
+    font-size: clamp(1.7rem, 7.4vw, 2rem) !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.03em !important;
+    text-align: center;
+    width: 100%;
   }
 
   .main-headline {
-    font-size: clamp(1.55rem, 5.2vw, 1.95rem) !important;
-    line-height: 1.2 !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.035em !important;
+    width: 100%;
   }
 
   .cards-collage-grid {
@@ -761,57 +774,70 @@ onUnmounted(() => {
   }
 }
 
-/* 4. Bottom Section Grid: Strict Alignment with Collage Columns */
-.artboard-bottom-grid {
-  display: grid;
-  grid-template-columns: 260px 1fr 260px;
+/* 4. Bottom Section Container: Symmetrical & Centered */
+.artboard-bottom-container {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 16px;
+  width: 100%;
+  max-width: 640px;
+  margin: 22px auto 0;
+  text-align: center;
+}
+
+.bottom-center-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
-@media (max-width: 959px) {
-  .artboard-bottom-grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    text-align: center;
-  }
+.bottom-quote-minimal {
+  max-width: 520px;
+  width: 100%;
+  padding: 0 12px;
+  text-align: center;
 }
 
-.bottom-left-quote {
-  position: relative;
-  text-align: left;
+.quote-text-clean {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  font-style: italic;
+  font-weight: 500;
+  color: #374151;
 }
 
-@media (max-width: 959px) {
-  .bottom-left-quote {
-    order: 2;
-    text-align: center;
-    max-width: 360px;
-  }
-}
-
-.quote-symbol {
+.quote-symbol-inline {
   font-family: Georgia, serif;
-  font-size: 2.4rem;
-  line-height: 1;
-  color: #111827;
-  margin-bottom: -8px;
+  font-size: 1.15rem;
+  color: #DC2626;
+  font-weight: 700;
 }
 
-.quote-text {
-  font-size: 0.85rem;
-  line-height: 1.42;
-}
-
-.quote-author {
-  font-size: 0.82rem;
+.quote-author-clean {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
 }
 
 .author-sub {
   font-size: 0.76rem;
+  font-weight: 500;
+}
+
+.quote-text {
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.quote-author {
+  font-size: 0.75rem;
+}
+
+.author-sub {
+  font-size: 0.72rem;
   font-weight: 500;
 }
 
@@ -821,11 +847,20 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  justify-self: center;
+  width: 100%;
 }
 
-@media (max-width: 959px) {
+.cta-interactive-group {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 100%;
+}
+
+@media (max-width: 1099px) {
   .bottom-center-cta {
-    order: 1;
+    grid-area: cta;
     width: 100%;
   }
 }
@@ -848,6 +883,10 @@ onUnmounted(() => {
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.btn-text {
+  white-space: nowrap;
+}
+
 .primary-highlighted-btn:hover {
   background: #B91C1C;
   transform: translateY(-3px) scale(1.03);
@@ -868,18 +907,17 @@ onUnmounted(() => {
     margin-bottom: 22px;
   }
 
-  .headline-container {
-    padding: 0 10px;
-  }
-
   .main-headline {
-    font-size: 1.85rem !important;
-    line-height: 1.2 !important;
-    letter-spacing: -0.025em !important;
+    font-size: clamp(2.75rem, 10.6vw, 3.35rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.035em !important;
   }
 
   .typewriter-line {
-    font-size: 0.9em !important;
+    font-size: clamp(1.65rem, 7vw, 2.1rem) !important;
+    line-height: 1.25 !important;
+    display: block !important;
+    margin-top: 6px !important;
   }
 
   .sub-headline {
@@ -908,30 +946,58 @@ onUnmounted(() => {
     right: 20px !important;
   }
 
+  .bottom-center-cta {
+    width: 100%;
+    padding: 0 4px;
+    box-sizing: border-box;
+  }
+
+  .cta-interactive-group {
+    width: 100%;
+  }
+
   .primary-highlighted-btn {
     width: 100%;
-    max-width: 320px;
-    padding: 14px 20px;
-    font-size: 0.88rem;
+    max-width: 100%;
+    padding: 14px 16px;
+    font-size: clamp(0.78rem, 3.8vw, 0.94rem);
+    letter-spacing: 0.03em;
+    gap: 6px;
+    box-sizing: border-box;
   }
 
-  .bottom-left-quote {
-    max-width: 320px;
-    margin: 0 auto;
+  .cta-status-badge {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    justify-content: center;
   }
 
-  .weekly-teaser-card {
-    max-width: 320px;
-    width: 100%;
-    margin: 0 auto;
+  .bottom-quote-minimal {
+    padding: 0 6px;
+  }
+
+  .quote-text-clean {
+    font-size: 0.85rem !important;
+    line-height: 1.45 !important;
   }
 }
 
 .cta-status-badge {
   background: #F3F4F6;
   border: 1px solid #E5E7EB;
-  padding: 3px 12px;
-  border-radius: 14px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.cta-status-badge:hover {
+  background: #E5E7EB;
+  border-color: #D1D5DB;
 }
 
 .pulse-green-dot {
@@ -947,71 +1013,5 @@ onUnmounted(() => {
   0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
   70% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
   100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
-}
-
-/* Weekly Teaser Card */
-.bottom-right-teaser {
-  display: flex;
-  justify-content: flex-end;
-}
-
-@media (max-width: 959px) {
-  .bottom-right-teaser {
-    order: 3;
-    justify-content: center;
-    width: 100%;
-  }
-}
-
-.weekly-teaser-card {
-  position: relative;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  border-radius: 18px;
-  padding: 12px 18px;
-  max-width: 260px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-}
-
-.weekly-teaser-card:hover {
-  transform: translateY(-2px);
-  border-color: #D1D5DB;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06) !important;
-}
-
-.teaser-meta {
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.teaser-num {
-  font-size: 1.45rem;
-  line-height: 1;
-  color: #111827;
-}
-
-.teaser-text {
-  font-size: 0.78rem;
-  line-height: 1.3;
-}
-
-.teaser-arrow-circle {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #111827;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: transform 0.2s ease;
-}
-
-.weekly-teaser-card:hover .teaser-arrow-circle {
-  transform: translateX(3px);
-  background: #DC2626;
 }
 </style>

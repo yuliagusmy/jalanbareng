@@ -11,7 +11,7 @@
             Komunitas
           </v-chip>
         </div>
-        <h2 class="text-h4 text-md-h3 font-weight-bold text-grey-darken-4 stories-heading">
+        <h2 class="text-h4 text-md-h3 section-headline stories-heading mb-1">
           Cerita Jalan Bareng
         </h2>
         <p class="text-body-2 text-md-body-1 text-grey-darken-1 mt-1 mb-0" style="max-width: 680px;">
@@ -46,127 +46,52 @@
     </div>
 
     <!-- Loading Skeleton -->
-    <v-row v-if="loading" dense>
-      <v-col cols="12" sm="6" md="4" v-for="i in 3" :key="i">
+    <div v-if="loading" class="stories-scroll-container">
+      <div v-for="i in 4" :key="i" class="story-scroll-item">
         <v-skeleton-loader type="card" height="420" rounded="xl"></v-skeleton-loader>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
 
-    <!-- Cards Grid (1 column on mobile, 2 columns on tablet, 3 columns on desktop) -->
-    <v-row v-else-if="stories.length > 0" class="stories-grid">
-      <v-col
-        v-for="(story, index) in stories"
+    <!-- Cards Scroll Row (Side-by-side with horizontal scroll) -->
+    <div v-else-if="stories.length > 0" class="stories-scroll-container">
+      <div
+        v-for="story in stories"
         :key="story.id"
-        cols="6"
-        sm="6"
-        :md="getColSpan(index, stories.length)"
+        class="story-scroll-item"
       >
         <div
-          class="story-card"
-          :class="`theme-${story.card_style || 'coral'}`"
+          class="story-card story-card-photo-full"
           @click="navigateTo(`/cerita/${story.slug}`)"
         >
-          <!-- Card Layout Option 1: Booklet / Report Card (Coral & Magenta) -->
-          <template v-if="story.card_style === 'coral' || story.card_style === 'magenta'">
-            <div class="card-inner-report">
-              <!-- Book / Booklet Mockup Center -->
-              <div class="book-mockup-wrapper">
-                <div class="book-mockup">
-                  <div class="book-spine"></div>
-                  <div class="book-cover">
-                    <div class="book-badge">
-                      <v-icon size="small" color="white">mdi-map-marker-path</v-icon>
-                      <span>Jalan Bareng</span>
-                    </div>
-                    <div class="book-cover-title">{{ story.title }}</div>
-                    <div class="book-cover-footer">
-                      <span>{{ story.author_name }}</span>
-                      <span>{{ formatDate(story.published_at) }}</span>
-                    </div>
+          <!-- Full Photo Card with Gradient Overlay (Card 4 Style) -->
+          <div class="card-inner-photo-full">
+            <v-img
+              :src="story.cover_image_url || 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=800&fit=crop'"
+              height="100%"
+              cover
+              class="full-bg-image"
+            >
+              <div class="full-photo-overlay">
+                <div class="photo-category-pill mb-auto">{{ getStoryCategory(story) }}</div>
+                <div class="card-text-container">
+                  <h3 class="card-headline text-white">{{ story.title }}</h3>
+                  <p class="card-subtext text-white" v-if="story.excerpt">
+                    {{ story.excerpt }}
+                  </p>
+                  <div class="card-footer-meta text-white">
+                    <span class="author-label">Oleh {{ story.author_name }}</span>
+                    <span class="read-more-link">
+                      Baca Cerita
+                      <v-icon size="small">mdi-arrow-right</v-icon>
+                    </span>
                   </div>
                 </div>
               </div>
-
-              <!-- Card Title & Excerpt at Bottom -->
-              <div class="card-text-container">
-                <h3 class="card-headline text-white">{{ story.title }}</h3>
-                <p class="card-subtext text-white" v-if="story.excerpt">
-                  {{ story.excerpt }}
-                </p>
-                <div class="card-footer-meta text-white">
-                  <span class="author-label">Oleh {{ story.author_name }}</span>
-                  <span class="read-more-link">
-                    Baca Selengkapnya
-                    <v-icon size="small">mdi-arrow-right</v-icon>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </template>
-
-          <!-- Card Layout Option 2: Photo with Amber / Colored Lower Banner (Amber & Dark) -->
-          <template v-else-if="story.card_style === 'amber'">
-            <div class="card-inner-photo-split">
-              <!-- Photo Top Section -->
-              <div class="card-photo-box">
-                <v-img
-                  :src="story.cover_image_url || 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&fit=crop'"
-                  height="220"
-                  cover
-                  class="card-img-top"
-                >
-                  <div class="photo-category-pill">Catatan Lapangan</div>
-                </v-img>
-              </div>
-
-              <!-- Amber Solid Lower Section -->
-              <div class="card-amber-lower">
-                <h3 class="card-headline text-white">{{ story.title }}</h3>
-                <p class="card-subtext text-white" v-if="story.excerpt">
-                  {{ story.excerpt }}
-                </p>
-                <div class="card-footer-meta text-white">
-                  <span class="author-label">Oleh {{ story.author_name }}</span>
-                  <span class="read-more-link">
-                    Baca Cerita
-                    <v-icon size="small">mdi-arrow-right</v-icon>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </template>
-
-          <!-- Card Layout Option 3: Full Photo Card with Gradient Overlay -->
-          <template v-else>
-            <div class="card-inner-photo-full">
-              <v-img
-                :src="story.cover_image_url || 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=800&fit=crop'"
-                height="100%"
-                cover
-                class="full-bg-image"
-              >
-                <div class="full-photo-overlay">
-                  <div class="photo-category-pill mb-auto">Cerita Perjalanan</div>
-                  <div class="card-text-container">
-                    <h3 class="card-headline text-white">{{ story.title }}</h3>
-                    <p class="card-subtext text-white" v-if="story.excerpt">
-                      {{ story.excerpt }}
-                    </p>
-                    <div class="card-footer-meta text-white">
-                      <span class="author-label">Oleh {{ story.author_name }}</span>
-                      <span class="read-more-link">
-                        Baca Cerita
-                        <v-icon size="small">mdi-arrow-right</v-icon>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </v-img>
-            </div>
-          </template>
+            </v-img>
+          </div>
         </div>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
 
     <!-- Empty State -->
     <v-card v-else variant="tonal" rounded="xl" class="pa-8 text-center bg-grey-lighten-4">
@@ -178,58 +103,31 @@
       </v-btn>
     </v-card>
 
-    <!-- SUBMIT STORY CTA BANNER (Inserted Underneath Cards) -->
-    <v-card
-      elevation="0"
-      rounded="xl"
-      class="mt-8 pa-6 pa-md-8 registration-cta-banner"
-    >
-      <v-row align="center" justify="space-between">
-        <v-col cols="12" lg="7" md="7">
-          <div class="d-flex align-center ga-3 mb-2">
-            <v-avatar color="white" size="42" class="elevation-2">
-              <v-icon color="#2563EB" size="24">mdi-feather</v-icon>
-            </v-avatar>
-            <span class="text-subtitle-2 font-weight-bold text-white text-uppercase tracking-wider">
-              Ruang Kontribusi Pejalan
-            </span>
+    <!-- Compact Story Contribution Strip -->
+    <div class="story-invite-strip mt-5">
+      <div class="d-flex align-center justify-space-between ga-3 flex-nowrap">
+        <div class="d-flex align-center ga-3 min-w-0">
+          <div class="invite-icon-box">
+            <v-icon color="#DC2626" size="20">mdi-feather</v-icon>
           </div>
-          <h3 class="text-h5 text-md-h4 font-weight-bold text-white mb-2 banner-heading">
-            Punya Catatan & Cerita Menarik dari Trotoar Kotamu?
-          </h3>
-          <p class="text-body-1 text-white opacity-90 mb-0" style="max-width: 580px; line-height: 1.6;">
-            Bagikan refleksi jalan santai, kisah lorong kota, atau catatan riset pejalan kakimu. Setiap tulisan yang masuk akan dikurasi dan dipublikasikan di kanal Cerita Jalan Bareng.
-          </p>
-        </v-col>
-
-        <v-col cols="12" lg="5" md="5" class="text-md-right mt-4 mt-md-0">
-          <div class="cta-btn-group justify-start justify-md-end">
-            <v-btn
-              color="white"
-              size="large"
-              rounded="pill"
-              class="font-weight-bold px-6 text-primary elevation-4 cta-reg-btn"
-              @click="showSubmitDialog = true"
-            >
-              <v-icon start size="20">mdi-feather</v-icon>
-              Submit Tulisan Sekarang
-            </v-btn>
-
-            <v-btn
-              to="/cerita"
-              variant="outlined"
-              color="white"
-              size="large"
-              rounded="pill"
-              class="font-weight-bold px-5"
-            >
-              <v-icon start size="18">mdi-book-open-page-variant-outline</v-icon>
-              Baca Arsip Cerita
-            </v-btn>
+          <div class="invite-text-block min-w-0">
+            <div class="invite-title">Punya cerita dari trotoar kotamu?</div>
+            <div class="invite-subtitle">Bagikan refleksi & kisah pejalan kakimu</div>
           </div>
-        </v-col>
-      </v-row>
-    </v-card>
+        </div>
+
+        <v-btn
+          color="primary"
+          rounded="pill"
+          size="small"
+          class="font-weight-bold px-4 invite-action-btn flex-shrink-0"
+          @click="showSubmitDialog = true"
+        >
+          <v-icon start size="15" class="d-none d-sm-inline">mdi-pencil-plus-outline</v-icon>
+          <span>Kirim Tulisan</span>
+        </v-btn>
+      </div>
+    </div>
 
     <!-- Dialog Submit Story -->
     <SubmitStoryDialog
@@ -270,21 +168,31 @@ const formatDate = (dateStr: string) => {
   })
 }
 
+const getStoryCategory = (story: any) => {
+  if (story.category) return story.category
+  const t = (story.title || '').toLowerCase()
+  if (t.includes('report') || t.includes('riset') || t.includes('panduan')) return 'Riset & Advokasi'
+  if (t.includes('disabilitas') || t.includes('inklusi') || t.includes('akses')) return 'Inklusi Kota'
+  if (t.includes('panas') || t.includes('lorong') || t.includes('iklim') || t.includes('hijau')) return 'Catatan Lingkungan'
+  if (t.includes('denyut') || t.includes('sejarah') || t.includes('kota tua')) return 'Cerita Perjalanan'
+  return 'Cerita Komunitas'
+}
+
 const fetchStories = async () => {
   loading.value = true
   try {
     const res = await api.get('/stories', {
-      params: { limit: 3 }
+      params: { limit: 4 }
     })
     const fetched = res.data.stories || res.data.data || []
     if (fetched && fetched.length > 0) {
       stories.value = fetched
     } else {
-      stories.value = defaultDummyStories.slice(0, 3)
+      stories.value = defaultDummyStories.slice(0, 4)
     }
   } catch (err) {
     console.error('Failed to load community stories from API, using fallback:', err)
-    stories.value = defaultDummyStories.slice(0, 3)
+    stories.value = defaultDummyStories.slice(0, 4)
   } finally {
     loading.value = false
   }
@@ -297,7 +205,51 @@ onMounted(() => {
 
 <style scoped>
 .stories-heading {
-  letter-spacing: -0.5px;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.2 !important;
+}
+
+/* Scroll Container */
+.stories-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 4px 20px;
+  margin: 0 -4px;
+}
+
+.stories-scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.stories-scroll-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 9999px;
+}
+
+.stories-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+
+.stories-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(220, 38, 38, 0.4);
+}
+
+.story-scroll-item {
+  flex: 0 0 320px;
+  width: 320px;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 600px) {
+  .story-scroll-item {
+    flex: 0 0 260px;
+    width: 260px;
+  }
 }
 
 /* Card Container */
@@ -540,53 +492,101 @@ onMounted(() => {
   justify-content: space-between;
 }
 
-/* Registration CTA Banner */
-.registration-cta-banner {
-  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 50%, #4F46E5 100%);
-  box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.35);
-  position: relative;
-  overflow: hidden;
+/* Compact Story Contribution Strip */
+.story-invite-strip {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 12px 18px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
 }
 
-.registration-cta-banner::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 350px;
-  height: 350px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%);
-  pointer-events: none;
+.story-invite-strip:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.banner-heading {
-  word-break: break-word;
-  overflow-wrap: break-word;
+.invite-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.invite-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.invite-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #111827;
   line-height: 1.3;
 }
 
-.cta-btn-group {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
+.invite-subtitle {
+  font-size: 0.76rem;
+  color: #64748B;
+  line-height: 1.3;
 }
 
-.cta-reg-btn {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.cta-reg-btn:hover {
-  transform: scale(1.03);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+.invite-action-btn {
+  text-transform: none;
+  letter-spacing: 0.01em;
+  height: 34px !important;
 }
 
 /* Mobile 1-column layout refinements */
 @media (max-width: 600px) {
   .story-card {
-    height: 300px;
+    height: 310px;
+    border-radius: 16px;
+  }
+
+  .full-photo-overlay {
+    padding: 16px 14px;
+  }
+
+  .story-invite-strip {
+    padding: 10px 12px;
     border-radius: 14px;
+    margin-top: 14px !important;
+  }
+
+  .invite-icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .invite-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #111827;
+  }
+
+  .invite-subtitle {
+    font-size: 0.68rem;
+    color: #64748B;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .invite-action-btn {
+    height: 32px !important;
+    font-size: 0.74rem !important;
+    padding: 0 12px !important;
   }
 
   .card-inner-report {

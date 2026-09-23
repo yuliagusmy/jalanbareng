@@ -696,9 +696,24 @@ useSeoMeta({
     font-size: 0.95rem;
   }
 
+  .category-filters-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
   .filter-btn {
-    font-size: 0.8rem;
-    padding: 6px 14px;
+    font-size: 0.72rem !important;
+    min-height: 26px !important;
+    height: 26px !important;
+    padding: 0 10px !important;
+    gap: 4px;
+  }
+
+  .filter-btn :deep(.v-icon) {
+    font-size: 13px !important;
   }
 
   .featured-img-col {

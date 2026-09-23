@@ -183,6 +183,19 @@ const api = useApi()
 </script>
 
 <style>
+/* ==========================================================================
+   Design System Standards (DESIGN.md) - Typography Consistency
+   ========================================================================== */
+.section-headline,
+.stories-heading,
+.category-title,
+.section-title,
+.registration-heading {
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.2 !important;
+}
+
 /* Modern Header Styles - Scoped strictly to default layout */
 .default-layout .default-header {
   background: transparent !important;

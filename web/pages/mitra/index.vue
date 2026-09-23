@@ -131,61 +131,86 @@
           </div>
         </div>
 
-        <!-- Filter Chips -->
-        <div class="category-filters-wrapper d-flex align-center flex-wrap ga-2 mb-8">
-          <button
-            type="button"
-            :class="['filter-btn', { active: selectedCategory === 'all' }]"
-            @click="selectedCategory = 'all'"
-          >
-            Semua Sektor ({{ partnersList.length }})
-          </button>
-          <button
-            type="button"
-            :class="['filter-btn', { active: selectedCategory === 'brand' }]"
-            @click="selectedCategory = 'brand'"
-          >
-            <v-icon start size="16">mdi-tag-outline</v-icon>
-            Brand &amp; Sponsor
-          </button>
-          <button
-            type="button"
-            :class="['filter-btn', { active: selectedCategory === 'government' }]"
-            @click="selectedCategory = 'government'"
-          >
-            <v-icon start size="16">mdi-bank-outline</v-icon>
-            Pemerintah &amp; Kementerian
-          </button>
-          <button
-            type="button"
-            :class="['filter-btn', { active: selectedCategory === 'bumn' }]"
-            @click="selectedCategory = 'bumn'"
-          >
-            <v-icon start size="16">mdi-domain</v-icon>
-            BUMN &amp; Institusi
-          </button>
-          <button
-            type="button"
-            :class="['filter-btn', { active: selectedCategory === 'community' }]"
-            @click="selectedCategory = 'community'"
-          >
-            <v-icon start size="16">mdi-account-group-outline</v-icon>
-            Komunitas &amp; Media
-          </button>
+        <!-- Controls: Category Filters & View Mode Switcher -->
+        <div class="d-flex flex-column flex-md-row align-start align-md-center justify-space-between ga-4 mb-8">
+          <!-- Filter Chips -->
+          <div class="category-filters-wrapper d-flex align-center flex-wrap ga-2">
+            <button
+              type="button"
+              :class="['filter-btn', { active: selectedCategory === 'all' }]"
+              @click="selectedCategory = 'all'"
+            >
+              Semua Sektor ({{ partnersList.length }})
+            </button>
+            <button
+              type="button"
+              :class="['filter-btn', { active: selectedCategory === 'brand' }]"
+              @click="selectedCategory = 'brand'"
+            >
+              <v-icon start size="16">mdi-tag-outline</v-icon>
+              Brand &amp; Sponsor
+            </button>
+            <button
+              type="button"
+              :class="['filter-btn', { active: selectedCategory === 'government' }]"
+              @click="selectedCategory = 'government'"
+            >
+              <v-icon start size="16">mdi-bank-outline</v-icon>
+              Pemerintah &amp; Kementerian
+            </button>
+            <button
+              type="button"
+              :class="['filter-btn', { active: selectedCategory === 'bumn' }]"
+              @click="selectedCategory = 'bumn'"
+            >
+              <v-icon start size="16">mdi-domain</v-icon>
+              BUMN &amp; Institusi
+            </button>
+            <button
+              type="button"
+              :class="['filter-btn', { active: selectedCategory === 'community' }]"
+              @click="selectedCategory = 'community'"
+            >
+              <v-icon start size="16">mdi-account-group-outline</v-icon>
+              Komunitas &amp; Media
+            </button>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="view-mode-pill d-inline-flex align-center pa-1">
+            <button
+              type="button"
+              :class="['mode-toggle-btn', { active: displayMode === 'mixed' }]"
+              @click="displayMode = 'mixed'"
+              aria-label="Tampilan Kolase Dinamis"
+            >
+              <v-icon start size="15">mdi-view-dashboard-outline</v-icon>
+              Kolase (Mix)
+            </button>
+            <button
+              type="button"
+              :class="['mode-toggle-btn', { active: displayMode === 'tiered' }]"
+              @click="displayMode = 'tiered'"
+              aria-label="Tampilan Berdasarkan Tingkatan"
+            >
+              <v-icon start size="15">mdi-format-line-spacing</v-icon>
+              Tingkatan (Tier)
+            </button>
+          </div>
         </div>
 
-        <!-- Partners Grid -->
-        <v-row v-if="filteredPartners.length > 0" dense class="ma-n1">
+        <!-- MODE 1: KOLASE DINAMIS (MIX & MATCH) -->
+        <v-row v-if="displayMode === 'mixed' && filteredPartners.length > 0" dense class="ma-n1 align-center justify-center">
           <v-col
             v-for="partner in filteredPartners"
             :key="partner.id"
-            cols="3"
-            sm="2"
-            md="2"
+            :cols="getPartnerTier(partner) === 'large' ? 6 : getPartnerTier(partner) === 'small' ? 3 : 4"
+            :sm="getPartnerTier(partner) === 'large' ? 4 : getPartnerTier(partner) === 'small' ? 2 : 3"
+            :md="getPartnerTier(partner) === 'large' ? 3 : 2"
             class="pa-1"
           >
             <div class="partner-logo-item" @click="openPartnerDetail(partner)">
-              <div class="partner-logo-wrapper">
+              <div :class="['partner-logo-wrapper', `tier-${getPartnerTier(partner)}`]">
                 <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
                   <img
                     :src="partner.logo"
@@ -195,7 +220,7 @@
                     @error="failedLogos[partner.id] = true"
                   />
                 </div>
-                <div v-else class="partner-emblem" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
+                <div v-else :class="['partner-emblem', `emblem-${getPartnerTier(partner)}`]" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
                   <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
                     {{ partner.initial }}
                   </span>
@@ -204,6 +229,120 @@
             </div>
           </v-col>
         </v-row>
+
+        <!-- MODE 2: BERDASARKAN TINGKATAN (TIERED) -->
+        <div v-else-if="displayMode === 'tiered' && filteredPartners.length > 0">
+          <!-- Tier 1: Large / Mitra Utama -->
+          <div v-if="largePartners.length > 0" class="mb-8">
+            <div class="tier-section-header d-flex align-center ga-3 mb-4">
+              <span class="tier-badge tier-badge-large">👑 Mitra Utama &amp; Sponsor Besar</span>
+              <div class="tier-divider flex-grow-1"></div>
+            </div>
+            <v-row dense class="ma-n1 align-center justify-center">
+              <v-col
+                v-for="partner in largePartners"
+                :key="partner.id"
+                cols="6"
+                sm="4"
+                md="3"
+                class="pa-1"
+              >
+                <div class="partner-logo-item" @click="openPartnerDetail(partner)">
+                  <div class="partner-logo-wrapper tier-large">
+                    <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
+                      <img
+                        :src="partner.logo"
+                        :alt="partner.name"
+                        class="partner-logo-img"
+                        loading="lazy"
+                        @error="failedLogos[partner.id] = true"
+                      />
+                    </div>
+                    <div v-else class="partner-emblem emblem-large" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
+                      <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
+                        {{ partner.initial }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
+
+          <!-- Tier 2: Medium / Mitra Resmi -->
+          <div v-if="mediumPartners.length > 0" class="mb-8">
+            <div class="tier-section-header d-flex align-center ga-3 mb-4">
+              <span class="tier-badge tier-badge-medium">⭐ Mitra Resmi &amp; Institusi</span>
+              <div class="tier-divider flex-grow-1"></div>
+            </div>
+            <v-row dense class="ma-n1 align-center justify-center">
+              <v-col
+                v-for="partner in mediumPartners"
+                :key="partner.id"
+                cols="4"
+                sm="3"
+                md="2"
+                class="pa-1"
+              >
+                <div class="partner-logo-item" @click="openPartnerDetail(partner)">
+                  <div class="partner-logo-wrapper tier-medium">
+                    <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
+                      <img
+                        :src="partner.logo"
+                        :alt="partner.name"
+                        class="partner-logo-img"
+                        loading="lazy"
+                        @error="failedLogos[partner.id] = true"
+                      />
+                    </div>
+                    <div v-else class="partner-emblem emblem-medium" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
+                      <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
+                        {{ partner.initial }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
+
+          <!-- Tier 3: Small / Komunitas & Media -->
+          <div v-if="smallPartners.length > 0" class="mb-8">
+            <div class="tier-section-header d-flex align-center ga-3 mb-4">
+              <span class="tier-badge tier-badge-small">🤝 Komunitas &amp; Media Partner</span>
+              <div class="tier-divider flex-grow-1"></div>
+            </div>
+            <v-row dense class="ma-n1 align-center justify-center">
+              <v-col
+                v-for="partner in smallPartners"
+                :key="partner.id"
+                cols="3"
+                sm="2"
+                md="2"
+                class="pa-1"
+              >
+                <div class="partner-logo-item" @click="openPartnerDetail(partner)">
+                  <div class="partner-logo-wrapper tier-small">
+                    <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
+                      <img
+                        :src="partner.logo"
+                        :alt="partner.name"
+                        class="partner-logo-img"
+                        loading="lazy"
+                        @error="failedLogos[partner.id] = true"
+                      />
+                    </div>
+                    <div v-else class="partner-emblem emblem-small" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
+                      <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
+                        {{ partner.initial }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
+        </div>
 
         <!-- Empty Search State -->
         <div v-else class="empty-state-box text-center pa-12">
@@ -349,6 +488,7 @@ interface Partner {
   id: number
   name: string
   category: 'brand' | 'government' | 'bumn' | 'community'
+  tier?: 'large' | 'medium' | 'small'
   role: string
   collabType: string
   initial: string
@@ -740,33 +880,142 @@ const getCategoryLabel = (category: string) => {
   }
   return map[category] || 'Mitra'
 }
+
+// Display Mode: 'mixed' (Kolase Dinamis) vs 'tiered' (Tingkatan)
+const displayMode = ref<'mixed' | 'tiered'>('mixed')
+
+// Tier Mapping: Menentukan skala visual masing-masing partner
+const LARGE_PARTNER_IDS = new Set([1, 2, 6, 8, 9, 10, 17, 18])
+const SMALL_PARTNER_IDS = new Set([23, 24, 25, 26, 27, 28, 29, 30, 31, 32])
+
+const getPartnerTier = (partner: Partner): 'large' | 'medium' | 'small' => {
+  if (partner.tier) return partner.tier
+  if (LARGE_PARTNER_IDS.has(partner.id)) return 'large'
+  if (SMALL_PARTNER_IDS.has(partner.id)) return 'small'
+  return 'medium'
+}
+
+// Grouped partners for Tiered view
+const largePartners = computed(() => filteredPartners.value.filter(p => getPartnerTier(p) === 'large'))
+const mediumPartners = computed(() => filteredPartners.value.filter(p => getPartnerTier(p) === 'medium'))
+const smallPartners = computed(() => filteredPartners.value.filter(p => getPartnerTier(p) === 'small'))
 </script>
 
 <style scoped>
-/* New Partner Logo Grid Style */
+/* View Mode Switcher Pill */
+.view-mode-pill {
+  background: #F1F5F9;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+  display: inline-flex;
+}
+
+.mode-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748B;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mode-toggle-btn:hover {
+  color: #0F172A;
+}
+
+.mode-toggle-btn.active {
+  background: #FFFFFF;
+  color: #DC2626;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Tiered Section Headers */
+.tier-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.tier-badge-large {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.tier-badge-medium {
+  background: #F8FAFC;
+  color: #334155;
+  border: 1px solid #E2E8F0;
+}
+
+.tier-badge-small {
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #E2E8F0;
+}
+
+.tier-divider {
+  height: 1px;
+  background: #E2E8F0;
+}
+
+/* Partner Logo Grid Styles */
 .partner-logo-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px;
+  justify-content: center;
+  padding: 2px 4px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease;
 }
 
 .partner-logo-item:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px) scale(1.05);
 }
 
 .partner-logo-wrapper {
   width: 100%;
-  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  overflow: hidden;
+  background: transparent;
+  border: none;
+}
+
+/* Tier Sizing */
+.partner-logo-wrapper.tier-large {
+  height: 74px;
+}
+.partner-logo-wrapper.tier-large .partner-logo-img {
+  max-height: 58px;
+  max-width: 95%;
+}
+
+.partner-logo-wrapper.tier-medium {
+  height: 56px;
+}
+.partner-logo-wrapper.tier-medium .partner-logo-img {
+  max-height: 42px;
+  max-width: 90%;
+}
+
+.partner-logo-wrapper.tier-small {
+  height: 42px;
+}
+.partner-logo-wrapper.tier-small .partner-logo-img {
+  max-height: 28px;
+  max-width: 80%;
 }
 
 .partner-logo-box {
@@ -775,13 +1024,43 @@ const getCategoryLabel = (category: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 2px 4px;
+  background: transparent;
+  border: none;
 }
 
 .partner-logo-img {
-  max-width: 80%;
-  max-height: 80%;
+  width: auto;
+  height: auto;
   object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.partner-logo-item:hover .partner-logo-img {
+  transform: scale(1.05);
+}
+
+.partner-emblem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+.partner-emblem.emblem-large {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+}
+.partner-emblem.emblem-medium {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+.partner-emblem.emblem-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
 }
 
 .partner-name-simple {
@@ -970,39 +1249,6 @@ const getCategoryLabel = (category: string) => {
   border-color: #CBD5E1;
 }
 
-.partner-logo-wrapper {
-  height: 52px;
-  display: flex;
-  align-items: center;
-}
-
-.partner-logo-box {
-  height: 44px;
-  width: auto;
-  max-width: 170px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 4px 10px;
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-radius: 10px;
-  transition: all 0.2s ease;
-}
-
-.partner-card:hover .partner-logo-box {
-  background: #FFFFFF;
-  border-color: #CBD5E1;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.partner-logo-img {
-  height: 32px;
-  max-width: 145px;
-  width: auto;
-  object-fit: contain;
-  display: block;
-}
 
 .partner-emblem {
   width: 52px;
@@ -1162,9 +1408,24 @@ const getCategoryLabel = (category: string) => {
     font-size: 0.95rem;
   }
 
+  .category-filters-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
   .filter-btn {
-    font-size: 0.8rem;
-    padding: 6px 14px;
+    font-size: 0.72rem !important;
+    min-height: 26px !important;
+    height: 26px !important;
+    padding: 0 10px !important;
+    gap: 4px;
+  }
+
+  .filter-btn :deep(.v-icon) {
+    font-size: 13px !important;
   }
 }
 </style>

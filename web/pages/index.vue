@@ -5,7 +5,7 @@
       <EditorialCollageHero @scroll-to-registration="scrollToRegistration" />
 
       <!-- Stats Section -->
-      <HomeStatsSection :stats="stats" class="mt-8 mt-md-14" />
+      <HomeStatsSection :stats="stats" class="mt-4 mt-md-14" />
 
       <!-- Community Stories Section (Cerita Jalan Bareng) -->
       <HomeCommunityStoriesSection />
@@ -13,21 +13,18 @@
       <!-- Weekly Registration Hub (Drop Link Pendaftaran Pekan Ini) -->
       <WeeklyRegistrationHub />
 
-      <!-- Featured Activation Section -->
-      <HomeFeaturedActivationSection :featured-activation="featuredActivation" />
-
-      <!-- Explore by Category Section -->
+      <!-- Explore by Category Section (Temukan Destinasi Favoritmu) -->
       <HomeCategorySection :categories="destinationCategories" :loading="loadingCategories" />
 
-      <!-- Active Activations Grid -->
-      <HomeActiveActivationsSection :activations="activeActivations" />
+      <!-- Featured Activation Section (Aktivasi Unggulan - Top 3 Teraktif) -->
+      <HomeFeaturedActivationSection :activations="activationsList" />
 
       <!-- Purposeful Bottom CTA Section -->
       <v-card v-if="!authStore.isLoggedIn" elevation="0" rounded="xl" class="pa-5 pa-sm-8 pa-md-12 text-center border antislop-cta-card">
         <v-avatar color="#FACC15" size="64" class="mb-4 elevation-2">
           <v-icon size="36" color="#111827">mdi-foot-print</v-icon>
         </v-avatar>
-        <h2 :class="$vuetify.display.mobile ? 'text-h5' : 'text-h3'" class="text-white font-weight-bold mb-3">
+        <h2 :class="$vuetify.display.mobile ? 'text-h5' : 'text-h3'" class="text-white section-headline mb-3">
           Langkah Pertama Dimulai Bersama Kami
         </h2>
         <p :class="$vuetify.display.mobile ? 'text-body-2' : 'text-h6'" class="text-white mb-6 mb-md-8 mx-auto px-2 px-md-4"
@@ -70,7 +67,6 @@ import HomeStatsSection from '~/components/home/StatsSection.vue'
 import HomeCommunityStoriesSection from '~/components/home/CommunityStoriesSection.vue'
 import HomeFeaturedActivationSection from '~/components/home/FeaturedActivationSection.vue'
 import HomeCategorySection from '~/components/home/CategorySection.vue'
-import HomeActiveActivationsSection from '~/components/home/ActiveActivationsSection.vue'
 
 const { api } = useApi()
 const authStore = useAuthStore()
@@ -83,14 +79,13 @@ const scrollToRegistration = () => {
   }
 }
 
-const featuredActivation = ref(null)
-const activeActivations = ref([])
+const activationsList = ref<any[]>([])
 
 const stats = ref([
   { icon: 'mdi-account-multiple-check', value: '10.000+', label: 'Pendaftar Database', color: '#DC2626' },
   { icon: 'mdi-account-group', value: '1.000+', label: 'Anggota Aktif', color: '#111827' },
   { icon: 'mdi-handshake-outline', value: '80+', label: 'Mitra Strategis', color: '#D97706' },
-  { icon: 'mdi-calendar-check', value: '0', label: 'Agenda & Event', color: '#059669' },
+  { icon: 'mdi-calendar-check', value: '50+', label: 'Agenda & Event', color: '#059669' },
 ])
 
 const destinationCategories = ref([])
@@ -133,11 +128,8 @@ onMounted(async () => {
     // Filter active activations
     const active = activations.filter((a: any) => a.is_active)
 
-    // Set featured activation (prioritize is_featured, otherwise first active)
-    featuredActivation.value = active.find((a: any) => a.is_featured) || active[0]
-
-    // Set active activations (limit to 6)
-    activeActivations.value = active.slice(0, 6)
+    // Set activations list for featured section
+    activationsList.value = active
 
     // Dynamic events count for stats
     try {
@@ -215,6 +207,12 @@ onMounted(async () => {
 .hero-primary-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3) !important;
+}
+
+.section-headline {
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.2 !important;
 }
 
 .antislop-cta-card {

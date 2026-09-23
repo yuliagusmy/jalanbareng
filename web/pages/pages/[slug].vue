@@ -1001,4 +1001,13 @@ onMounted(() => {
   color: #DC2626;
   text-decoration: underline;
 }
+
+@media (max-width: 600px) {
+  .faq-header-box .v-chip {
+    font-size: 0.72rem !important;
+    min-height: 26px !important;
+    height: 26px !important;
+    padding: 0 8px !important;
+  }
+}
 </style>

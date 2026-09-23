@@ -7,7 +7,7 @@
           <p class="category-label text-overline text-primary font-weight-bold mb-2">
             JELAJAHI DESTINASI
           </p>
-          <h2 class="category-title text-h4 text-md-h3 font-weight-bold mb-4">
+          <h2 class="category-title text-h4 text-md-h3 section-headline mb-4">
             Temukan Destinasi<br>
             <span class="text-primary">Favoritmu</span>
           </h2>
@@ -33,28 +33,22 @@
       <v-col cols="12" md="8" lg="9">
         <div class="category-cards-wrapper">
           <!-- Loading State -->
-          <v-row v-if="loading" class="mx-n1">
-            <v-col
+          <div v-if="loading" class="category-scroll-container">
+            <div
               v-for="n in 6"
               :key="n"
-              cols="4"
-              sm="3"
-              md="2"
-              class="px-1"
+              class="category-scroll-item"
             >
               <v-skeleton-loader type="image, article" height="320"></v-skeleton-loader>
-            </v-col>
-          </v-row>
+            </div>
+          </div>
 
-          <!-- Category Cards -->
-          <v-row v-else class="mx-n1">
-            <v-col
-              v-for="category in categories.slice(0, 6)"
+          <!-- Category Cards (Side-by-side with horizontal scroll) -->
+          <div v-else class="category-scroll-container">
+            <div
+              v-for="category in categories"
               :key="category.id"
-              cols="4"
-              sm="3"
-              md="2"
-              class="px-1"
+              class="category-scroll-item"
             >
               <v-card
                 :to="`/destinations?category_id=${category.id}`"
@@ -73,8 +67,8 @@
                   </div>
                 </div>
               </v-card>
-            </v-col>
-          </v-row>
+            </div>
+          </div>
         </div>
       </v-col>
     </v-row>
@@ -95,6 +89,54 @@ const props = defineProps({
 </script>
 
 <style scoped>
+.category-title {
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.2 !important;
+}
+
+/* Category Scroll Container */
+.category-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 4px 16px;
+  margin: 0 -4px;
+}
+
+.category-scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.category-scroll-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 9999px;
+}
+
+.category-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+
+.category-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(220, 38, 38, 0.4);
+}
+
+.category-scroll-item {
+  flex: 0 0 160px;
+  width: 160px;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 600px) {
+  .category-scroll-item {
+    flex: 0 0 135px;
+    width: 135px;
+  }
+}
+
 /* Category Cards - Portrait Tall & Thin */
 .category-card {
   border-radius: 16px;
