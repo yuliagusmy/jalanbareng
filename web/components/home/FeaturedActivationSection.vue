@@ -288,7 +288,21 @@ const displayActivations = computed(() => {
 
 @media (max-width: 600px) {
   .card-img-wrapper {
-    height: 180px;
+    height: 135px;
+  }
+
+  .featured-item-card :deep(.v-card-text),
+  .featured-item-card > div.pa-5 {
+    padding: 14px 14px !important;
+  }
+
+  .card-title {
+    font-size: 0.95rem !important;
+  }
+
+  .card-desc {
+    font-size: 0.8rem !important;
+    margin-bottom: 10px !important;
   }
 }
 </style>

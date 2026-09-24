@@ -107,12 +107,12 @@
         <!-- Upcoming Events Tab -->
         <v-window-item value="upcoming">
           <div>
-            <!-- Events Grid -->
-            <v-row v-if="!loadingUpcoming && upcomingEvents.length > 0">
+            <!-- Events Grid (2 columns on mobile 390px) -->
+            <v-row v-if="!loadingUpcoming && upcomingEvents.length > 0" dense>
               <v-col
                 v-for="event in upcomingEvents"
                 :key="event.id"
-                cols="12"
+                cols="6"
                 sm="6"
                 md="4"
               >
@@ -133,41 +133,43 @@
                     <!-- Category Badge -->
                     <div class="event-tag-badge">
                       <span :class="['type-pill', event.type === 'walking' ? 'walking' : 'regular']">
-                        <v-icon start size="14">
+                        <v-icon start size="12">
                           {{ event.type === 'walking' ? 'mdi-walk' : 'mdi-calendar-text-outline' }}
                         </v-icon>
-                        {{ event.type === 'walking' ? 'Jalan Santai' : 'Tematik' }}
+                        {{ event.type === 'walking' ? 'Jalan' : 'Tematik' }}
                       </span>
                     </div>
                   </div>
 
                   <!-- Event Details Body -->
-                  <div class="pa-6 d-flex flex-column flex-grow-1">
+                  <div class="pa-2.5 pa-sm-4 d-flex flex-column flex-grow-1">
                     <!-- Date & Time Row -->
-                    <div class="d-flex align-center date-row mb-2">
-                      <v-icon size="16" color="#DC2626" class="mr-2">mdi-calendar-blank-outline</v-icon>
-                      <span class="date-text">{{ formatDate(event.date) }}</span>
+                    <div class="d-flex align-center date-row mb-1">
+                      <v-icon size="13" color="#DC2626" class="mr-1">mdi-calendar-blank-outline</v-icon>
+                      <span class="date-text text-truncate">{{ formatDate(event.date) }}</span>
                     </div>
 
                     <!-- Event Name -->
-                    <h3 class="card-title text-h6 font-weight-bold text-grey-darken-4 mb-2">
+                    <h3 class="card-title text-subtitle-2 text-sm-h6 font-weight-bold text-grey-darken-4 mb-1">
                       {{ event.name }}
                     </h3>
 
-                    <!-- Excerpt Description -->
-                    <p class="card-desc text-body-2 text-grey-darken-1 mb-4 flex-grow-1">
+                    <!-- Excerpt Description (shown on sm+) -->
+                    <p v-if="event.description" class="card-desc text-caption text-grey-darken-1 mb-2 d-none d-sm-block flex-grow-1">
                       {{ stripHtml(event.description) }}
                     </p>
+                    <div v-else class="flex-grow-1"></div>
 
                     <!-- Footer Details -->
-                    <div class="pt-3 border-top d-flex align-center justify-space-between mt-auto">
+                    <div class="pt-2 border-top d-flex align-center justify-space-between mt-auto">
                       <span class="status-indicator">
                         <span class="pulse-dot"></span>
-                        Pendaftaran Terbuka
+                        <span class="d-none d-sm-inline">Pendaftaran Terbuka</span>
+                        <span class="d-inline d-sm-none">Buka</span>
                       </span>
-                      <span class="action-link-text">
-                        Detail Jadwal
-                        <v-icon size="14" class="ml-1">mdi-arrow-right</v-icon>
+                      <span class="action-link-text ml-auto">
+                        Detail
+                        <v-icon size="13" class="ml-0.5">mdi-arrow-right</v-icon>
                       </span>
                     </div>
                   </div>
@@ -214,12 +216,12 @@
         <!-- Past Events Tab -->
         <v-window-item value="past">
           <div>
-            <!-- Events Grid -->
-            <v-row v-if="!loadingPast && pastEvents.length > 0">
+            <!-- Events Grid (2 columns on mobile 390px) -->
+            <v-row v-if="!loadingPast && pastEvents.length > 0" dense>
               <v-col
                 v-for="event in pastEvents"
                 :key="event.id"
-                cols="12"
+                cols="6"
                 sm="6"
                 md="4"
               >
@@ -240,36 +242,37 @@
                     <!-- Category Badge -->
                     <div class="event-tag-badge">
                       <span class="type-pill completed">
-                        <v-icon start size="14">mdi-check</v-icon>
+                        <v-icon start size="12">mdi-check</v-icon>
                         Selesai
                       </span>
                     </div>
                   </div>
 
                   <!-- Event Details Body -->
-                  <div class="pa-6 d-flex flex-column flex-grow-1">
+                  <div class="pa-2.5 pa-sm-4 d-flex flex-column flex-grow-1">
                     <!-- Date & Time Row -->
-                    <div class="d-flex align-center date-row mb-2">
-                      <v-icon size="16" color="grey" class="mr-2">mdi-calendar-check-outline</v-icon>
-                      <span class="date-text text-grey">{{ formatDate(event.date) }}</span>
+                    <div class="d-flex align-center date-row mb-1">
+                      <v-icon size="13" color="grey" class="mr-1">mdi-calendar-check-outline</v-icon>
+                      <span class="date-text text-grey text-truncate">{{ formatDate(event.date) }}</span>
                     </div>
 
                     <!-- Event Name -->
-                    <h3 class="card-title text-h6 font-weight-bold text-grey-darken-3 mb-2">
+                    <h3 class="card-title text-subtitle-2 text-sm-h6 font-weight-bold text-grey-darken-3 mb-1">
                       {{ event.name }}
                     </h3>
 
-                    <!-- Excerpt Description -->
-                    <p class="card-desc text-body-2 text-grey-darken-1 mb-4 flex-grow-1">
+                    <!-- Excerpt Description (shown on sm+) -->
+                    <p v-if="event.description" class="card-desc text-caption text-grey-darken-1 mb-2 d-none d-sm-block flex-grow-1">
                       {{ stripHtml(event.description) }}
                     </p>
+                    <div v-else class="flex-grow-1"></div>
 
                     <!-- Footer Details -->
-                    <div class="pt-3 border-top d-flex align-center justify-space-between mt-auto">
-                      <span class="text-caption text-grey">Dokumentasi Arsip</span>
-                      <span class="action-link-text text-grey-darken-2">
-                        Lihat Rangkuman
-                        <v-icon size="14" class="ml-1">mdi-arrow-right</v-icon>
+                    <div class="pt-2 border-top d-flex align-center justify-space-between mt-auto">
+                      <span class="text-caption text-grey d-none d-sm-inline">Dokumentasi Arsip</span>
+                      <span class="action-link-text text-grey-darken-2 ml-auto">
+                        Rangkuman
+                        <v-icon size="13" class="ml-0.5">mdi-arrow-right</v-icon>
                       </span>
                     </div>
                   </div>
@@ -305,48 +308,54 @@
       </v-window>
 
       <!-- Walk Participation Guide (Antislop: Honest & Editorial) -->
-      <section class="mt-16">
-        <div class="guide-card pa-8 pa-md-12">
-          <div class="text-center max-w-xl mx-auto mb-10">
-            <div class="d-inline-flex align-center ga-1 text-caption font-weight-bold text-primary-red text-uppercase tracking-wider mb-2">
+      <section class="mt-8 mt-md-14">
+        <div class="guide-card pa-4 pa-sm-8 pa-md-10">
+          <div class="text-center max-w-xl mx-auto mb-5 mb-md-8">
+            <div class="d-inline-flex align-center ga-1 text-caption font-weight-bold text-primary-red text-uppercase tracking-wider mb-1.5">
               <v-icon size="14" color="#DC2626">mdi-walk</v-icon>
               <span>ALUR PARTISIPASI</span>
             </div>
-            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-3">
+            <h2 class="guide-title font-weight-black text-grey-darken-4 mb-1.5">
               Cara Ikut Jalan Bareng
             </h2>
-            <p class="text-body-1 text-grey-darken-1 mb-0">
-              Kegiatan kami terbuka untuk siapa saja tanpa syarat rumit. Ikuti langkah sederhana ini untuk bergabung:
+            <p class="guide-subtitle text-grey-darken-1 mb-0">
+              Agenda komunitas kami terbuka dan ramah untuk siapa saja. Ikuti langkah sederhana ini untuk bergabung:
             </p>
           </div>
 
-          <v-row>
+          <v-row dense class="guide-steps-row">
             <v-col cols="12" md="4">
-              <div class="guide-step-card pa-6 h-100">
-                <div class="step-badge mb-4">1</div>
-                <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-2">Pilih Jadwal &amp; Rute</h3>
-                <p class="text-body-2 text-grey-darken-1 mb-0">
-                  Telusuri daftar event di atas dan temukan rute jalan santai yang cocok dengan waktu luangmu.
+              <div class="guide-step-card pa-3.5 pa-md-5 h-100">
+                <div class="d-flex d-md-block align-center ga-3 mb-2 mb-md-3">
+                  <div class="step-badge">1</div>
+                  <h3 class="step-title font-weight-bold text-grey-darken-4 mb-0 mb-md-2">Pilih Agenda Komunitas</h3>
+                </div>
+                <p class="step-desc text-grey-darken-1 mb-0">
+                  Telusuri daftar jalan santai rutin atau agenda aktivasi komunitas (diskusi buku, workshop kreatif, tur rute tematik) yang cocok dengan waktumu.
                 </p>
               </div>
             </v-col>
 
             <v-col cols="12" md="4">
-              <div class="guide-step-card pa-6 h-100">
-                <div class="step-badge mb-4">2</div>
-                <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-2">Daftar Tanpa Biaya</h3>
-                <p class="text-body-2 text-grey-darken-1 mb-0">
-                  Buka detail event untuk konfirmasi kehadiran melalui tautan formulir pendaftaran terbuka.
+              <div class="guide-step-card pa-3.5 pa-md-5 h-100">
+                <div class="d-flex d-md-block align-center ga-3 mb-2 mb-md-3">
+                  <div class="step-badge">2</div>
+                  <h3 class="step-title font-weight-bold text-grey-darken-4 mb-0 mb-md-2">Cek Detail &amp; Registrasi</h3>
+                </div>
+                <p class="step-desc text-grey-darken-1 mb-0">
+                  Buka detail event untuk konfirmasi kehadiran. Sebagian besar jalan santai 100% gratis, sementara untuk workshop atau edisi khusus berbayar, informasi HTM dan kuota tertera transparan.
                 </p>
               </div>
             </v-col>
 
             <v-col cols="12" md="4">
-              <div class="guide-step-card pa-6 h-100">
-                <div class="step-badge mb-4">3</div>
-                <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-2">Hadir &amp; Nikmati Waktu</h3>
-                <p class="text-body-2 text-grey-darken-1 mb-0">
-                  Kenakan pakaian santai serta sepatu jalan yang nyaman, dan nikmati interaksi hangat bersama warga pejalan.
+              <div class="guide-step-card pa-3.5 pa-md-5 h-100">
+                <div class="d-flex d-md-block align-center ga-3 mb-2 mb-md-3">
+                  <div class="step-badge">3</div>
+                  <h3 class="step-title font-weight-bold text-grey-darken-4 mb-0 mb-md-2">Hadir &amp; Nikmati Waktu</h3>
+                </div>
+                <p class="step-desc text-grey-darken-1 mb-0">
+                  Kenakan pakaian santai serta sepatu jalan yang nyaman, datang tepat waktu di titik kumpul, dan nikmati interaksi hangat bersama teman baru.
                 </p>
               </div>
             </v-col>
@@ -743,10 +752,38 @@ const stripHtml = (html: string) => {
   border-radius: 24px;
 }
 
+.guide-title {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.guide-subtitle {
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
 .guide-step-card {
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
   border-radius: 18px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.guide-step-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.06);
+}
+
+.step-title {
+  font-size: 1.05rem;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.step-desc {
+  font-size: 0.875rem;
+  line-height: 1.55;
 }
 
 .step-badge {
@@ -762,35 +799,114 @@ const stripHtml = (html: string) => {
   font-size: 1rem;
 }
 
-/* Responsive */
+/* Responsive (Mobile 390px Compact Standards) */
 @media (max-width: 600px) {
   .events-hero {
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 
   .hero-title {
-    font-size: 1.95rem;
+    font-size: clamp(1.65rem, 6.8vw, 2.15rem);
+    line-height: 1.15;
   }
 
   .hero-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 20px !important;
+  }
+
+  .filter-bar-card {
+    padding: 10px 12px !important;
+    border-radius: 16px;
+    margin-bottom: 20px !important;
+  }
+
+  .event-card {
+    border-radius: 14px;
   }
 
   .event-image-wrapper {
-    height: 175px;
+    height: 105px;
+  }
+
+  .card-title {
+    font-size: 0.825rem !important;
+    line-height: 1.3 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .date-text {
+    font-size: 0.68rem;
+  }
+
+  .type-pill {
+    font-size: 0.625rem;
+    padding: 2px 6px;
+  }
+
+  .status-indicator {
+    font-size: 0.68rem;
+  }
+
+  .action-link-text {
+    font-size: 0.72rem;
   }
 
   .tab-switcher-pill {
     width: 100%;
     justify-content: center;
+    padding: 3px;
   }
 
   .tab-pill-btn {
     flex: 1;
     justify-content: center;
-    padding: 7px 10px;
-    font-size: 0.78rem;
+    padding: 6px 8px;
+    font-size: 0.74rem;
+  }
+
+  .counter-badge {
+    font-size: 0.65rem;
+    padding: 1px 5px;
+  }
+
+  .guide-card {
+    border-radius: 16px;
+  }
+
+  .guide-title {
+    font-size: clamp(1.2rem, 4.8vw, 1.45rem);
+  }
+
+  .guide-subtitle {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .guide-step-card {
+    border-radius: 14px;
+    margin-bottom: 6px;
+  }
+
+  .step-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 0.825rem;
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-size: 0.875rem;
+  }
+
+  .step-desc {
+    font-size: 0.775rem;
+    line-height: 1.45;
   }
 }
 </style>

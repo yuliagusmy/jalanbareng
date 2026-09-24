@@ -68,9 +68,51 @@
 
 ### Border Radius
 - **Buttons & Pills**: 9999px (full pill).
-- **Cards & Containers**: 16–24px (rounded, not harsh).
-- **Small Elements (chips, badges)**: 8–12px.
+- **Cards & Containers**: 14–18px (mobile 390px) | 18–24px (desktop).
+- **Small Elements (chips, badges, thumbnails)**: 6–10px.
 - **No pill-radius uniformity**: radius varies by purpose (buttons pill-shaped, cards rounded-xl, inputs rounded-lg).
+
+---
+
+## Standar Tampilan Mobile 390px (Mobile 390px Compact Standards)
+
+Layar 390px (sekelas iPhone 14/15/16 Pro dan smartphone Android modern) adalah **viewport utama yang paling sering diakses pejalan kaki**. Halaman tidak boleh terasa "membengkak" dengan card raksasa yang memakan satu layar penuh atau teks yang tidak proporsional.
+
+### 1. Prinsip Utama "Compact & Scannable"
+- **Dilarang Card Raksasa (No Giant Cards)**: Kartu konten reguler pada mobile dilarang memakan tinggi layar vertikal lebih dari 260px tanpa scroll.
+- **Pola Grid 2-Kolom (`cols="6"`) untuk Katalog**: Halaman direktori (Aktivasi, Event, Destinasi, Cerita) **wajib menggunakan 2 kolom di layar mobile (`cols="6"` atau `grid-template-columns: repeat(2, 1fr)`)**, bukan 1 kolom penuh (`cols="12"`). Ini membuat katalog 3x lebih cepat di-scan dan terasa seperti aplikasi modern (native app feel).
+- **Horizontal Scroll Snap (`.events-hscroll`) untuk Konten Sekunder**: Section seperti "Event Mendatang", "Sorotan Pekan Ini", atau "Kategori Pilihan" di dalam halaman detail/beranda menggunakan horizontal scroll strip (lebar kartu 180px–200px) dengan `scroll-snap-type: x mandatory` dan scrollbar tersembunyi.
+
+### 2. Standar Tipografi Mobile 390px
+| Elemen | Ukuran di 390px | Weight & Line-height | Catatan |
+|---|---|---|---|
+| **H1 Hero Headline** | `clamp(2.2rem, 9.5vw, 2.75rem)` | 900, `line-height: 1.05`, `-0.035em` | Stacked 2 baris editorial |
+| **H2 Section Heading** | `clamp(1.2rem, 4.8vw, 1.45rem)` | 800, `line-height: 1.2`, `-0.02em` | Seragam di seluruh section |
+| **Section Subtitle** | `0.825rem - 0.875rem` | 400, `line-height: 1.45`, `#6B7280` | Ringkas, max 2 baris |
+| **Card Title (Grid 2-col)** | `0.825rem - 0.875rem` | 700, `line-height: 1.3`, `-webkit-line-clamp: 2` | Wajib clamp 2 baris |
+| **Body / Deskripsi** | `0.875rem (14px)` | 400, `line-height: 1.6`, `#374151` | Tidak bertele-tele |
+| **Meta & Captions** | `0.68rem - 0.75rem` | 500–600, `#9CA3AF` / `#6B7280` | Tanggal, jarak km, kota |
+
+### 3. Standar Padding, Margin & Radius Mobile 390px
+- **Container Padding**: `py-5 px-3` atau `py-5 py-md-10 px-4` (jangan gunakan `py-16` di mobile!).
+- **Card Padding**: Maksimal `pa-3` (12px) untuk kartu grid 2-kolom, atau `pa-4` (16px) untuk featured card tunggal. DILARANG menggunakan `pa-6` (24px) di layar mobile.
+- **Image Aspect Ratio & Height**:
+  - Grid 2-kolom: `aspect-ratio: 4 / 3` atau tinggi tetap `105px–115px`, `object-fit: cover`.
+  - Featured Card / Banner: tinggi maksimal `160px–170px`.
+  - Galeri Dokumentasi: `aspect-ratio: 1 / 1` (kotak 2-kolom seimbang), dilarang ada foto yang span 2 kolom di mobile.
+- **Card Border Radius**: `14px–16px` (halus dan proporsional terhadap ukuran kartu yang lebih kecil).
+
+### 4. Standar CTA Section di Mobile
+- **Wadah**: Background gradien brand `#DC2626` ke `#991B1B`.
+- **Padding**: `20px 16px` (bukan 40px+).
+- **Judul**: `1.15rem` (18px), font-weight 700.
+- **Subtitle**: `0.825rem` (13px), opacity 0.9.
+- **Tombol**: Pill shape, tinggi `36px`, font-size `0.8rem`, padding `0 16px`.
+
+### 5. Komponen Pendukung Mobile
+- **Chapter Quick Facts Bar**: Bar pill lonjong (`border-radius: 9999px`, background putih/surface, border halus) berisi ringkasan cepat: 📍 Kota • 🗓️ Jadwal • 🎟️ Gratis & Terbuka.
+- **Tag Status Selesai**: Chip kecil di pojok kartu arsip (`font-size: 0.65rem`, padding `2px 6px`).
+- **Date Badge Mengambang**: Badge tanggal kompak (`14px` day, `9px` month) di pojok kiri atas poster event.
 
 ---
 

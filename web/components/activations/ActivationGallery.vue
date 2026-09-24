@@ -1,87 +1,94 @@
 <template>
-  <v-row>
-    <v-col cols="12">
-      <h2 class="text-h4 font-weight-bold mb-4">Gallery Kegiatan</h2>
-    </v-col>
+  <div>
+    <!-- Gallery Header -->
+    <div class="gallery-header mb-4 mb-md-6">
+      <h3 class="gallery-title font-weight-bold">Dokumentasi Kegiatan</h3>
+      <p class="gallery-count text-grey-darken-1">{{ photoMedia.length }} foto</p>
+    </div>
 
-    <v-col cols="12">
-      <v-row>
-        <v-col
-          v-for="(item, index) in media"
-          :key="item.id"
-          cols="12"
-          sm="6"
-          md="4"
-        >
-          <!-- Photo -->
-          <v-card
-            v-if="item.type === 'photo' && item.file_url"
-            @click="openLightbox(index)"
-            class="gallery-item"
-            hover
-          >
-            <v-img
-              :src="getImageUrl(item.file_url)"
-              :alt="item.description"
-              aspect-ratio="1"
-              cover
-            >
-              <template v-slot:placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
-                  <v-progress-circular indeterminate color="grey-lighten-5" />
-                </v-row>
-              </template>
-            </v-img>
-            <v-card-text v-if="item.description" class="text-caption">
-              {{ item.description }}
-            </v-card-text>
-          </v-card>
+    <!-- Photo Grid: 2 col mobile, 3 col desktop -->
+    <div class="gallery-grid">
+      <div
+        v-for="(item, index) in displayedMedia"
+        :key="item.id"
+        class="gallery-cell"
+        :class="{ 'gallery-cell--wide': index === 0 }"
+        @click="openLightbox(index)"
+      >
+        <div class="gallery-img-wrapper">
+          <img
+            :src="getImageUrl(item.file_url)"
+            :alt="item.description || 'Dokumentasi kegiatan'"
+            class="gallery-img"
+            loading="lazy"
+          />
+          <div class="gallery-overlay">
+            <v-icon color="white" size="24">mdi-magnify-plus-outline</v-icon>
+          </div>
+        </div>
+      </div>
 
-          <!-- YouTube Video -->
-          <v-card v-else-if="item.type === 'youtube' && item.external_url">
-            <div class="video-container">
-              <iframe
-                :src="getYouTubeEmbedUrl(item.external_url)"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              />
-            </div>
-            <v-card-text v-if="item.description" class="text-caption">
-              {{ item.description }}
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-col>
+      <!-- YouTube videos -->
+      <div
+        v-for="item in videoMedia"
+        :key="item.id"
+        class="gallery-cell gallery-cell--video"
+      >
+        <div class="video-container">
+          <iframe
+            :src="getYouTubeEmbedUrl(item.external_url)"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Show More -->
+    <div v-if="photoMedia.length > 6" class="text-center mt-4">
+      <v-btn
+        variant="tonal"
+        rounded="pill"
+        size="small"
+        @click="showAll = !showAll"
+      >
+        {{ showAll ? 'Tampilkan lebih sedikit' : `Lihat semua ${photoMedia.length} foto` }}
+        <v-icon end size="16">{{ showAll ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+      </v-btn>
+    </div>
 
     <!-- Lightbox Dialog -->
-    <v-dialog v-model="lightboxOpen" max-width="90vw">
-      <v-card>
-        <v-card-text class="pa-0">
-          <v-img
-            v-if="currentMedia && currentMedia.file_url"
+    <v-dialog v-model="lightboxOpen" max-width="92vw" :max-height="'90vh'">
+      <v-card rounded="xl" class="overflow-hidden" style="background:#000">
+        <div class="lightbox-img-wrapper">
+          <img
+            v-if="currentMedia"
             :src="getImageUrl(currentMedia.file_url)"
             :alt="currentMedia.description"
-            max-height="80vh"
-            contain
+            class="lightbox-img"
           />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn icon @click="previousImage">
+        </div>
+        <p v-if="currentMedia?.description" class="pa-3 text-caption text-white text-center ma-0" style="background: rgba(0,0,0,0.6);">
+          {{ currentMedia.description }}
+        </p>
+        <!-- Controls -->
+        <div class="lightbox-controls">
+          <v-btn icon size="small" color="white" variant="text" @click="previousImage">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-btn icon @click="nextImage">
+          <span class="text-caption text-white">{{ currentIndex + 1 }} / {{ photoMedia.length }}</span>
+          <v-btn icon size="small" color="white" variant="text" @click="nextImage">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
-          <v-btn icon @click="lightboxOpen = false">
+          <v-btn icon size="small" color="white" variant="text" @click="lightboxOpen = false" class="ml-2">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-        </v-card-actions>
+        </div>
       </v-card>
     </v-dialog>
-  </v-row>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -96,21 +103,25 @@ const apiBase = config.public.apiBase
 
 const lightboxOpen = ref(false)
 const currentIndex = ref(0)
+const showAll = ref(false)
 
-const photoMedia = computed(() => {
-  return props.media.filter(m => m.type === 'photo' && m.file_url)
-})
+const photoMedia = computed(() =>
+  props.media.filter(m => m.type === 'photo' && m.file_url)
+)
 
-const currentMedia = computed(() => {
-  return photoMedia.value[currentIndex.value]
-})
+const videoMedia = computed(() =>
+  props.media.filter(m => m.type === 'youtube' && m.external_url)
+)
+
+const displayedMedia = computed(() =>
+  showAll.value ? photoMedia.value : photoMedia.value.slice(0, 6)
+)
+
+const currentMedia = computed(() => photoMedia.value[currentIndex.value])
 
 const openLightbox = (index: number) => {
-  const photoIndex = photoMedia.value.findIndex(m => m.id === props.media[index].id)
-  if (photoIndex !== -1) {
-    currentIndex.value = photoIndex
-    lightboxOpen.value = true
-  }
+  currentIndex.value = index
+  lightboxOpen.value = true
 }
 
 const nextImage = () => {
@@ -128,7 +139,6 @@ const getImageUrl = (url?: string) => {
 }
 
 const getYouTubeEmbedUrl = (url: string) => {
-  // Extract video ID from various YouTube URL formats
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
   const match = url.match(regExp)
   const videoId = match && match[2].length === 11 ? match[2] : null
@@ -137,27 +147,154 @@ const getYouTubeEmbedUrl = (url: string) => {
 </script>
 
 <style scoped>
-.gallery-item {
+.gallery-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.gallery-title {
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.gallery-count {
+  font-size: 0.8rem;
+}
+
+/* 2-column grid on mobile, 3-column on desktop */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 600px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+.gallery-cell {
   cursor: pointer;
-  transition: transform 0.2s;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #F3F4F6;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.gallery-item:hover {
-  transform: scale(1.02);
+@media (min-width: 600px) {
+  .gallery-cell {
+    border-radius: 14px;
+  }
 }
 
+.gallery-cell--wide {
+  /* On mobile keep uniform, on tablet+ allow wide */
+  grid-column: span 1;
+}
+
+@media (min-width: 960px) {
+  .gallery-cell--wide {
+    grid-column: span 2;
+    aspect-ratio: 2 / 1;
+  }
+}
+
+.gallery-cell--video {
+  aspect-ratio: 16 / 9;
+  grid-column: span 2;
+  cursor: default;
+}
+
+@media (min-width: 600px) {
+  .gallery-cell--video {
+    grid-column: span 1;
+  }
+}
+
+.gallery-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.gallery-cell:hover .gallery-img {
+  transform: scale(1.06);
+}
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease;
+}
+
+.gallery-cell:hover .gallery-overlay {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.gallery-overlay .v-icon {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.gallery-cell:hover .gallery-overlay .v-icon {
+  opacity: 1;
+}
+
+/* Video */
 .video-container {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 .video-container iframe {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
+}
+
+/* Lightbox */
+.lightbox-img-wrapper {
+  width: 100%;
+  max-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+}
+
+.lightbox-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.7);
 }
 </style>

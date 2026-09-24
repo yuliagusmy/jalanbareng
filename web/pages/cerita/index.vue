@@ -67,19 +67,19 @@
         </v-col>
       </v-row>
 
-      <!-- Stories Grid -->
-      <v-row v-else-if="stories.length > 0">
+      <!-- Stories Grid (2 columns on mobile 390px) -->
+      <v-row v-else-if="stories.length > 0" dense>
         <v-col
           v-for="story in stories"
           :key="story.id"
-          cols="12"
+          cols="6"
           sm="6"
           md="4"
         >
           <v-card
             rounded="xl"
-            elevation="2"
-            class="story-archive-card h-100 d-flex flex-column"
+            elevation="0"
+            class="story-archive-card h-100 d-flex flex-column border"
             :class="`border-theme-${story.card_style || 'coral'}`"
             @click="navigateTo(`/cerita/${story.slug}`)"
           >
@@ -91,30 +91,31 @@
               <v-img
                 v-if="story.cover_image_url"
                 :src="story.cover_image_url"
-                height="180"
-                cover
                 class="archive-img"
+                cover
               >
                 <div class="archive-pill">{{ story.author_name }}</div>
               </v-img>
-              <div v-else class="archive-placeholder-banner pa-6 d-flex align-center justify-center">
-                <v-icon size="48" color="white" style="opacity: 0.7;">mdi-book-open-page-variant</v-icon>
+              <div v-else class="archive-placeholder-banner pa-4 d-flex align-center justify-center">
+                <v-icon size="32" color="white" style="opacity: 0.7;">mdi-book-open-page-variant</v-icon>
               </div>
             </div>
 
-            <v-card-text class="pa-5 flex-grow-1 d-flex flex-column">
-              <div class="text-caption text-grey-darken-1 mb-2">
+            <v-card-text class="pa-2.5 pa-sm-4 flex-grow-1 d-flex flex-column">
+              <div class="text-caption text-grey-darken-1 mb-1" style="font-size: 0.68rem !important;">
                 {{ formatDate(story.published_at) }}
               </div>
-              <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-2 archive-title">
+              <h3 class="card-title text-subtitle-2 text-sm-h6 font-weight-bold text-grey-darken-4 mb-1 archive-title">
                 {{ story.title }}
               </h3>
-              <p class="text-body-2 text-grey-darken-2 mb-4 archive-excerpt flex-grow-1">
+              <p v-if="story.excerpt" class="text-caption text-grey-darken-2 mb-2 archive-excerpt d-none d-sm-block flex-grow-1">
                 {{ story.excerpt }}
               </p>
+              <div v-else class="flex-grow-1"></div>
 
-              <div class="d-flex align-center justify-space-between pt-3 border-t text-caption text-primary font-weight-bold">
-                <span>Baca Selengkapnya</span>
+              <div class="d-flex align-center justify-space-between pt-2 border-t text-caption text-primary font-weight-bold mt-auto">
+                <span class="d-none d-sm-inline">Baca Selengkapnya</span>
+                <span class="d-inline d-sm-none">Baca</span>
                 <v-icon size="small">mdi-arrow-right</v-icon>
               </div>
             </v-card-text>
@@ -250,19 +251,9 @@ onMounted(() => {
   max-width: 680px;
 }
 
-@media (max-width: 600px) {
-  .stories-hero {
-    padding-top: 32px;
-    padding-bottom: 32px;
-  }
-
-  .hero-title {
-    font-size: 1.95rem;
-  }
-
-  .hero-subtitle {
-    font-size: 0.95rem;
-  }
+.archive-img {
+  height: 170px;
+  width: 100%;
 }
 
 .story-archive-card {
@@ -288,12 +279,12 @@ onMounted(() => {
 
 .archive-pill {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 10px;
+  left: 10px;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   color: white;
-  padding: 3px 10px;
+  padding: 3px 8px;
   border-radius: 20px;
   font-size: 0.7rem;
   font-weight: 600;
@@ -313,5 +304,43 @@ onMounted(() => {
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .stories-hero {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.65rem, 6.8vw, 2.15rem);
+    line-height: 1.15;
+  }
+
+  .hero-subtitle {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 20px !important;
+  }
+
+  .story-archive-card {
+    border-radius: 14px !important;
+  }
+
+  .archive-img {
+    height: 105px !important;
+  }
+
+  .archive-pill {
+    top: 6px;
+    left: 6px;
+    padding: 2px 6px;
+    font-size: 0.625rem;
+  }
+
+  .archive-title {
+    font-size: 0.825rem !important;
+    line-height: 1.3 !important;
+  }
 }
 </style>

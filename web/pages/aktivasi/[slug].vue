@@ -29,9 +29,10 @@
               </a>
             </div>
 
-            <!-- Main Headline: Directly Activation Name as requested -->
+            <!-- Main Headline: Stacked 2-line editorial style -->
             <h1 class="hero-main-title font-weight-black text-grey-darken-4 mb-3 mb-md-4">
-              {{ activation.name }}
+              <span class="hero-title-line">{{ titleLine1 }}</span>
+              <span v-if="titleLine2" class="hero-title-line">{{ titleLine2 }}</span>
             </h1>
 
             <!-- Lead Copy -->
@@ -152,35 +153,53 @@
       </v-container>
     </section>
 
-    <v-container class="py-6 py-md-12">
-      <!-- 1. ABOUT SECTION (URUTAN 1) - Modern & Informative with Gallery -->
-      <div id="about-section" class="about-section mb-10 mb-md-16">
+    <v-container class="py-5 py-md-10">
+      <!-- Chapter Quick Facts Bar (Compact on 390px) -->
+      <div class="chapter-quick-bar mb-6 mb-md-10">
+        <div class="quick-fact-item">
+          <v-icon size="15" color="#DC2626">mdi-map-marker</v-icon>
+          <span>{{ activation.city || activation.name }}</span>
+        </div>
+        <div class="quick-fact-dot">•</div>
+        <div class="quick-fact-item">
+          <v-icon size="15" color="#059669">mdi-calendar-check</v-icon>
+          <span>Agenda Pekanan</span>
+        </div>
+        <div class="quick-fact-dot">•</div>
+        <div class="quick-fact-item">
+          <v-icon size="15" color="#D97706">mdi-account-group-outline</v-icon>
+          <span>Terbuka untuk Umum</span>
+        </div>
+      </div>
+
+      <!-- 1. ABOUT SECTION (URUTAN 1) -->
+      <div id="about-section" class="about-section mb-8 mb-md-14">
         <v-row>
           <v-col cols="12">
             <!-- About Header -->
-            <div class="mb-6 mb-md-12">
-              <h2 class="text-h4 text-md-h3 font-weight-bold mb-4 mb-md-6"
+            <div class="mb-4 mb-md-8">
+              <h2 class="section-heading font-weight-bold mb-2 mb-md-3"
                 :style="{ color: activation.color_theme || '#DC2626' }">
                 Tentang
               </h2>
-              <div class="about-content text-body-1 text-md-h6 font-weight-regular text-grey-darken-2 line-height-relaxed"
+              <div class="about-content text-body-1 font-weight-regular text-grey-darken-2"
                 v-html="activation.description"></div>
             </div>
 
             <!-- Gallery Integration -->
             <div v-if="activation.show_gallery && activation.media && activation.media.length > 0"
-              class="gallery-integration mt-8">
+              class="gallery-integration mt-6 mt-md-8">
               <ActivationGallery :media="activation.media" />
             </div>
           </v-col>
         </v-row>
       </div>
 
-      <!-- Featured Event Section -->
-      <div v-if="activation.featured_event" class="mb-10 mb-md-16">
-        <div class="text-center mb-8">
-          <h2 class="text-h3 font-weight-bold mb-3">Event Pilihan Minggu Ini</h2>
-          <p class="text-h6 text-grey-darken-1 font-weight-regular">Jangan lewatkan event menarik dari komunitas</p>
+      <!-- 2. FEATURED EVENT SECTION (Event Pilihan Minggu Ini) -->
+      <div v-if="activation.featured_event" class="featured-section mb-8 mb-md-14">
+        <div class="section-header-center text-center mb-4 mb-md-6">
+          <h2 class="section-heading font-weight-bold mb-1">Event Pilihan Minggu Ini</h2>
+          <p class="section-subtitle text-grey-darken-1">Jangan lewatkan agenda seru terdekat dari komunitas</p>
         </div>
 
         <v-card elevation="0" class="featured-event-card overflow-hidden" rounded="xl">
@@ -191,121 +210,211 @@
                   :src="`${apiBase}/storage/${activation.featured_event.poster}`" :alt="activation.featured_event.name"
                   class="featured-image" />
                 <div v-else class="featured-placeholder">
-                  <v-icon size="80" color="grey-lighten-1">mdi-calendar-star</v-icon>
+                  <v-icon size="56" color="grey-lighten-1">mdi-calendar-star</v-icon>
                 </div>
                 <div class="featured-overlay"></div>
                 <div class="featured-badge">
-                  <v-chip color="success" size="small">
-                    <v-icon start size="small">mdi-calendar-check</v-icon>
+                  <v-chip color="success" size="x-small" class="font-weight-bold">
+                    <v-icon start size="12">mdi-calendar-check</v-icon>
                     Mendatang
                   </v-chip>
                 </div>
               </div>
             </v-col>
             <v-col cols="12" md="6">
-              <v-card-text class="pa-6 pa-md-8">
-                <h3 class="text-h5 font-weight-bold mb-4">{{ activation.featured_event.name }}</h3>
+              <v-card-text class="pa-4 pa-sm-5 pa-md-6 d-flex flex-column justify-center h-100">
+                <h3 class="featured-card-title font-weight-bold mb-2">{{ activation.featured_event.name }}</h3>
 
-                <div class="d-flex align-center mb-3">
-                  <v-icon :color="activation.color_theme || 'primary'" class="mr-2">mdi-calendar</v-icon>
+                <div class="d-flex align-center mb-2 text-caption text-grey-darken-2">
+                  <v-icon size="14" :color="activation.color_theme || '#DC2626'" class="mr-1.5">mdi-calendar</v-icon>
                   <span>{{ formatDate(activation.featured_event.date) }}</span>
                 </div>
 
-                <p class="text-body-1 mb-6 text-grey-darken-1">
-                  {{ stripHtml(activation.featured_event.description)?.substring(0, 150) }}...
+                <p class="featured-card-desc mb-4 text-grey-darken-1">
+                  {{ stripHtml(activation.featured_event.description)?.substring(0, 130) }}...
                 </p>
 
-                <v-btn :color="activation.color_theme || 'primary'" size="large"
-                  :to="`/events/${activation.featured_event.id}`" rounded="pill" class="px-6" block variant="flat">
-                  Lihat Detail
-                  <v-icon end>mdi-arrow-right</v-icon>
-                </v-btn>
+                <div>
+                  <v-btn :color="activation.color_theme || '#DC2626'" size="small"
+                    :to="`/events/${activation.featured_event.id}`" rounded="pill" class="px-5 font-weight-bold" variant="flat">
+                    Lihat Detail
+                    <v-icon end size="14">mdi-arrow-right</v-icon>
+                  </v-btn>
+                </div>
               </v-card-text>
             </v-col>
           </v-row>
         </v-card>
       </div>
 
-      <!-- UPCOMING EVENTS SECTION - Moved here, limited to 3 -->
-      <div v-if="activation.upcoming_events && activation.upcoming_events.length > 0"
+      <!-- 3. UPCOMING EVENTS SECTION (Event Mendatang) -->
+      <div v-if="upcomingEvents && upcomingEvents.length > 0"
         id="upcoming-events"
-        class="upcoming-events-section mb-10 mb-md-16">
-        <div class="text-center mb-10">
-          <h2 class="text-h3 font-weight-bold mb-3">Event Mendatang</h2>
-          <p class="text-h6 text-grey-darken-1 font-weight-regular">Ikuti kegiatan seru bersama komunitas</p>
+        class="upcoming-events-section mb-8 mb-md-14">
+        <div class="section-header-row mb-3 mb-md-5">
+          <div>
+            <h2 class="section-heading font-weight-bold mb-0.5">Event Mendatang</h2>
+            <p class="section-subtitle text-grey-darken-1 mb-0">Ikuti kegiatan seru bersama komunitas</p>
+          </div>
+          <v-btn
+            :to="`/events?activation_id=${activation.id}`"
+            :color="activation.color_theme || '#DC2626'"
+            variant="tonal"
+            rounded="pill"
+            size="small"
+            class="flex-shrink-0 font-weight-bold"
+          >
+            Lihat semua
+            <v-icon end size="14">mdi-arrow-right</v-icon>
+          </v-btn>
         </div>
 
-        <v-row>
-          <v-col v-for="event in activation.upcoming_events.slice(0, 3)" :key="event.id" cols="12" sm="6" md="4">
+        <!-- Mobile: horizontal scroll strip (compact, touch-friendly) -->
+        <div class="events-hscroll d-flex d-md-none">
+          <div
+            v-for="event in upcomingEvents.slice(0, 6)"
+            :key="event.id"
+            class="event-strip-card"
+            @click="navigateTo(`/events/${event.id}`)"
+          >
+            <div class="event-strip-img-wrap">
+              <img v-if="event.poster"
+                :src="`${apiBase}/storage/${event.poster}`"
+                :alt="event.name"
+                class="event-strip-img"
+              />
+              <div v-else class="event-strip-placeholder">
+                <v-icon size="24" color="grey-lighten-1">mdi-walk</v-icon>
+              </div>
+              <div class="event-strip-date">
+                <span class="date-day-sm">{{ getDay(event.date) }}</span>
+                <span class="date-month-sm">{{ getMonth(event.date) }}</span>
+              </div>
+            </div>
+            <div class="event-strip-body">
+              <p class="event-strip-name">{{ event.name }}</p>
+              <p class="event-strip-date-text">{{ formatDate(event.date) }}</p>
+              <div class="d-flex align-center justify-space-between mt-2 pt-1 border-top-subtle">
+                <span class="text-caption text-grey font-weight-medium">Detail</span>
+                <v-icon size="14" color="#DC2626">mdi-arrow-right</v-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop: card grid -->
+        <v-row class="d-none d-md-flex">
+          <v-col v-for="event in upcomingEvents.slice(0, 3)" :key="event.id" cols="12" md="4">
             <v-card elevation="0" class="event-card-modern h-100" :to="`/events/${event.id}`" rounded="xl">
               <div class="event-image-wrapper-modern">
                 <img v-if="event.poster" :src="`${apiBase}/storage/${event.poster}`" :alt="event.name"
                   class="event-image" />
                 <div v-else class="event-placeholder">
-                  <v-icon size="64" color="grey-lighten-1">mdi-calendar</v-icon>
+                  <v-icon size="56" color="grey-lighten-1">mdi-calendar</v-icon>
                 </div>
                 <div class="event-overlay-modern"></div>
-
-                <!-- Date Badge -->
                 <div class="event-date-badge">
                   <div class="date-day">{{ getDay(event.date) }}</div>
                   <div class="date-month">{{ getMonth(event.date) }}</div>
                 </div>
-
-                <!-- Type Badge -->
                 <div class="event-type-badge">
                   <v-chip :color="event.type === 'walking' ? 'success' : activation.color_theme || 'primary'"
                     size="small" variant="flat">
-                    <v-icon start size="small">
-                      {{ event.type === 'walking' ? 'mdi-walk' : 'mdi-calendar' }}
-                    </v-icon>
+                    <v-icon start size="small">{{ event.type === 'walking' ? 'mdi-walk' : 'mdi-calendar' }}</v-icon>
                     {{ event.type === 'walking' ? 'Jalan Kaki' : 'Regular' }}
                   </v-chip>
                 </div>
               </div>
-
-              <v-card-text class="pa-6">
-                <h4 class="text-h6 font-weight-bold mb-3 event-title">{{ event.name }}</h4>
-
-                <div class="d-flex align-center text-grey-darken-1 mb-3">
-                  <v-icon size="small" class="mr-2">mdi-clock-outline</v-icon>
+              <v-card-text class="pa-4">
+                <h4 class="text-subtitle-1 font-weight-bold mb-2 event-title">{{ event.name }}</h4>
+                <div class="d-flex align-center text-grey-darken-1">
+                  <v-icon size="small" class="mr-1">mdi-clock-outline</v-icon>
                   <span class="text-caption">{{ formatDate(event.date) }}</span>
                 </div>
-
-                <p class="text-caption text-grey-darken-1 event-description mb-0">
-                  {{ stripHtml(event.description)?.substring(0, 80) }}...
-                </p>
               </v-card-text>
             </v-card>
           </v-col>
         </v-row>
+      </div>
 
-        <div class="text-center mt-8">
-          <v-btn :to="`/events?activation_id=${activation.id}`" :color="activation.color_theme || 'primary'"
-            size="x-large" rounded="pill" variant="flat" class="px-10">
-            Lihat Semua Event
-            <v-icon end>mdi-arrow-right</v-icon>
+      <!-- 4. PAST EVENTS SECTION (Kegiatan Selesai / Arsip Dokumentasi) -->
+      <div v-if="pastEvents && pastEvents.length > 0"
+        id="past-events"
+        class="past-events-section mb-8 mb-md-14">
+        <div class="section-header-row mb-3 mb-md-5">
+          <div>
+            <h2 class="section-heading font-weight-bold mb-0.5">Kegiatan Selesai</h2>
+            <p class="section-subtitle text-grey-darken-1 mb-0">Arsip edisi jalan dan dokumentasi bersama pejalan</p>
+          </div>
+          <v-chip size="small" variant="tonal" color="grey-darken-2" class="font-weight-medium">
+            {{ pastEvents.length }} Edisi
+          </v-chip>
+        </div>
+
+        <!-- 2-column compact grid on mobile & desktop -->
+        <div class="past-events-grid">
+          <div
+            v-for="event in pastEvents.slice(0, 6)"
+            :key="event.id"
+            class="past-event-card"
+            @click="navigateTo(`/events/${event.id}`)"
+          >
+            <div class="past-event-img-wrap">
+              <img
+                v-if="event.poster"
+                :src="`${apiBase}/storage/${event.poster}`"
+                :alt="event.name"
+                class="past-event-img"
+              />
+              <div v-else class="past-event-placeholder">
+                <v-icon size="24" color="grey-lighten-1">mdi-walk</v-icon>
+              </div>
+              <span class="past-status-tag">Selesai</span>
+            </div>
+            <div class="past-event-body">
+              <span class="past-event-date-chip">{{ formatDate(event.date) }}</span>
+              <h4 class="past-event-title">{{ event.name }}</h4>
+              <div v-if="event.distance || event.start_point" class="past-event-meta">
+                <span v-if="event.distance" class="mr-2">
+                  <v-icon size="11" class="mr-0.5">mdi-map-marker-distance</v-icon>{{ event.distance }} km
+                </span>
+                <span v-if="event.start_point" class="text-truncate">
+                  <v-icon size="11" class="mr-0.5">mdi-map-marker</v-icon>{{ event.start_point }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="pastEvents.length > 6" class="text-center mt-3 mt-md-4">
+          <v-btn
+            :to="`/events?activation_id=${activation.id}&status=past`"
+            variant="outlined"
+            rounded="pill"
+            size="small"
+            color="grey-darken-2"
+          >
+            Lihat Semua {{ pastEvents.length }} Kegiatan Selesai
+            <v-icon end size="14">mdi-arrow-right</v-icon>
           </v-btn>
         </div>
       </div>
 
-
-
-      <!-- Testimonials Section -->
+      <!-- 5. TESTIMONIALS SECTION -->
       <div v-if="activation.show_testimonials && activation.testimonials && activation.testimonials.length > 0"
-        class="mb-10 mb-md-16">
-        <div class="text-center mb-8">
-          <h2 class="text-h3 font-weight-bold mb-3">Kata Mereka</h2>
-          <p class="text-h6 text-grey-darken-1 font-weight-regular">Pengalaman dari peserta aktivitas kami</p>
+        class="testimonials-section mb-8 mb-md-14">
+        <div class="section-header-center text-center mb-4 mb-md-6">
+          <h2 class="section-heading font-weight-bold mb-1">Kata Mereka</h2>
+          <p class="section-subtitle text-grey-darken-1">Pengalaman dari kawan-kawan yang telah melangkah bersama</p>
         </div>
         <ActivationTestimonials :testimonials="activation.testimonials" />
       </div>
 
-      <!-- 4. FAQ SECTION - Adjusted Width -->
-      <div v-if="activation.show_faq && activation.faqs && activation.faqs.length > 0" class="mb-10 mb-md-16">
-        <div class="text-center mb-8">
-          <h2 class="text-h3 font-weight-bold mb-3">Pertanyaan Umum</h2>
-          <p class="text-h6 text-grey-darken-1 font-weight-regular">Temukan jawaban untuk pertanyaan Anda</p>
+      <!-- 6. FAQ SECTION -->
+      <div v-if="activation.show_faq && activation.faqs && activation.faqs.length > 0" class="faq-section mb-8 mb-md-14">
+        <div class="section-header-center text-center mb-4 mb-md-6">
+          <h2 class="section-heading font-weight-bold mb-1">Pertanyaan Umum</h2>
+          <p class="section-subtitle text-grey-darken-1">Jawaban seputar kegiatan dan cara bergabung</p>
         </div>
         <v-row>
           <v-col cols="12" md="10" lg="9" xl="8" class="mx-auto">
@@ -314,58 +423,48 @@
         </v-row>
       </div>
 
-      <!-- CTA Section -->
-      <v-card v-if="activation.cta_primary_label || activation.cta_secondary_label" elevation="0" rounded="xl"
-        class="pa-5 pa-sm-8 pa-md-12 text-center" :style="{
-          background: `linear-gradient(135deg, ${activation.color_theme || '#667eea'} 0%, ${darkenColor(activation.color_theme || '#764ba2', 20)} 100%)`
+      <!-- 7. CTA SECTION: Compact, balanced on mobile 390px -->
+      <div v-if="activation.social_instagram || activation.cta_primary_label" class="cta-section mb-4">
+        <div class="cta-inner" :style="{
+          background: `linear-gradient(135deg, ${activation.color_theme || '#DC2626'} 0%, ${darkenColor(activation.color_theme || '#991B1B', 25)} 100%)`
         }">
-        <v-icon size="56" color="white" class="mb-4">mdi-account-group</v-icon>
-        <h2 class="text-h5 text-md-h4 text-white font-weight-bold mb-3">
-          Siap Bergabung dengan {{ activation.name }}?
-        </h2>
-        <p class="text-body-1 text-md-h6 text-white mb-6 mb-md-8 mx-auto" style="opacity: 0.95; max-width: 580px; line-height: 1.6;">
-          Jangan lewatkan kesempatan untuk menjadi bagian dari komunitas kami
-        </p>
-        <div class="d-flex flex-column flex-sm-row flex-wrap justify-center align-center ga-3 ga-md-4">
-          <v-btn
-            v-if="activation.social_instagram"
-            :href="`https://instagram.com/${activation.social_instagram}`"
-            target="_blank"
-            rel="noopener noreferrer"
-            color="white"
-            rounded="pill"
-            class="activation-cta-btn font-weight-bold elevation-4"
-          >
-            <v-icon start size="20">mdi-instagram</v-icon>
-            <span class="cta-btn-text">Instagram @{{ activation.social_instagram }}</span>
-          </v-btn>
-          <v-btn
-            v-if="activation.cta_primary_label"
-            :href="activation.cta_primary_url"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="outlined"
-            color="white"
-            rounded="pill"
-            class="activation-cta-btn font-weight-bold"
-          >
-            <span class="cta-btn-text">{{ activation.cta_primary_label }}</span>
-            <v-icon end size="18">mdi-open-in-new</v-icon>
-          </v-btn>
-          <v-btn
-            v-if="activation.cta_secondary_label"
-            :href="activation.cta_secondary_url"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="text"
-            color="white"
-            rounded="pill"
-            class="activation-cta-btn"
-          >
-            <span class="cta-btn-text">{{ activation.cta_secondary_label }}</span>
-          </v-btn>
+          <div class="cta-content">
+            <v-icon size="28" color="white" class="mb-1.5">mdi-account-group</v-icon>
+            <h2 class="cta-title text-white font-weight-bold">Bergabung dengan {{ activation.name }}</h2>
+            <p class="cta-subtitle text-white">Jadilah bagian dari pejalan dan komunitas kami</p>
+          </div>
+          <div class="cta-actions">
+            <v-btn
+              v-if="activation.social_instagram"
+              :href="`https://instagram.com/${activation.social_instagram}`"
+              target="_blank"
+              rel="noopener noreferrer"
+              color="white"
+              rounded="pill"
+              size="small"
+              class="font-weight-bold cta-pill-btn"
+              elevation="1"
+            >
+              <v-icon start size="15" color="#E11D48">mdi-instagram</v-icon>
+              @{{ activation.social_instagram }}
+            </v-btn>
+            <v-btn
+              v-if="activation.cta_primary_label"
+              :href="activation.cta_primary_url"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="outlined"
+              color="white"
+              rounded="pill"
+              size="small"
+              class="cta-pill-btn"
+            >
+              {{ activation.cta_primary_label }}
+              <v-icon end size="13">mdi-open-in-new</v-icon>
+            </v-btn>
+          </div>
         </div>
-      </v-card>
+      </div>
     </v-container>
   </div>
 
@@ -520,6 +619,18 @@ const heroTitleLine2 = computed(() => {
   return activation.value?.name || 'Jalan Bareng'
 })
 
+const titleLine1 = computed(() => {
+  if (!activation.value?.name) return ''
+  const words = activation.value.name.trim().split(/\s+/)
+  return words.slice(0, 2).join(' ')
+})
+
+const titleLine2 = computed(() => {
+  if (!activation.value?.name) return ''
+  const words = activation.value.name.trim().split(/\s+/)
+  return words.slice(2).join(' ')
+})
+
 const heroDescription = computed(() => {
   if (activation.value?.tagline) {
     return activation.value.tagline
@@ -528,6 +639,29 @@ const heroDescription = computed(() => {
     return 'Berbagi kesenangan menyusuri sudut-sudut kota dengan berjalan kaki sambil menyapa wajah-wajah baru tanpa beban ekspektasi. Gerakan ruang bersama yang telah berdenyut dan melangkah bersama selama lebih dari dua tahun di Makassar.'
   }
   return stripHtml(activation.value?.description || '').substring(0, 180) + '...'
+})
+
+// Computed upcoming & past events with fallback to full events array
+const upcomingEvents = computed(() => {
+  if (activation.value?.upcoming_events && activation.value.upcoming_events.length > 0) {
+    return activation.value.upcoming_events
+  }
+  if (activation.value?.events && activation.value.events.length > 0) {
+    const now = new Date()
+    return activation.value.events.filter((e: any) => new Date(e.date) >= now)
+  }
+  return []
+})
+
+const pastEvents = computed(() => {
+  if (activation.value?.past_events && activation.value.past_events.length > 0) {
+    return activation.value.past_events
+  }
+  if (activation.value?.events && activation.value.events.length > 0) {
+    const now = new Date()
+    return activation.value.events.filter((e: any) => new Date(e.date) < now)
+  }
+  return []
 })
 
 
@@ -677,17 +811,18 @@ useSeoMeta({
   text-transform: uppercase;
 }
 
-/* Headline: Match Tentang section heading size */
+/* Headline: editorial stacked words — big on every screen */
 .hero-main-title {
-  font-size: clamp(1.75rem, 5.5vw, 2.5rem);
-  font-weight: 800 !important;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
+  font-weight: 900 !important;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
   color: #111827;
 }
 
-.hero-main-title .title-line {
-  letter-spacing: -0.035em;
+.hero-title-line {
+  display: block;
+  font-size: clamp(3rem, 12vw, 5rem);
+  line-height: 1.05;
 }
 
 /* Lead text */
@@ -908,11 +1043,6 @@ useSeoMeta({
     padding: 28px 0 40px 0;
   }
 
-  .hero-main-title {
-    font-size: 2rem;
-    line-height: 1.12;
-  }
-
   .activation-hero-collage {
     margin-top: 32px;
     max-width: 480px;
@@ -938,10 +1068,8 @@ useSeoMeta({
     padding: 20px 0 24px 0;
   }
 
-  .hero-main-title {
-    font-size: clamp(1.5rem, 6vw, 1.85rem);
-    line-height: 1.15;
-  }
+  /* hero-main-title intentionally not overridden here — clamp(2.75rem, 9vw, 3.5rem)
+     naturally forces "Jalan", "Bareng", "Makassar" each to its own line at 390px */
 
   .hero-lead-text {
     font-size: 0.92rem;
@@ -970,6 +1098,42 @@ useSeoMeta({
     font-size: 0.875rem !important;
     height: 40px !important;
     padding: 0 16px !important;
+  }
+
+  .featured-image-wrapper {
+    height: 200px;
+  }
+
+  .event-image-wrapper-modern {
+    height: 160px;
+  }
+
+  .upcoming-events-section {
+    padding: 16px 0;
+  }
+}
+
+/* Section headings – consistent across all content blocks */
+.section-heading {
+  font-size: clamp(1.35rem, 5vw, 2.125rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: #111827;
+}
+
+.section-subtitle {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #64748B;
+}
+
+@media (min-width: 960px) {
+  .section-heading {
+    font-size: 2.125rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.25rem;
   }
 }
 
@@ -1411,5 +1575,356 @@ useSeoMeta({
 .about-content :deep(p) {
   margin-bottom: 1.25rem;
   line-height: 1.85;
+}
+
+/* Chapter Quick Facts Bar (Mobile Friendly) */
+.chapter-quick-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.quick-fact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.quick-fact-dot {
+  color: #D1D5DB;
+  font-size: 0.8rem;
+}
+
+/* Section Header Layouts */
+.section-header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-header-center {
+  max-width: 580px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.featured-card-title {
+  font-size: 1.1rem;
+  line-height: 1.3;
+  color: #111827;
+}
+
+@media (min-width: 600px) {
+  .featured-card-title {
+    font-size: 1.35rem;
+  }
+}
+
+.featured-card-desc {
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+/* Horizontal Scroll Strip for Upcoming Events on Mobile */
+.events-hscroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 2px 14px 2px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.events-hscroll::-webkit-scrollbar {
+  display: none;
+}
+
+.event-strip-card {
+  flex: 0 0 190px;
+  scroll-snap-align: start;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-strip-card:active {
+  transform: scale(0.98);
+}
+
+.event-strip-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 105px;
+  background: #F3F4F6;
+  overflow: hidden;
+}
+
+.event-strip-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.event-strip-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F3F4F6;
+}
+
+.event-strip-date {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  padding: 3px 6px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  line-height: 1;
+}
+
+.date-day-sm {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.date-month-sm {
+  display: block;
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #DC2626;
+  text-transform: uppercase;
+}
+
+.event-strip-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.event-strip-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.event-strip-date-text {
+  font-size: 0.72rem;
+  color: #6B7280;
+  margin-bottom: 0;
+}
+
+.border-top-subtle {
+  border-top: 1px solid #F3F4F6;
+}
+
+/* Past Events Grid (Arsip Kegiatan Selesai) */
+.past-events-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 600px) {
+  .past-events-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (min-width: 960px) {
+  .past-events-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
+.past-event-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.past-event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.past-event-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #F3F4F6;
+  overflow: hidden;
+}
+
+.past-event-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.past-event-card:hover .past-event-img {
+  transform: scale(1.05);
+}
+
+.past-event-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F3F4F6;
+}
+
+.past-status-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(4px);
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.03em;
+}
+
+.past-event-body {
+  padding: 9px 10px 11px 10px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.past-event-date-chip {
+  font-size: 0.68rem;
+  color: #6B7280;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.past-event-title {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.past-event-meta {
+  display: flex;
+  align-items: center;
+  font-size: 0.68rem;
+  color: #9CA3AF;
+  margin-top: auto;
+}
+
+/* CTA Section (Siap Bergabung - Compact on 390px) */
+.cta-section {
+  width: 100%;
+}
+
+.cta-inner {
+  border-radius: 18px;
+  padding: 22px 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.16);
+}
+
+@media (min-width: 600px) {
+  .cta-inner {
+    border-radius: 24px;
+    padding: 36px 32px;
+  }
+}
+
+.cta-title {
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+@media (min-width: 600px) {
+  .cta-title {
+    font-size: 1.6rem;
+  }
+}
+
+.cta-subtitle {
+  font-size: 0.825rem;
+  opacity: 0.92;
+  margin-bottom: 16px;
+  line-height: 1.45;
+}
+
+@media (min-width: 600px) {
+  .cta-subtitle {
+    font-size: 1rem;
+    margin-bottom: 22px;
+  }
+}
+
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cta-pill-btn {
+  height: 36px !important;
+  font-size: 0.8rem !important;
+  padding: 0 16px !important;
+  letter-spacing: 0.01em;
 }
 </style>

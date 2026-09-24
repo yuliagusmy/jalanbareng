@@ -282,8 +282,8 @@
           </div>
         </div>
 
-        <!-- Grid Cards -->
-        <v-row v-if="!loading && destinations.length > 0">
+        <!-- Grid Cards (2 columns on mobile 390px) -->
+        <v-row v-if="!loading && destinations.length > 0" dense>
           <v-col v-for="destination in destinations" :key="destination.id" cols="6" sm="6" md="3">
             <v-card elevation="0" class="destination-card h-100" :to="`/destinations/${destination.id}`">
               <div class="card-header-img-wrapper">
@@ -296,24 +296,24 @@
                 </div>
               </div>
 
-              <div class="pa-4">
-                <h4 class="card-title text-subtitle-1 font-weight-bold text-grey-darken-4 mb-2">
+              <div class="pa-2.5 pa-sm-4">
+                <h4 class="card-title text-subtitle-2 text-sm-subtitle-1 font-weight-bold text-grey-darken-4 mb-1">
                   {{ destination.name }}
                 </h4>
 
-                <div class="d-flex align-center justify-space-between">
-                  <div class="d-flex align-center ga-3">
+                <div class="d-flex align-center justify-space-between pt-1">
+                  <div class="d-flex align-center ga-2">
                     <span class="stat-chip">
-                      <v-icon size="14" color="#DC2626" class="mr-1">mdi-heart</v-icon>
+                      <v-icon size="12" color="#DC2626" class="mr-0.5">mdi-heart</v-icon>
                       {{ destination.likes_count || 0 }}
                     </span>
                     <span class="stat-chip">
-                      <v-icon size="14" color="#6B7280" class="mr-1">mdi-comment-outline</v-icon>
+                      <v-icon size="12" color="#6B7280" class="mr-0.5">mdi-comment-outline</v-icon>
                       {{ destination.comments_count || 0 }}
                     </span>
                   </div>
                   <span class="action-link-text">
-                    <v-icon size="14">mdi-arrow-right</v-icon>
+                    <v-icon size="13">mdi-arrow-right</v-icon>
                   </span>
                 </div>
               </div>
@@ -890,32 +890,86 @@ onMounted(() => {
   border-radius: 20px;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness (Compact 390px Standards) */
 @media (max-width: 600px) {
   .destinations-hero {
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 
   .hero-title {
-    font-size: 1.95rem;
+    font-size: clamp(1.65rem, 6.8vw, 2.15rem);
+    line-height: 1.15;
   }
 
   .hero-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 20px !important;
+  }
+
+  .category-filters-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding: 2px 4px 8px 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .category-filters-wrapper::-webkit-scrollbar {
+    display: none;
   }
 
   .filter-btn {
-    font-size: 0.8rem;
-    padding: 6px 14px;
+    font-size: 0.74rem !important;
+    min-height: 30px !important;
+    height: 30px !important;
+    padding: 0 12px !important;
+    flex-shrink: 0;
+  }
+
+  .search-filter-bar {
+    padding: 10px 12px !important;
+    border-radius: 16px;
+    margin-bottom: 18px !important;
+  }
+
+  .destination-card {
+    border-radius: 14px;
   }
 
   .card-header-img-wrapper {
-    height: 160px;
+    height: 105px;
+  }
+
+  .card-title {
+    font-size: 0.825rem !important;
+    line-height: 1.3 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .category-pill-solid {
+    font-size: 0.625rem;
+    padding: 2px 6px;
+  }
+
+  .stat-chip {
+    font-size: 0.68rem;
+  }
+
+  .action-link-text {
+    font-size: 0.72rem;
   }
 
   .map-embed-wrapper {
-    height: 380px;
+    height: 280px;
   }
 }
 </style>

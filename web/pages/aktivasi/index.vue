@@ -108,33 +108,33 @@
                   </div>
                 </v-col>
                 <v-col cols="12" sm="7" class="d-flex flex-column">
-                  <div class="pa-6 d-flex flex-column h-100">
-                    <div class="d-flex align-center justify-space-between mb-2">
+                  <div class="pa-3.5 pa-sm-6 d-flex flex-column h-100">
+                    <div class="d-flex align-center justify-space-between mb-1.5">
                       <span class="category-pill">
                         {{ getCategoryLabel(activation.category) }}
                       </span>
                       <span v-if="activation.city" class="city-indicator">
-                        <v-icon size="14" class="mr-1 text-grey">mdi-map-marker-outline</v-icon>
+                        <v-icon size="13" class="mr-0.5 text-grey">mdi-map-marker-outline</v-icon>
                         {{ activation.city }}
                       </span>
                     </div>
 
-                    <h3 class="card-title text-h5 font-weight-bold text-grey-darken-4 mb-2">
+                    <h3 class="featured-card-heading font-weight-bold text-grey-darken-4 mb-1">
                       {{ activation.name }}
                     </h3>
 
-                    <p v-if="activation.tagline" class="card-desc text-body-2 text-grey-darken-1 mb-4">
+                    <p v-if="activation.tagline" class="card-desc text-caption text-grey-darken-1 mb-3">
                       {{ activation.tagline }}
                     </p>
 
-                    <div class="mt-auto pt-3 border-top d-flex align-center justify-space-between">
+                    <div class="mt-auto pt-2 border-top d-flex align-center justify-space-between">
                       <span class="event-count-text">
-                        <v-icon size="16" class="mr-1 text-grey-darken-1">mdi-calendar-outline</v-icon>
-                        {{ activation.events_count || 0 }} Agenda Jalan
+                        <v-icon size="14" class="mr-1 text-grey-darken-1">mdi-calendar-outline</v-icon>
+                        {{ activation.events_count || 0 }} Agenda
                       </span>
                       <span class="action-link-text">
                         Lihat Profil
-                        <v-icon size="16" class="ml-1">mdi-arrow-right</v-icon>
+                        <v-icon size="14" class="ml-0.5">mdi-arrow-right</v-icon>
                       </span>
                     </div>
                   </div>
@@ -156,12 +156,12 @@
           </div>
         </div>
 
-        <!-- Grid Cards -->
-        <v-row v-if="!loading && filteredActivations.length > 0">
+        <!-- Grid Cards (2 columns on mobile 390px) -->
+        <v-row v-if="!loading && filteredActivations.length > 0" dense>
           <v-col
             v-for="activation in filteredActivations"
             :key="activation.id"
-            cols="12"
+            cols="6"
             sm="6"
             md="4"
           >
@@ -179,7 +179,7 @@
                   class="card-top-img"
                 />
                 <div v-else class="img-placeholder h-100">
-                  <v-icon size="48" color="grey-lighten-1">mdi-image-outline</v-icon>
+                  <v-icon size="36" color="grey-lighten-1">mdi-image-outline</v-icon>
                 </div>
 
                 <div class="card-tag-group">
@@ -195,10 +195,10 @@
               </div>
 
               <!-- Card Content -->
-              <div class="pa-6 d-flex flex-column flex-grow-1">
-                <div class="d-flex align-center justify-space-between mb-2">
-                  <span v-if="activation.city" class="city-indicator">
-                    <v-icon size="14" class="mr-1 text-grey">mdi-map-marker-outline</v-icon>
+              <div class="pa-2.5 pa-sm-4 d-flex flex-column flex-grow-1">
+                <div class="d-flex align-center justify-space-between mb-1">
+                  <span v-if="activation.city" class="city-indicator text-truncate">
+                    <v-icon size="12" class="mr-0.5 text-grey">mdi-map-marker-outline</v-icon>
                     {{ activation.city }}
                   </span>
                   <span class="event-count-chip">
@@ -206,22 +206,22 @@
                   </span>
                 </div>
 
-                <h3 class="card-title text-h6 font-weight-bold text-grey-darken-4 mb-2">
+                <h3 class="card-title text-subtitle-2 text-sm-h6 font-weight-bold text-grey-darken-4 mb-1">
                   {{ activation.name }}
                 </h3>
 
-                <p v-if="activation.tagline" class="card-desc text-body-2 text-grey-darken-1 mb-4 flex-grow-1">
+                <p v-if="activation.tagline" class="card-desc text-caption text-grey-darken-1 mb-2 d-none d-sm-block flex-grow-1">
                   {{ activation.tagline }}
                 </p>
                 <div v-else class="flex-grow-1"></div>
 
-                <div class="pt-3 border-top d-flex align-center justify-space-between mt-auto">
-                  <span class="text-caption text-grey-darken-1 font-weight-medium">
+                <div class="pt-2 border-top d-flex align-center justify-space-between mt-auto">
+                  <span class="text-caption text-grey-darken-1 font-weight-medium d-none d-sm-inline">
                     Jalan Bareng Chapter
                   </span>
-                  <span class="action-link-text">
+                  <span class="action-link-text ml-auto">
                     Eksplor
-                    <v-icon size="14" class="ml-1">mdi-arrow-right</v-icon>
+                    <v-icon size="13" class="ml-0.5">mdi-arrow-right</v-icon>
                   </span>
                 </div>
               </div>
@@ -681,47 +681,111 @@ useSeoMeta({
   border-radius: 20px;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness (Compact 390px Standards) */
 @media (max-width: 600px) {
   .aktivasi-hero {
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 
   .hero-title {
-    font-size: 1.95rem;
+    font-size: clamp(1.65rem, 6.8vw, 2.15rem);
+    line-height: 1.15;
   }
 
   .hero-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 20px !important;
   }
 
   .category-filters-wrapper {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 6px;
+    padding: 2px 4px 8px 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .category-filters-wrapper::-webkit-scrollbar {
+    display: none;
   }
 
   .filter-btn {
-    font-size: 0.72rem !important;
-    min-height: 26px !important;
-    height: 26px !important;
-    padding: 0 10px !important;
+    font-size: 0.75rem !important;
+    min-height: 30px !important;
+    height: 30px !important;
+    padding: 0 12px !important;
     gap: 4px;
+    flex-shrink: 0;
   }
 
   .filter-btn :deep(.v-icon) {
-    font-size: 13px !important;
+    font-size: 14px !important;
+  }
+
+  .featured-card {
+    border-radius: 16px;
   }
 
   .featured-img-col {
-    min-height: 180px;
+    min-height: 140px;
+  }
+
+  .featured-img-box {
+    min-height: 140px;
+  }
+
+  .featured-card-heading {
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  .activation-card {
+    border-radius: 14px;
   }
 
   .card-header-img-wrapper {
-    height: 170px;
+    height: 105px;
+  }
+
+  .card-title {
+    font-size: 0.825rem !important;
+    line-height: 1.3 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .category-pill,
+  .category-pill-solid {
+    font-size: 0.625rem;
+    padding: 2px 6px;
+  }
+
+  .event-count-chip {
+    font-size: 0.625rem;
+    padding: 1px 5px;
+  }
+
+  .city-indicator {
+    font-size: 0.68rem;
+  }
+
+  .action-link-text {
+    font-size: 0.72rem;
+  }
+
+  .activation-avatar-badge {
+    width: 30px;
+    height: 30px;
+    bottom: -10px;
+    right: 10px;
   }
 }
 </style>
