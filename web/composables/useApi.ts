@@ -5,8 +5,13 @@ export const useApi = () => {
   const config = useRuntimeConfig()
   const nuxtApp = useNuxtApp()
 
+  let baseURL = config.public.apiUrl as string || 'http://localhost:8001/api'
+  if (import.meta.client && baseURL.includes('localhost') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    baseURL = baseURL.replace('localhost', window.location.hostname)
+  }
+
   const api: AxiosInstance = axios.create({
-    baseURL: config.public.apiUrl as string,
+    baseURL,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
