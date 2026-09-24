@@ -3,12 +3,14 @@
     <div class="editorial-artboard">
       <!-- 1. Top Section: Centered Full-Width Headline (No side elements squeezing it) -->
       <div class="top-headline-wrapper text-center">
-        <div class="headline-container position-relative">
-          <h1 class="main-headline text-grey-darken-4 mb-2">
-            <span class="headline-lead">Setiap Sudut Kota</span>
-            <span class="headline-lead"> Punya Cerita</span>
+        <div class="headline-container position-relative mx-auto">
+          <h1 class="main-headline text-grey-darken-4 mb-2 mb-md-3">
+            <span class="headline-title">
+              <span class="headline-lead">Setiap Sudut Kota</span>
+              <span class="headline-follow"> Punya Cerita</span>
+            </span>
             <span class="typewriter-line text-primary">
-              {{ currentText }}<span class="cursor">|</span>
+              <span class="typewriter-text">{{ currentText }}</span><span class="cursor" aria-hidden="true">|</span>
             </span>
           </h1>
         </div>
@@ -286,22 +288,32 @@ onUnmounted(() => {
 /* 1. Full Width Top Headline Section */
 .top-headline-wrapper {
   width: 100%;
-  max-width: 1100px;
-  margin: 0 auto 38px;
+  max-width: 1400px;
+  margin: 0 auto 34px;
 }
 
 .headline-container {
   padding: 0;
   width: 100%;
-  max-width: 920px;
+  max-width: 100%;
 }
 
 .main-headline {
-  font-size: clamp(2.4rem, 5.8vw, 4.85rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.headline-title {
+  display: block;
+  font-size: clamp(2.4rem, 4.4vw, 5.25rem);
   font-weight: 800 !important;
   line-height: 1.08;
   letter-spacing: -0.035em !important;
-  white-space: normal;
+  color: #111827;
 }
 
 .headline-lead,
@@ -309,11 +321,34 @@ onUnmounted(() => {
   display: inline;
 }
 
+@media (min-width: 960px) {
+  .headline-title {
+    white-space: nowrap;
+  }
+}
+
 .typewriter-line {
-  font-size: 0.83em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.85rem, 3.4vw, 3.65rem);
+  font-weight: 800 !important;
+  line-height: 1.15;
+  letter-spacing: -0.03em !important;
   color: #DC2626;
-  display: inline-block;
+  min-height: 1.25em;
+  margin-top: 6px;
   word-break: break-word;
+}
+
+@media (min-width: 960px) {
+  .typewriter-line {
+    white-space: nowrap;
+  }
+}
+
+.typewriter-text {
+  display: inline-block;
 }
 
 .cursor {
@@ -321,7 +356,8 @@ onUnmounted(() => {
   font-weight: 300;
   color: #DC2626;
   animation: blink 1s infinite;
-  margin-left: 2px;
+  margin-left: 3px;
+  line-height: 1;
 }
 
 @keyframes blink {
@@ -330,9 +366,10 @@ onUnmounted(() => {
 }
 
 .sub-headline {
-  font-size: clamp(1rem, 1.6vw, 1.18rem);
-  max-width: 680px;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  max-width: 720px;
   line-height: 1.6;
+  margin-top: 14px;
 }
 
 /* Playful Stickers */
@@ -705,21 +742,18 @@ onUnmounted(() => {
     width: 100%;
   }
 
-  .headline-lead {
+  .headline-title {
     display: block;
-    font-size: clamp(2.15rem, 9.2vw, 2.45rem) !important;
-    line-height: 1.04 !important;
-    letter-spacing: -0.04em !important;
-    white-space: nowrap;
-    text-align: center;
     width: 100%;
   }
 
+  .headline-lead,
   .headline-follow {
     display: block;
-    font-size: clamp(1.7rem, 7.4vw, 2rem) !important;
-    line-height: 1.15 !important;
-    letter-spacing: -0.03em !important;
+    font-size: clamp(2.15rem, 9.2vw, 2.55rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.035em !important;
+    white-space: nowrap;
     text-align: center;
     width: 100%;
   }
@@ -728,6 +762,18 @@ onUnmounted(() => {
     line-height: 1.12 !important;
     letter-spacing: -0.035em !important;
     width: 100%;
+  }
+
+  .typewriter-line {
+    display: flex;
+    justify-content: center;
+    font-size: clamp(1.4rem, 6.2vw, 1.85rem) !important;
+    line-height: 1.25 !important;
+    min-height: 2.5em;
+    margin-top: 4px;
+    text-align: center;
+    width: 100%;
+    white-space: normal;
   }
 
   .cards-collage-grid {

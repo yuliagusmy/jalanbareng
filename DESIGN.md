@@ -38,7 +38,7 @@
 - **Monospace (none for now)**: Reserved for future code/terminal features.
 
 ### Font Hierarchy
-- **H1 (Hero Headlines)**: 2.4rem–4.85rem, font-weight 800, line-height 1.08, letter-spacing `-0.035em`. Tight, impactful, editorial. Example: "Setiap Sudut Kota Punya Cerita"
+- **H1 (Hero Headlines)**: 2.4rem–5.25rem, font-weight 800, line-height 1.08, letter-spacing `-0.035em`. Tight, impactful, editorial. Example: "Setiap Sudut Kota Punya Cerita"
 - **H2 (Section Headers)**: 1.875rem–2.25rem (desktop), ~1.65rem (mobile), font-weight 800, line-height 1.2, letter-spacing `-0.035em`. Wajib gunakan utility class `.section-headline`.
 - **H3 (Card Titles)**: 1.25rem, font-weight 700, line-height 1.35.
 - **Body**: 1rem, font-weight 400, line-height 1.6.
