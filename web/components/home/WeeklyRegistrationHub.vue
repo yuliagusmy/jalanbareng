@@ -13,7 +13,7 @@
         Pilih Aktivasi &amp; Registrasi
       </h2>
 
-      <p class="text-body-1 text-grey-darken-1 mx-auto" style="max-width: 600px; line-height: 1.6;">
+      <p class="text-body-2 text-md-body-1 text-grey-darken-1 mx-auto" style="max-width: 600px; line-height: 1.6;">
         Pilih agenda yang ingin kamu ikuti. Klik kartu untuk detail lengkap dan formulir pendaftaran.
       </p>
     </div>
@@ -244,7 +244,16 @@
           <!-- Detail Page Link -->
           <div class="text-center">
             <NuxtLink
-              v-if="selected.activationSlug"
+              v-if="selected.eventId"
+              :to="`/events/${selected.eventId}`"
+              class="detail-link"
+              @click="showDetail = false"
+            >
+              Lihat halaman lengkap event
+              <v-icon size="13">mdi-chevron-right</v-icon>
+            </NuxtLink>
+            <NuxtLink
+              v-else-if="selected.activationSlug"
               :to="`/aktivasi/${selected.activationSlug}`"
               class="detail-link"
               @click="showDetail = false"
@@ -260,7 +269,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useApi } from '~/composables/useApi'
+import { useImageUrl } from '~/composables/useImageUrl'
+
+const { api } = useApi()
+const { getImageUrl } = useImageUrl()
 
 const selectedFilter = ref('all')
 const showDetail = ref(false)
@@ -379,6 +393,82 @@ const getCountByFilter = (filterVal: string) => {
   if (filterVal === 'all') return weeklyActivations.value.length
   return weeklyActivations.value.filter(item => item.category === filterVal).length
 }
+
+const getEventLocation = (event: any) => {
+  if (!event) return 'Makassar & Sekitarnya'
+  if (event.meeting_point) return event.meeting_point
+  if (event.description) {
+    const match = event.description.match(/Titik Kumpul:?\s*<\/strong>\s*([^<]+)/i) ||
+                  event.description.match(/Titik Kumpul:?\s*([^<\n]+)/i)
+    if (match && match[1]) return match[1].trim()
+    const ruteMatch = event.description.match(/Rute:?\s*<\/strong>\s*([^<]+)/i) ||
+                      event.description.match(/Rute:?\s*([^<\n]+)/i)
+    if (ruteMatch && ruteMatch[1]) return ruteMatch[1].trim().split('-')[0].trim()
+  }
+  if (event.activation?.city) return event.activation.city
+  return 'Makassar'
+}
+
+const formatDateSchedule = (dateStr: string) => {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('id-ID', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    hour: '2-digit',
+    minute: '2-digit'
+  }) + ' WITA'
+}
+
+const formatScheduleShort = (dateStr: string) => {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('id-ID', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  }) + ' WITA'
+}
+
+onMounted(async () => {
+  try {
+    const res = await api.get('/events', { params: { status: 'upcoming', per_page: 6 } })
+    const events = res.data?.data || res.data || []
+    if (events && events.length > 0) {
+      weeklyActivations.value = events.map((ev: any) => {
+        const isWalking = ev.type === 'walking'
+        return {
+          id: ev.id,
+          eventId: ev.id,
+          category: isWalking ? 'walking' : 'explore',
+          categoryLabel: ev.activation?.title || (isWalking ? 'Jalan Santai • City Chapter' : 'Agenda Tematik • Komunitas'),
+          shortCategory: isWalking ? 'Jalan Santai' : 'Tematik',
+          icon: isWalking ? 'mdi-walk' : 'mdi-calendar-text-outline',
+          themeColorBg: isWalking ? '#FEE2E2' : '#E0F2FE',
+          themeColorText: isWalking ? '#DC2626' : '#0284C7',
+          title: ev.name,
+          activationSlug: ev.activation?.slug || null,
+          image: ev.poster ? getImageUrl(ev.poster) : '/images/hero/walk_2.jpg',
+          collaborator: ev.user?.name ? { name: ev.user.name, role: 'Penyelenggara' } : null,
+          description: ev.description ? ev.description.replace(/<[^>]*>/g, '').trim() : 'Agenda jalan dan berkumpul bersama komunitas pejalan kaki.',
+          schedule: formatDateSchedule(ev.date),
+          scheduleShort: formatScheduleShort(ev.date),
+          meetingPoint: getEventLocation(ev),
+          locationShort: getEventLocation(ev),
+          feeAndQuota: 'Gratis • Terbuka untuk umum',
+          deadline: 'Sebelum kegiatan dimulai',
+          statusText: 'Open Registration',
+          gformUrl: ev.registration_link || 'https://instagram.com/jalanbarengind'
+        }
+      })
+    }
+  } catch (err) {
+    console.error('Error fetching upcoming events in WeeklyRegistrationHub:', err)
+  }
+})
 </script>
 
 <style scoped>

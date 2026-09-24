@@ -13,8 +13,8 @@
 
             <!-- Main Headline -->
             <h1 class="hero-title font-weight-black text-grey-darken-4 mb-4">
-              Temukan Aktivasi &amp;
-              <span class="text-primary-red">Ruang Bergerak</span>
+              <span class="d-block">Temukan Aktivasi</span>
+              <span class="d-block text-primary-red">&amp; Ruang Bergerak</span>
             </h1>
 
             <!-- Subtitle -->
@@ -23,7 +23,7 @@
             </p>
 
             <!-- Category Filter Chips -->
-            <div class="category-filters-wrapper d-flex align-center justify-center flex-wrap ga-2">
+            <div class="category-filters-wrapper">
               <button
                 type="button"
                 :class="['filter-btn', { active: selectedCategory === '' }]"
@@ -68,13 +68,13 @@
       <section v-if="featuredActivations.length > 0" class="mb-14">
         <div class="section-header-row mb-6">
           <div>
-            <div class="d-inline-flex align-center ga-1 text-caption font-weight-bold text-primary-red text-uppercase tracking-wider mb-1">
+            <div class="d-inline-flex align-center ga-1 text-caption font-weight-bold text-primary-red text-uppercase tracking-wider mb-2 mb-md-2.5">
               <v-icon size="14" color="#DC2626">mdi-fire</v-icon>
               <span>Sorotan Komunitas</span>
             </div>
-            <h2 class="text-h4 font-weight-black text-grey-darken-4">Aktivasi Pilihan</h2>
+            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2 mb-md-3">Aktivasi Pilihan</h2>
+            <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">Program yang aktif bergerak setiap pekan</p>
           </div>
-          <span class="text-caption text-grey-darken-1">Program yang aktif bergerak setiap pekan</span>
         </div>
 
         <v-row>
@@ -149,8 +149,8 @@
       <section class="mb-14">
         <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-6">
           <div>
-            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-1">{{ categoryTitle }}</h2>
-            <p class="text-body-2 text-grey-darken-1 mb-0">
+            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2 mb-md-3">{{ categoryTitle }}</h2>
+            <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
               Menampilkan {{ filteredActivations.length }} komunitas dan aktivasi jalan kaki
             </p>
           </div>
@@ -414,6 +414,11 @@ useSeoMeta({
 
 /* Filter Buttons */
 .category-filters-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 8px;
 }
 
@@ -689,7 +694,7 @@ useSeoMeta({
   }
 
   .hero-title {
-    font-size: clamp(1.65rem, 6.8vw, 2.15rem);
+    font-size: clamp(1.5rem, 6.2vw, 2.05rem);
     line-height: 1.15;
   }
 
@@ -705,10 +710,13 @@ useSeoMeta({
     align-items: center;
     flex-wrap: nowrap;
     overflow-x: auto;
-    gap: 6px;
-    padding: 2px 4px 8px 4px;
+    gap: 8px;
+    padding: 4px 16px 10px 16px;
+    margin-left: -16px;
+    margin-right: -16px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .category-filters-wrapper::-webkit-scrollbar {
@@ -716,12 +724,13 @@ useSeoMeta({
   }
 
   .filter-btn {
-    font-size: 0.75rem !important;
-    min-height: 30px !important;
-    height: 30px !important;
-    padding: 0 12px !important;
+    font-size: 0.78rem !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 0 14px !important;
     gap: 4px;
-    flex-shrink: 0;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
 
   .filter-btn :deep(.v-icon) {

@@ -110,8 +110,8 @@
       <section class="mb-10">
         <div class="d-flex flex-column flex-md-row align-md-center justify-space-between ga-4 mb-6">
           <div>
-            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-1">Direktori Mitra</h2>
-            <p class="text-body-2 text-grey-darken-1 mb-0">
+            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2 mb-md-2.5">Direktori Mitra</h2>
+            <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
               Menampilkan {{ filteredPartners.length }} mitra yang telah melangkah dan berkontribusi bersama kami
             </p>
           </div>
@@ -134,7 +134,7 @@
         <!-- Controls: Category Filters & View Mode Switcher -->
         <div class="d-flex flex-column flex-md-row align-start align-md-center justify-space-between ga-4 mb-8">
           <!-- Filter Chips -->
-          <div class="category-filters-wrapper d-flex align-center flex-wrap ga-2">
+          <div class="category-filters-wrapper ga-2">
             <button
               type="button"
               :class="['filter-btn', { active: selectedCategory === 'all' }]"
@@ -199,18 +199,18 @@
           </div>
         </div>
 
-        <!-- MODE 1: KOLASE DINAMIS (MIX & MATCH) -->
+        <!-- MODE 1: KOLASE DINAMIS (SEMUA SEUKURAN BESAR & PROPORSIONAL) -->
         <v-row v-if="displayMode === 'mixed' && filteredPartners.length > 0" dense class="ma-n1 align-center justify-center">
           <v-col
             v-for="partner in filteredPartners"
             :key="partner.id"
-            :cols="getPartnerTier(partner) === 'large' ? 6 : getPartnerTier(partner) === 'small' ? 3 : 4"
-            :sm="getPartnerTier(partner) === 'large' ? 4 : getPartnerTier(partner) === 'small' ? 2 : 3"
-            :md="getPartnerTier(partner) === 'large' ? 3 : 2"
-            class="pa-1"
+            cols="6"
+            sm="4"
+            md="3"
+            class="pa-1 pa-sm-2"
           >
             <div class="partner-logo-item" @click="openPartnerDetail(partner)">
-              <div :class="['partner-logo-wrapper', `tier-${getPartnerTier(partner)}`]">
+              <div class="partner-logo-wrapper tier-large">
                 <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
                   <img
                     :src="partner.logo"
@@ -220,7 +220,7 @@
                     @error="failedLogos[partner.id] = true"
                   />
                 </div>
-                <div v-else :class="['partner-emblem', `emblem-${getPartnerTier(partner)}`]" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
+                <div v-else class="partner-emblem emblem-large" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
                   <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
                     {{ partner.initial }}
                   </span>
@@ -230,7 +230,7 @@
           </v-col>
         </v-row>
 
-        <!-- MODE 2: BERDASARKAN TINGKATAN (TIERED) -->
+        <!-- MODE 2: BERDASARKAN TINGKATAN (TIERED - SEMUA SEUKURAN BESAR) -->
         <div v-else-if="displayMode === 'tiered' && filteredPartners.length > 0">
           <!-- Tier 1: Large / Mitra Utama -->
           <div v-if="largePartners.length > 0" class="mb-8">
@@ -245,7 +245,7 @@
                 cols="6"
                 sm="4"
                 md="3"
-                class="pa-1"
+                class="pa-1 pa-sm-2"
               >
                 <div class="partner-logo-item" @click="openPartnerDetail(partner)">
                   <div class="partner-logo-wrapper tier-large">
@@ -279,13 +279,13 @@
               <v-col
                 v-for="partner in mediumPartners"
                 :key="partner.id"
-                cols="4"
-                sm="3"
-                md="2"
-                class="pa-1"
+                cols="6"
+                sm="4"
+                md="3"
+                class="pa-1 pa-sm-2"
               >
                 <div class="partner-logo-item" @click="openPartnerDetail(partner)">
-                  <div class="partner-logo-wrapper tier-medium">
+                  <div class="partner-logo-wrapper tier-large">
                     <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
                       <img
                         :src="partner.logo"
@@ -295,7 +295,7 @@
                         @error="failedLogos[partner.id] = true"
                       />
                     </div>
-                    <div v-else class="partner-emblem emblem-medium" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
+                    <div v-else class="partner-emblem emblem-large" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
                       <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
                         {{ partner.initial }}
                       </span>
@@ -316,13 +316,13 @@
               <v-col
                 v-for="partner in smallPartners"
                 :key="partner.id"
-                cols="3"
-                sm="2"
-                md="2"
-                class="pa-1"
+                cols="6"
+                sm="4"
+                md="3"
+                class="pa-1 pa-sm-2"
               >
                 <div class="partner-logo-item" @click="openPartnerDetail(partner)">
-                  <div class="partner-logo-wrapper tier-small">
+                  <div class="partner-logo-wrapper tier-large">
                     <div v-if="partner.logo && !failedLogos[partner.id]" class="partner-logo-box">
                       <img
                         :src="partner.logo"
@@ -332,7 +332,7 @@
                         @error="failedLogos[partner.id] = true"
                       />
                     </div>
-                    <div v-else class="partner-emblem emblem-small" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
+                    <div v-else class="partner-emblem emblem-large" :style="{ backgroundColor: partner.bgColor || '#F1F5F9' }">
                       <span class="emblem-text" :style="{ color: partner.textColor || '#0F172A' }">
                         {{ partner.initial }}
                       </span>
@@ -352,8 +352,8 @@
         </div>
 
         <!-- Partner Detail Dialog -->
-        <v-dialog v-model="isDetailOpen" max-width="450" rounded="xl">
-          <v-card v-if="selectedPartner" class="pa-4 text-center">
+        <v-dialog v-model="isDetailOpen" max-width="420" rounded="xl">
+          <v-card v-if="selectedPartner" class="pa-6 text-center" rounded="24">
             <div class="partner-logo-box-large mx-auto mb-4">
               <img v-if="selectedPartner.logo" :src="selectedPartner.logo" :alt="selectedPartner.name" class="partner-logo-img" />
               <div v-else class="partner-emblem-large">{{ selectedPartner.initial }}</div>
@@ -361,7 +361,7 @@
             <h2 class="text-h6 font-weight-bold mb-1">{{ selectedPartner.name }}</h2>
             <p class="text-caption text-primary-red font-weight-bold mb-3">{{ getCategoryLabel(selectedPartner.category) }}</p>
             <p class="text-body-2 text-grey-darken-2 mb-4">{{ selectedPartner.role }}</p>
-            <v-btn block color="primary" rounded="pill" variant="flat" @click="isDetailOpen = false">Tutup</v-btn>
+            <v-btn block color="primary" rounded="pill" variant="flat" class="font-weight-bold" @click="isDetailOpen = false">Tutup</v-btn>
           </v-card>
         </v-dialog>
       </section>
@@ -993,29 +993,20 @@ const smallPartners = computed(() => filteredPartners.value.filter(p => getPartn
   border: none;
 }
 
-/* Tier Sizing */
-.partner-logo-wrapper.tier-large {
-  height: 74px;
+/* Tier Sizing - Unified Large Size for All Brands */
+.partner-logo-wrapper,
+.partner-logo-wrapper.tier-large,
+.partner-logo-wrapper.tier-medium,
+.partner-logo-wrapper.tier-small {
+  height: 76px;
 }
-.partner-logo-wrapper.tier-large .partner-logo-img {
+
+.partner-logo-wrapper .partner-logo-img,
+.partner-logo-wrapper.tier-large .partner-logo-img,
+.partner-logo-wrapper.tier-medium .partner-logo-img,
+.partner-logo-wrapper.tier-small .partner-logo-img {
   max-height: 58px;
   max-width: 95%;
-}
-
-.partner-logo-wrapper.tier-medium {
-  height: 56px;
-}
-.partner-logo-wrapper.tier-medium .partner-logo-img {
-  max-height: 42px;
-  max-width: 90%;
-}
-
-.partner-logo-wrapper.tier-small {
-  height: 42px;
-}
-.partner-logo-wrapper.tier-small .partner-logo-img {
-  max-height: 28px;
-  max-width: 80%;
 }
 
 .partner-logo-box {
@@ -1041,26 +1032,18 @@ const smallPartners = computed(() => filteredPartners.value.filter(p => getPartn
   transform: scale(1.05);
 }
 
-.partner-emblem {
+.partner-emblem,
+.partner-emblem.emblem-large,
+.partner-emblem.emblem-medium,
+.partner-emblem.emblem-small {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-}
-.partner-emblem.emblem-large {
   width: 58px;
   height: 58px;
   border-radius: 16px;
-}
-.partner-emblem.emblem-medium {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-}
-.partner-emblem.emblem-small {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: 800;
 }
 
 .partner-name-simple {
@@ -1072,18 +1055,26 @@ const smallPartners = computed(() => filteredPartners.value.filter(p => getPartn
 }
 
 .partner-logo-box-large {
-  width: 100px;
-  height: 100px;
-  border-radius: 20px;
-  background: #F8FAFC;
+  width: 100%;
+  height: 72px;
+  background: transparent !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #E2E8F0;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.partner-logo-box-large .partner-logo-img {
+  max-height: 64px;
+  max-width: 240px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 .partner-emblem-large {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 900;
   color: #111827;
 }
@@ -1410,22 +1401,47 @@ const smallPartners = computed(() => filteredPartners.value.filter(p => getPartn
 
   .category-filters-wrapper {
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 6px;
+    padding: 4px 16px 8px 16px;
+    margin-left: -16px;
+    margin-right: -16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .category-filters-wrapper::-webkit-scrollbar {
+    display: none;
   }
 
   .filter-btn {
-    font-size: 0.72rem !important;
-    min-height: 26px !important;
-    height: 26px !important;
-    padding: 0 10px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    font-size: 0.74rem !important;
+    min-height: 28px !important;
+    height: 28px !important;
+    padding: 0 12px !important;
     gap: 4px;
   }
 
   .filter-btn :deep(.v-icon) {
     font-size: 13px !important;
+  }
+
+  .partner-logo-wrapper {
+    height: 70px !important;
+  }
+
+  .partner-logo-img {
+    max-height: 52px !important;
+    max-width: 90% !important;
+  }
+
+  .partner-emblem {
+    width: 52px !important;
+    height: 52px !important;
   }
 }
 </style>

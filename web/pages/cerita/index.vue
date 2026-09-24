@@ -13,8 +13,8 @@
 
             <!-- Main Headline -->
             <h1 class="hero-title font-weight-black text-grey-darken-4 mb-4">
-              Cerita &amp; Kabar
-              <span class="text-primary-red">Jalan Bareng</span>
+              <span class="d-block">Cerita &amp; Kabar</span>
+              <span class="d-block text-primary-red">Jalan Bareng</span>
             </h1>
 
             <!-- Subtitle -->
@@ -313,7 +313,7 @@ onMounted(() => {
   }
 
   .hero-title {
-    font-size: clamp(1.65rem, 6.8vw, 2.15rem);
+    font-size: clamp(1.5rem, 6.2vw, 2.05rem);
     line-height: 1.15;
   }
 

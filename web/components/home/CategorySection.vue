@@ -11,7 +11,7 @@
             Temukan Destinasi<br>
             <span class="text-primary">Favoritmu</span>
           </h2>
-          <p class="text-body-1 text-grey-darken-1 mb-6">
+          <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-6" style="line-height: 1.6;">
             Telusuri berbagai kategori destinasi menarik,
             dari pantai eksotis hingga kuliner khas yang menggugah selera.
           </p>

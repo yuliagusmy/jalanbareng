@@ -10,7 +10,7 @@
               <span class="headline-follow"> Punya Cerita</span>
             </span>
             <span class="typewriter-line text-primary">
-              <span class="typewriter-text">{{ currentText }}</span><span class="cursor" aria-hidden="true">|</span>
+              <span class="typewriter-text">{{ currentText }}<span class="cursor" aria-hidden="true">|</span></span>
             </span>
           </h1>
         </div>
@@ -213,12 +213,12 @@ const swapOnePhoto = () => {
 
 // Typewriter Headline logic
 const phrases = [
-  'Jalan Bareng Bergerak Bersama Warga',
-  'Menghubungkan Kawan Baru di Trotoar',
-  'Baca Buku & Diskusi di Ruang Terbuka',
+  'Jalan Bareng Bersama Warga',
+  'Temukan Kawan Baru di Kotamu',
+  'Baca Buku & Diskusi Terbuka',
   'Menelusuri Kota Lebih Lambat',
   'Berjalan Santai & Berbagi Cerita',
-  'Ruang Bersama untuk Semua Warga'
+  'Ruang Bersama Semua Warga'
 ]
 
 const currentText = ref('')
@@ -348,7 +348,7 @@ onUnmounted(() => {
 }
 
 .typewriter-text {
-  display: inline-block;
+  display: inline;
 }
 
 .cursor {
@@ -682,6 +682,15 @@ onUnmounted(() => {
     margin-bottom: 24px;
   }
 
+  .typewriter-line {
+    font-size: clamp(1.4rem, 3.8vw, 2.2rem);
+    line-height: 1.25;
+    min-height: 2.55em;
+    max-height: 2.55em;
+    height: 2.55em;
+    overflow: hidden;
+  }
+
   .cards-collage-grid {
     align-items: center;
     gap: 8px;
@@ -765,15 +774,19 @@ onUnmounted(() => {
   }
 
   .typewriter-line {
-    display: flex;
-    justify-content: center;
-    font-size: clamp(1.4rem, 6.2vw, 1.85rem) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: clamp(1.2rem, 5.2vw, 1.5rem) !important;
     line-height: 1.25 !important;
-    min-height: 2.5em;
-    margin-top: 4px;
-    text-align: center;
+    min-height: 2.55em !important;
+    max-height: 2.55em !important;
+    height: 2.55em !important;
+    margin-top: 6px !important;
+    text-align: center !important;
     width: 100%;
     white-space: normal;
+    overflow: hidden !important;
   }
 
   .cards-collage-grid {
@@ -960,17 +973,26 @@ onUnmounted(() => {
   }
 
   .typewriter-line {
-    font-size: clamp(1.65rem, 7vw, 2.1rem) !important;
+    font-size: clamp(1.2rem, 5.2vw, 1.5rem) !important;
     line-height: 1.25 !important;
-    display: block !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 2.55em !important;
+    max-height: 2.55em !important;
+    height: 2.55em !important;
     margin-top: 6px !important;
+    text-align: center !important;
+    width: 100%;
+    overflow: hidden !important;
   }
 
   .sub-headline {
     font-size: 0.88rem !important;
-    line-height: 1.55 !important;
+    line-height: 1.6 !important;
     padding: 0 6px;
-    margin-top: 8px;
+    margin-top: 14px;
+    margin-bottom: 4px;
   }
 
   /* Scaled-down subtle stickers on mobile */

@@ -1,9 +1,9 @@
 <template>
   <div class="community-stories-section mb-12 mb-md-16">
     <!-- Header Section -->
-    <div class="d-flex flex-column flex-sm-row justify-space-between align-start align-sm-center mb-6 ga-3">
+    <div class="d-flex flex-column flex-sm-row justify-space-between align-start align-sm-center mb-6 mb-md-8 ga-4">
       <div>
-        <div class="d-flex align-center ga-2 mb-1">
+        <div class="d-flex align-center ga-2 mb-2 mb-md-2.5">
           <span class="text-caption font-weight-bold text-uppercase tracking-wider text-primary">
             Publikasi & Catatan Lapangan
           </span>
@@ -11,15 +11,15 @@
             Komunitas
           </v-chip>
         </div>
-        <h2 class="text-h4 text-md-h3 section-headline stories-heading mb-1">
+        <h2 class="text-h4 text-md-h3 section-headline stories-heading mb-3 mb-md-4">
           Cerita Jalan Bareng
         </h2>
-        <p class="text-body-2 text-md-body-1 text-grey-darken-1 mt-1 mb-0" style="max-width: 680px;">
+        <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-2 mb-sm-0" style="max-width: 680px; line-height: 1.6;">
           Kumpulan refleksi, riset jalur jalan kaki, dan cerita lorong perkotaan yang ditulis langsung oleh teman-teman pejalan dan dikurasi tim Jalan Bareng.
         </p>
       </div>
 
-      <div class="d-flex align-center ga-2 flex-wrap">
+      <div class="d-flex align-center ga-2 flex-wrap pt-1 pt-sm-0">
         <v-btn
           variant="outlined"
           color="primary"

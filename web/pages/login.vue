@@ -20,12 +20,12 @@
 
         <!-- Center Stage: Editorial Headline & Authentic Photo Collage -->
         <div class="collage-center-content my-auto py-2">
-          <div class="collage-headline-block mb-3">
-            <h2 class="editorial-headline text-grey-darken-4 mb-1">
+          <div class="collage-headline-block mb-3 mb-md-4">
+            <h2 class="editorial-headline text-grey-darken-4 mb-2 mb-md-2.5">
               Menjelajah kota lebih dekat,<br>
               <span class="text-primary-red">berbagi cerita</span> lebih hangat.
             </h2>
-            <p class="editorial-sublead text-grey-darken-2 mb-0">
+            <p class="editorial-sublead text-grey-darken-2 mb-0" style="line-height: 1.6;">
               Ruang bersama untuk berjalan santai, merespon tata kota, dan menghubungkan kawan baru.
             </p>
           </div>

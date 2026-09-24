@@ -1,9 +1,9 @@
 <template>
   <div v-if="activations && activations.length > 0" class="featured-activations-section mb-10 mb-md-16">
     <!-- Header Section -->
-    <div class="d-flex flex-column flex-sm-row justify-space-between align-start align-sm-center mb-6 ga-3">
+    <div class="d-flex flex-column flex-sm-row justify-space-between align-start align-sm-center mb-6 mb-md-8 ga-4">
       <div>
-        <div class="d-flex align-center ga-2 mb-1">
+        <div class="d-flex align-center ga-2 mb-2 mb-md-2.5">
           <span class="text-caption font-weight-bold text-uppercase tracking-wider text-primary">
             Inisiatif Paling Aktif
           </span>
@@ -11,10 +11,10 @@
             Top 3
           </v-chip>
         </div>
-        <h2 class="text-h4 text-md-h3 section-headline section-title mb-1">
+        <h2 class="text-h4 text-md-h3 section-headline section-title mb-3 mb-md-4">
           Aktivasi Unggulan
         </h2>
-        <p class="text-body-2 text-md-body-1 text-grey-darken-1 mt-1 mb-0" style="max-width: 620px;">
+        <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-2 mb-sm-0" style="max-width: 620px; line-height: 1.6;">
           Komunitas dan chapter yang paling rajin menggelar jalan santai serta eksplorasi lorong kota bersama pejalan kaki.
         </p>
       </div>

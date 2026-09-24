@@ -13,8 +13,8 @@
 
             <!-- Main Headline -->
             <h1 class="hero-title font-weight-black text-grey-darken-4 mb-4">
-              Temukan Destinasi &amp;
-              <span class="text-primary-red">Sudut Kota</span>
+              <span class="d-block">Temukan Destinasi</span>
+              <span class="d-block text-primary-red">&amp; Sudut Kota</span>
             </h1>
 
             <!-- Subtitle -->
@@ -23,7 +23,7 @@
             </p>
 
             <!-- Category Filter Chips -->
-            <div class="category-filters-wrapper d-flex align-center justify-center flex-wrap ga-2">
+            <div class="category-filters-wrapper">
               <button
                 type="button"
                 :class="['filter-btn', { active: !selectedCategory }]"
@@ -45,7 +45,7 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="mt-6 d-flex align-center justify-center ga-3 flex-wrap">
+            <div class="mt-4 mt-md-6 d-flex align-center justify-center ga-3 flex-wrap">
               <v-btn
                 v-if="authStore.isLoggedIn"
                 color="#DC2626"
@@ -228,8 +228,8 @@
         <div v-if="filteredMapDestinations.length > 0" class="map-destinations-preview">
           <div class="d-flex align-center justify-space-between mb-4">
             <div>
-              <h3 class="text-h5 font-weight-black text-grey-darken-4 mb-1">Destinasi di Peta</h3>
-              <p class="text-body-2 text-grey-darken-1 mb-0">
+              <h3 class="text-h5 font-weight-black text-grey-darken-4 mb-2 mb-md-2.5">Destinasi di Peta</h3>
+              <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
                 Jelajahi {{ filteredMapDestinations.length }} titik destinasi yang tersemat pada peta di atas
               </p>
             </div>
@@ -275,8 +275,8 @@
       <section v-else class="mb-14">
         <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-6">
           <div>
-            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-1">Direktori Destinasi</h2>
-            <p class="text-body-2 text-grey-darken-1 mb-0">
+            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2 mb-md-2.5">Direktori Destinasi</h2>
+            <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
               Menampilkan {{ destinations.length }} dari {{ pagination.total }} destinasi komunitas
             </p>
           </div>
@@ -351,7 +351,7 @@
 
       <!-- Community CTA Section -->
       <section class="mb-8">
-        <div class="kolaborasi-card pa-8 pa-md-12 text-center">
+        <div class="kolaborasi-card pa-5 pa-sm-8 pa-md-12 text-center">
           <v-row justify="center">
             <v-col cols="12" md="8">
               <div class="hero-badge-pill mb-4 d-inline-flex">
@@ -396,11 +396,11 @@
                 size="large"
                 rounded="pill"
                 elevation="0"
-                class="font-weight-bold px-8 text-white"
+                class="cta-contrib-btn font-weight-bold px-5 px-sm-8 text-white"
                 to="/destinations/create"
               >
-                <v-icon start>mdi-plus</v-icon>
-                Tambah Destinasi Baru
+                <v-icon start size="18">mdi-plus</v-icon>
+                <span>Tambah Destinasi Baru</span>
               </v-btn>
               <v-btn
                 v-else
@@ -408,11 +408,12 @@
                 size="large"
                 rounded="pill"
                 elevation="0"
-                class="font-weight-bold px-8 text-white"
+                class="cta-contrib-btn font-weight-bold px-4 px-sm-8 text-white"
                 to="/register"
               >
-                <v-icon start>mdi-account-plus-outline</v-icon>
-                Daftar untuk Berkontribusi
+                <v-icon start size="18">mdi-account-plus-outline</v-icon>
+                <span class="d-none d-sm-inline">Daftar untuk Berkontribusi</span>
+                <span class="d-inline d-sm-none">Daftar &amp; Berkontribusi</span>
               </v-btn>
             </v-col>
           </v-row>
@@ -677,6 +678,11 @@ onMounted(() => {
 
 /* Category Filter Buttons */
 .category-filters-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 8px;
 }
 
@@ -874,6 +880,13 @@ onMounted(() => {
   background: #FAFAFA;
 }
 
+.cta-contrib-btn {
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-size: 0.95rem;
+  max-width: 100%;
+}
+
 .contrib-feature {
   padding: 1rem 0.5rem;
   transition: transform 0.2s ease;
@@ -898,7 +911,7 @@ onMounted(() => {
   }
 
   .hero-title {
-    font-size: clamp(1.65rem, 6.8vw, 2.15rem);
+    font-size: clamp(1.5rem, 6.2vw, 2.05rem);
     line-height: 1.15;
   }
 
@@ -914,10 +927,13 @@ onMounted(() => {
     align-items: center;
     flex-wrap: nowrap;
     overflow-x: auto;
-    gap: 6px;
-    padding: 2px 4px 8px 4px;
+    gap: 8px;
+    padding: 4px 16px 10px 16px;
+    margin-left: -16px;
+    margin-right: -16px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .category-filters-wrapper::-webkit-scrollbar {
@@ -925,11 +941,12 @@ onMounted(() => {
   }
 
   .filter-btn {
-    font-size: 0.74rem !important;
-    min-height: 30px !important;
-    height: 30px !important;
-    padding: 0 12px !important;
-    flex-shrink: 0;
+    font-size: 0.78rem !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 0 14px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
 
   .search-filter-bar {
@@ -970,6 +987,21 @@ onMounted(() => {
 
   .map-embed-wrapper {
     height: 280px;
+  }
+
+  .kolaborasi-card {
+    border-radius: 20px;
+    padding: 24px 14px !important;
+  }
+
+  .cta-contrib-btn {
+    font-size: 0.8rem !important;
+    height: 40px !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
   }
 }
 </style>
