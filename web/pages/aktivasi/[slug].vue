@@ -9,7 +9,7 @@
           <!-- Left Column: Eyebrow, Headline, Description, Dual CTAs, Stats -->
           <v-col cols="12" md="6" lg="6" class="hero-text-col">
             <!-- Eyebrow Chip & Social Badge -->
-            <div class="d-flex align-center flex-wrap ga-3 mb-5">
+            <div class="d-flex align-center flex-wrap ga-2 ga-md-3 mb-3 mb-md-5">
               <div class="hero-eyebrow-pill">
                 <span class="eyebrow-dot"></span>
                 <span class="eyebrow-text">
@@ -30,37 +30,37 @@
             </div>
 
             <!-- Main Headline: Directly Activation Name as requested -->
-            <h1 class="hero-main-title font-weight-black text-grey-darken-4 mb-4">
+            <h1 class="hero-main-title font-weight-black text-grey-darken-4 mb-3 mb-md-4">
               {{ activation.name }}
             </h1>
 
             <!-- Lead Copy -->
-            <p class="hero-lead-text mb-6">
+            <p class="hero-lead-text mb-4 mb-md-6">
               {{ heroDescription }}
             </p>
 
             <!-- Action Buttons -->
-            <div class="hero-actions-group d-flex flex-wrap align-center ga-3 mb-8">
+            <div class="hero-actions-group d-flex flex-wrap align-center ga-2 ga-md-3 mb-4 mb-md-8">
               <v-btn
                 @click="scrollToEventsOrRegister"
                 color="#DC2626"
-                size="large"
+                size="default"
                 rounded="pill"
                 class="hero-primary-btn font-weight-bold"
                 elevation="0"
               >
                 Ikut Jalan Pekan Ini
-                <v-icon end size="18">mdi-arrow-right</v-icon>
+                <v-icon end size="16">mdi-arrow-right</v-icon>
               </v-btn>
 
               <v-btn
                 @click="scrollToAbout"
                 variant="outlined"
-                size="large"
+                size="default"
                 rounded="pill"
                 class="hero-secondary-btn font-weight-bold"
               >
-                Tentang Aktivasi
+                Tentang
               </v-btn>
             </div>
 
@@ -94,8 +94,8 @@
             </div>
           </v-col>
 
-          <!-- Right Column: 2-Column Collage (Home Columns 3 & 4 style) -->
-          <v-col cols="12" md="6" lg="6" class="hero-visual-col">
+          <!-- Right Column: 2-Column Collage (hidden on mobile xs, shown on sm+) -->
+          <v-col cols="12" md="6" lg="6" class="hero-visual-col d-none d-sm-flex">
             <div class="activation-hero-collage">
               <!-- Column 1: Tall Vertical Card (Lane 3 style) -->
               <div class="collage-lane-tall">
@@ -133,6 +133,21 @@
               </div>
             </div>
           </v-col>
+
+          <!-- Mobile-only: compact single photo strip -->
+          <v-col cols="12" class="d-flex d-sm-none hero-mobile-photo-strip">
+            <div class="mobile-photo-row">
+              <div class="mobile-photo-item">
+                <img :src="heroCard1Image" :alt="activation.name" class="mobile-photo-img" />
+              </div>
+              <div class="mobile-photo-item">
+                <img :src="heroCard2Image" alt="Komunitas Jalan Bareng" class="mobile-photo-img" />
+              </div>
+              <div class="mobile-photo-item">
+                <img :src="heroCard3Image" alt="Aktivitas Jalan Bareng" class="mobile-photo-img" />
+              </div>
+            </div>
+          </v-col>
         </v-row>
       </v-container>
     </section>
@@ -143,12 +158,12 @@
         <v-row>
           <v-col cols="12">
             <!-- About Header -->
-            <div class="mb-12">
-              <h2 class="text-h3 text-md-h2 font-weight-bold mb-6"
+            <div class="mb-6 mb-md-12">
+              <h2 class="text-h4 text-md-h3 font-weight-bold mb-4 mb-md-6"
                 :style="{ color: activation.color_theme || '#DC2626' }">
-                Tentang {{ activation.name }}
+                Tentang
               </h2>
-              <div class="about-content text-h6 text-md-h5 font-weight-regular text-grey-darken-2 line-height-relaxed"
+              <div class="about-content text-body-1 text-md-h6 font-weight-regular text-grey-darken-2 line-height-relaxed"
                 v-html="activation.description"></div>
             </div>
 
@@ -592,7 +607,7 @@ useSeoMeta({
 .activation-hero-section {
   position: relative;
   background: #FFFFFF;
-  padding: 48px 0 64px 0;
+  padding: 32px 0 48px 0;
   overflow: hidden;
   border-bottom: 1px solid #F1F5F9;
 }
@@ -662,12 +677,12 @@ useSeoMeta({
   text-transform: uppercase;
 }
 
-/* Headline: Same font & typography as Home Page */
+/* Headline: Match Tentang section heading size */
 .hero-main-title {
-  font-size: clamp(2.35rem, 4.2vw, 3.45rem);
-  font-weight: 900 !important;
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  font-size: clamp(1.75rem, 5.5vw, 2.5rem);
+  font-weight: 800 !important;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
   color: #111827;
 }
 
@@ -856,15 +871,46 @@ useSeoMeta({
   transform: scale(1.04);
 }
 
+/* Mobile-only photo strip (xs only) */
+.hero-mobile-photo-strip {
+  padding: 0 16px;
+  margin-top: 4px;
+}
+
+.mobile-photo-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  height: 140px;
+}
+
+.mobile-photo-item {
+  flex: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #F3F4F6;
+}
+
+.mobile-photo-item:first-child {
+  flex: 1.3;
+}
+
+.mobile-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* Responsive Breakpoints */
 @media (max-width: 960px) {
   .activation-hero-section {
-    padding: 32px 0 48px 0;
+    padding: 28px 0 40px 0;
   }
 
   .hero-main-title {
-    font-size: 2.35rem;
-    line-height: 1.1;
+    font-size: 2rem;
+    line-height: 1.12;
   }
 
   .activation-hero-collage {
@@ -874,7 +920,7 @@ useSeoMeta({
 
   .collage-lane-tall,
   .collage-lane-stacked {
-    height: 340px;
+    height: 320px;
   }
 
   .card-tall {
@@ -889,49 +935,41 @@ useSeoMeta({
 
 @media (max-width: 600px) {
   .activation-hero-section {
-    padding: 28px 0 32px 0;
-  }
-
-  .activation-hero-collage {
-    max-width: 100%;
-    gap: 12px;
-    margin-top: 24px;
-  }
-
-  .collage-lane-tall,
-  .collage-lane-stacked {
-    height: 240px;
-  }
-
-  .collage-lane-stacked {
-    gap: 12px;
-  }
-
-  .card-stacked-top,
-  .card-stacked-bottom {
-    height: calc((100% - 12px) / 2);
-    border-radius: 14px;
-  }
-
-  .card-tall {
-    border-radius: 18px;
+    padding: 20px 0 24px 0;
   }
 
   .hero-main-title {
-    font-size: 2.05rem;
-    line-height: 1.12;
+    font-size: clamp(1.5rem, 6vw, 1.85rem);
+    line-height: 1.15;
+  }
+
+  .hero-lead-text {
+    font-size: 0.92rem;
+    line-height: 1.6;
   }
 
   .hero-stats-row {
-    gap: 16px;
+    gap: 12px;
+    padding-top: 16px;
   }
 
   .stat-value {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
   }
 
   .stat-label {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
+  }
+
+  .stat-divider {
+    height: 30px;
+  }
+
+  .hero-primary-btn,
+  .hero-secondary-btn {
+    font-size: 0.875rem !important;
+    height: 40px !important;
+    padding: 0 16px !important;
   }
 }
 
