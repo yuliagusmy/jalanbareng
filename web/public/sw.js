@@ -1,11 +1,13 @@
 // Jalan Bareng Service Worker
-const CACHE_NAME = 'jalan-bareng-cache-v1'
+const CACHE_NAME = 'jalan-bareng-cache-v2'
 const STATIC_ASSETS = [
   '/',
   '/manifest.webmanifest',
   '/favicon.ico',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  '/icons/icon-maskable.png',
+  '/icons/icon.svg',
 ]
 
 // Install event - Cache static assets

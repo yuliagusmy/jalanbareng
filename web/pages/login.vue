@@ -13,7 +13,7 @@
             />
           </NuxtLink>
           <div class="hero-badge-pill">
-            <v-icon size="12" color="#DC2626" class="mr-1">mdi-foot-print</v-icon>
+            <v-icon size="14" color="#DC2626" class="mr-1">mdi-foot-print</v-icon>
             <span>#MENELUSURIKOTA</span>
           </div>
         </div>
@@ -72,7 +72,7 @@
                     class="photo-img"
                   />
                   <div class="photo-badge-chip">
-                    <v-icon size="10" color="#DC2626" class="mr-0.5">mdi-map-marker</v-icon>
+                    <v-icon size="12" color="#DC2626" class="mr-0.5">mdi-map-marker</v-icon>
                     <span>Ruang Publik</span>
                   </div>
                 </div>
@@ -96,7 +96,7 @@
         <!-- Top Back Nav -->
         <div class="top-nav-bar w-100 d-flex justify-space-between align-center">
           <NuxtLink to="/" class="back-link">
-            <v-icon size="15" class="mr-1">mdi-arrow-left</v-icon>
+            <v-icon size="18" class="mr-1">mdi-arrow-left</v-icon>
             <span>Kembali ke Beranda</span>
           </NuxtLink>
         </div>
@@ -124,18 +124,18 @@
           </div>
 
           <!-- Main Login Card -->
-          <div class="login-card pa-3.5 pa-sm-5">
+          <div class="login-card pa-5 pa-md-7">
             <!-- Loading State -->
             <div v-if="loading" class="text-center py-6">
-              <v-progress-circular indeterminate color="#DC2626" size="40" width="3"></v-progress-circular>
-              <p class="mt-3 text-caption font-weight-medium text-grey-darken-2">Sedang memproses masuk...</p>
+              <v-progress-circular indeterminate color="#DC2626" size="44" width="3.5"></v-progress-circular>
+              <p class="mt-3 text-body-2 font-weight-medium text-grey-darken-2">Sedang memproses masuk...</p>
             </div>
 
             <!-- Login Form -->
             <v-form v-else ref="loginForm" v-model="formValid" @submit.prevent="handleLogin">
               <!-- Email Input -->
-              <div class="input-group mb-2">
-                <label class="input-label mb-0.5 d-block text-caption font-weight-bold text-grey-darken-3">
+              <div class="input-group mb-3">
+                <label class="input-label mb-1 d-block text-body-2 font-weight-bold text-grey-darken-3">
                   Email
                 </label>
                 <v-text-field
@@ -143,7 +143,7 @@
                   type="email"
                   placeholder="nama@email.com"
                   variant="outlined"
-                  density="compact"
+                  density="comfortable"
                   prepend-inner-icon="mdi-email-outline"
                   :rules="[rules.required, rules.email]"
                   color="#DC2626"
@@ -153,8 +153,8 @@
               </div>
 
               <!-- Password Input -->
-              <div class="input-group mb-3">
-                <label class="input-label mb-0.5 d-block text-caption font-weight-bold text-grey-darken-3">
+              <div class="input-group mb-4">
+                <label class="input-label mb-1 d-block text-body-2 font-weight-bold text-grey-darken-3">
                   Password
                 </label>
                 <v-text-field
@@ -162,7 +162,7 @@
                   :type="showPassword ? 'text' : 'password'"
                   placeholder="Masukkan kata sandi"
                   variant="outlined"
-                  density="compact"
+                  density="comfortable"
                   prepend-inner-icon="mdi-lock-outline"
                   :append-inner-icon="showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                   @click:append-inner="showPassword = !showPassword"
@@ -177,15 +177,15 @@
               <v-btn
                 type="submit"
                 block
-                class="login-btn-primary mb-2.5"
+                class="login-btn-primary mb-1"
                 :loading="loading"
               >
                 Masuk ke Akun
               </v-btn>
 
               <!-- Divider -->
-              <div class="divider-line my-2.5">
-                <span class="divider-text">atau masuk dengan</span>
+              <div class="divider-line my-4">
+                <span class="divider-text">atau</span>
               </div>
 
               <!-- Google Sign In Button -->
@@ -194,7 +194,7 @@
                 class="google-oauth-btn w-100"
                 @click="handleGoogleLogin"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="mr-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="mr-2">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                     fill="#4285F4"
@@ -216,8 +216,8 @@
               </button>
 
               <!-- Footer CTA Link -->
-              <div class="text-center mt-3 pt-2 border-top-subtle">
-                <p class="text-caption text-grey-darken-1 mb-0">
+              <div class="text-center mt-4 pt-3 border-top-subtle">
+                <p class="footer-cta-text text-grey-darken-1 mb-0">
                   Belum punya akun?
                   <NuxtLink to="/register" class="register-link font-weight-bold ml-1">
                     Daftar sekarang
@@ -371,7 +371,7 @@ const handleGoogleLogin = async () => {
   height: 100%;
   background-color: #FFFFFF;
   border-right: 1px solid #E5E7EB;
-  padding: clamp(14px, 2.5vh, 26px) clamp(20px, 3vw, 36px);
+  padding: clamp(24px, 4vh, 44px) clamp(28px, 4vw, 54px);
   overflow: hidden;
   position: relative;
   box-sizing: border-box;
@@ -384,7 +384,7 @@ const handleGoogleLogin = async () => {
 }
 
 .brand-logo-desktop {
-  height: clamp(32px, 3.8vh, 38px);
+  height: clamp(40px, 5vh, 52px);
   width: auto;
   object-fit: contain;
   transition: transform 0.2s ease;
@@ -397,12 +397,12 @@ const handleGoogleLogin = async () => {
 .hero-badge-pill {
   display: inline-flex;
   align-items: center;
-  padding: 4px 11px;
+  padding: 6px 14px;
   border-radius: 9999px;
   background: #FEF2F2;
   border: 1px solid #FEE2E2;
   color: #DC2626;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.04em;
 }
@@ -415,7 +415,7 @@ const handleGoogleLogin = async () => {
 }
 
 .editorial-headline {
-  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  font-size: clamp(1.65rem, 2.4vw, 2.25rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.25;
@@ -426,24 +426,24 @@ const handleGoogleLogin = async () => {
 }
 
 .editorial-sublead {
-  font-size: clamp(0.8rem, 1vw, 0.88rem);
-  line-height: 1.5;
-  max-width: 440px;
+  font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+  line-height: 1.6;
+  max-width: 520px;
 }
 
 /* 3-Card Collage Composition - Enlarged & Balanced */
 .collage-composition-wrapper {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   position: relative;
-  margin-top: clamp(14px, 2.5vh, 24px);
-  max-width: 490px;
+  margin-top: clamp(18px, 3vh, 32px);
+  max-width: 540px;
 }
 
 .photo-card {
   position: relative;
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
   background: #FFFFFF;
   border: 4px solid #FFFFFF;
@@ -458,28 +458,28 @@ const handleGoogleLogin = async () => {
 }
 
 .photo-card-main {
-  width: clamp(200px, 18vw, 245px);
-  height: clamp(235px, 35vh, 320px);
+  width: clamp(230px, 20vw, 280px);
+  height: clamp(270px, 39vh, 360px);
   flex-shrink: 0;
-  border-radius: 22px;
+  border-radius: 24px;
 }
 
 .photo-side-column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   flex-grow: 1;
 }
 
 .photo-card-secondary-top {
-  height: clamp(110px, 16.5vh, 152px);
-  border-radius: 17px;
+  height: clamp(128px, 18.5vh, 172px);
+  border-radius: 20px;
   transform: rotate(2.5deg);
 }
 
 .photo-card-secondary-bottom {
-  height: clamp(112px, 17vh, 154px);
-  border-radius: 17px;
+  height: clamp(130px, 19vh, 174px);
+  border-radius: 20px;
   transform: rotate(-2.5deg);
 }
 
@@ -500,38 +500,38 @@ const handleGoogleLogin = async () => {
 
 .photo-caption-pill {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
+  bottom: 12px;
+  left: 12px;
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  background: rgba(17, 24, 39, 0.82);
+  padding: 6px 12px;
+  background: rgba(17, 24, 39, 0.85);
   backdrop-filter: blur(6px);
   border-radius: 9999px;
   color: #FFFFFF;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
 .pulse-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #10B981;
 }
 
 .photo-badge-chip {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
+  bottom: 12px;
+  left: 12px;
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
+  padding: 5px 10px;
   background: rgba(17, 24, 39, 0.85);
   backdrop-filter: blur(4px);
   border-radius: 9999px;
   color: #FFFFFF;
-  font-size: 0.68rem;
+  font-size: 0.76rem;
   font-weight: 700;
 }
 
@@ -548,24 +548,24 @@ const handleGoogleLogin = async () => {
 }
 
 .sticker-move {
-  top: -12px;
-  right: 18px;
-  padding: 5px 13px;
+  top: -14px;
+  right: 20px;
+  padding: 7px 16px;
   border-radius: 9999px;
-  font-size: 0.76rem;
+  font-size: 0.84rem;
   font-weight: 800;
   color: #111827;
   transform: rotate(4deg);
 }
 
 .sticker-flower {
-  bottom: -12px;
-  left: 205px;
-  width: 36px;
-  height: 36px;
+  bottom: -14px;
+  left: 240px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   transform: rotate(-10deg);
 }
 
@@ -576,15 +576,15 @@ const handleGoogleLogin = async () => {
   flex: 1;
   height: 100%;
   background-color: #FAFAF9;
-  padding: clamp(14px, 2.5vh, 24px) clamp(16px, 2.5vw, 32px);
+  padding: clamp(24px, 4vh, 48px) clamp(24px, 4vw, 52px);
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
 }
 
 .top-nav-bar {
-  max-width: 380px;
-  margin: 0 auto clamp(4px, 1.2vh, 12px);
+  max-width: 440px;
+  margin: 0 auto clamp(8px, 1.8vh, 18px);
   flex-shrink: 0;
 }
 
@@ -592,7 +592,7 @@ const handleGoogleLogin = async () => {
   display: inline-flex;
   align-items: center;
   color: #64748B;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -603,7 +603,7 @@ const handleGoogleLogin = async () => {
 }
 
 .form-inner-container {
-  max-width: 380px;
+  max-width: 440px;
   margin: auto auto;
 }
 
@@ -614,31 +614,31 @@ const handleGoogleLogin = async () => {
 }
 
 .form-title {
-  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+  font-size: clamp(1.45rem, 2.2vw, 1.85rem);
   letter-spacing: -0.025em;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .form-subtitle {
-  font-size: 0.78rem;
-  line-height: 1.4;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 /* Clean Login Card */
 .login-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 18px;
-  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.04);
+  border-radius: 22px;
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
 }
 
 .input-label {
   letter-spacing: 0.01em;
-  font-size: 0.75rem !important;
+  font-size: 0.86rem !important;
 }
 
 :deep(.clean-field .v-field) {
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   background-color: #FAFAFA !important;
 }
 
@@ -647,10 +647,14 @@ const handleGoogleLogin = async () => {
 }
 
 :deep(.clean-field input) {
-  font-size: 0.85rem !important;
-  min-height: 38px !important;
-  padding-top: 6px !important;
-  padding-bottom: 6px !important;
+  font-size: 0.95rem !important;
+  min-height: 46px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+:deep(.clean-field .v-icon) {
+  font-size: 20px !important;
 }
 
 /* Action Buttons (High Contrast Solid Primary Red) */
@@ -659,11 +663,11 @@ const handleGoogleLogin = async () => {
   color: #FFFFFF !important;
   border-radius: 9999px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.01em !important;
-  height: 40px !important;
-  box-shadow: 0 3px 10px rgba(220, 38, 38, 0.24) !important;
+  letter-spacing: 0.02em !important;
+  height: 48px !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.28) !important;
   text-transform: none !important;
-  font-size: 0.88rem !important;
+  font-size: 0.98rem !important;
   opacity: 1 !important;
   transition: all 0.2s ease !important;
 }
@@ -671,13 +675,14 @@ const handleGoogleLogin = async () => {
 .login-btn-primary:hover {
   background-color: #B91C1C !important;
   transform: translateY(-1px);
-  box-shadow: 0 5px 14px rgba(220, 38, 38, 0.3) !important;
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.35) !important;
 }
 
 .divider-line {
   display: flex;
   align-items: center;
   text-align: center;
+  margin: 1.35rem 0;
 }
 
 .divider-line::before,
@@ -688,12 +693,12 @@ const handleGoogleLogin = async () => {
 }
 
 .divider-text {
-  padding: 0 10px;
-  font-size: 0.68rem;
-  color: #94A3B8;
+  padding: 0 14px;
+  font-size: 0.78rem;
+  color: #64748B;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .google-oauth-btn {
@@ -701,12 +706,12 @@ const handleGoogleLogin = async () => {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 40px;
+  height: 48px;
   border: 1px solid #E2E8F0;
   border-radius: 9999px;
   background: #FFFFFF;
   color: #334155;
-  font-size: 0.825rem;
+  font-size: 0.92rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -723,9 +728,14 @@ const handleGoogleLogin = async () => {
   border-top: 1px solid #F1F5F9;
 }
 
+.footer-cta-text {
+  font-size: 0.9rem;
+}
+
 .register-link {
   color: #DC2626;
   text-decoration: none;
+  font-size: 0.9rem;
 }
 
 .register-link:hover {

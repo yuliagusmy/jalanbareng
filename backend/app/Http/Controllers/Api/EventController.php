@@ -154,6 +154,7 @@ class EventController extends Controller
     {
         $event->load([
             'user',
+            'activation',
             'photos',
             'comments' => function ($query) {
                 $query->whereNull('parent_id')

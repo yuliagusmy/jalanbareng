@@ -276,9 +276,9 @@
 
         <!-- Sidebar -->
         <v-col cols="12" lg="4">
-          <!-- Admin Panel Quick Access (Khusus Administrator) -->
+          <!-- Admin Panel Quick Access (Administrator & Community Admin) -->
           <v-card
-            v-if="authStore.isAdmin"
+            v-if="authStore.isAdmin || authStore.isCommunityAdmin"
             elevation="0"
             rounded="xl"
             class="sidebar-card mb-4"
@@ -290,8 +290,12 @@
                   <v-icon color="#F59E0B" size="24">mdi-shield-crown</v-icon>
                 </v-avatar>
                 <div>
-                  <h3 class="text-subtitle-1 font-weight-bold text-white mb-0">Panel Administrator</h3>
-                  <p class="text-caption text-grey-lighten-2 mb-0">Kelola sistem, event, & aktivasi</p>
+                  <h3 class="text-subtitle-1 font-weight-bold text-white mb-0">
+                    {{ authStore.isAdmin ? 'Panel Administrator' : 'Panel Manajemen Komunitas' }}
+                  </h3>
+                  <p class="text-caption text-grey-lighten-2 mb-0">
+                    {{ authStore.isAdmin ? 'Kelola sistem, event, & aktivasi' : 'Kelola event, destinasi, & aktivasi' }}
+                  </p>
                 </div>
               </div>
               <v-btn
@@ -304,7 +308,7 @@
                 class="font-weight-bold"
               >
                 <v-icon start>mdi-view-dashboard-outline</v-icon>
-                Masuk ke Panel Admin
+                {{ authStore.isAdmin ? 'Masuk ke Panel Admin' : 'Masuk ke Panel Manajemen' }}
               </v-btn>
             </v-card-text>
           </v-card>

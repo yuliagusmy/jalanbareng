@@ -78,8 +78,10 @@
                 <v-icon size="13" color="#DC2626">mdi-calendar-clock</v-icon>
                 <span>{{ item.scheduleShort }}</span>
               </div>
-              <div class="compact-meta-row">
-                <v-icon size="13" color="#0284C7">mdi-map-marker-radius</v-icon>
+              <div class="compact-meta-row" :class="{ 'text-amber-darken-3 font-weight-bold': item.isCurated }">
+                <v-icon size="13" :color="item.isCurated ? '#D97706' : '#0284C7'">
+                  {{ item.isCurated ? 'mdi-shield-lock-outline' : 'mdi-map-marker-radius' }}
+                </v-icon>
                 <span>{{ item.locationShort }}</span>
               </div>
             </div>
@@ -119,8 +121,24 @@
       </v-col>
     </v-row>
 
+    <!-- View All Events Catalog CTA -->
+    <div class="text-center mt-8 mb-2">
+      <v-btn
+        to="/events"
+        variant="outlined"
+        color="grey-darken-3"
+        rounded="pill"
+        size="large"
+        class="font-weight-bold px-6 catalog-jump-btn"
+      >
+        <v-icon start size="18" color="#DC2626">mdi-calendar-multiselect</v-icon>
+        Lihat Semua Jadwal &amp; Arsip di Katalog Event
+        <v-icon end size="16">mdi-arrow-right</v-icon>
+      </v-btn>
+    </div>
+
     <!-- Bottom Help Text -->
-    <div class="text-center mt-6 px-4">
+    <div class="text-center mt-3 px-4">
       <p class="text-caption text-grey-darken-1 mb-0">
         Ada pertanyaan? DM kami di Instagram
         <a
@@ -194,13 +212,15 @@
               </div>
             </div>
 
-            <div class="spec-item">
-              <div class="spec-icon-box icon-box-location">
-                <v-icon size="16" color="#0284C7">mdi-map-marker-radius</v-icon>
+            <div class="spec-item" :class="{ 'spec-item-curated': selected.isCurated }">
+              <div class="spec-icon-box" :class="selected.isCurated ? 'icon-box-secret' : 'icon-box-location'">
+                <v-icon size="16" :color="selected.isCurated ? '#D97706' : '#0284C7'">
+                  {{ selected.isCurated ? 'mdi-shield-lock-outline' : 'mdi-map-marker-radius' }}
+                </v-icon>
               </div>
               <div class="spec-text">
                 <span class="spec-label">Titik Kumpul</span>
-                <span class="spec-val">{{ selected.meetingPoint }}</span>
+                <span class="spec-val" :class="{ 'text-amber-darken-3 font-weight-bold': selected.isCurated }">{{ selected.meetingPoint }}</span>
               </div>
             </div>
 
@@ -225,6 +245,14 @@
             </div>
           </div>
 
+          <!-- Curation Alert in Sheet -->
+          <div v-if="selected.isCurated" class="pa-2 px-3 rounded-lg border mb-3 d-flex align-center ga-2" style="background: #FFFDF5; border-color: #FDE68A !important;">
+            <v-icon size="16" color="#D97706">mdi-information-outline</v-icon>
+            <span class="text-caption text-grey-darken-3" style="line-height: 1.4;">
+              <strong>Sistem Kurasi:</strong> Titik kumpul rahasia dan akan dikirim langsung via Japri WhatsApp / DM Instagram bagi pendaftar yang lolos kurasi.
+            </span>
+          </div>
+
           <!-- CTA Button -->
           <v-btn
             :href="selected.gformUrl"
@@ -237,9 +265,10 @@
             class="gform-btn elevation-2 mb-2"
           >
             <v-icon start size="18">mdi-clipboard-edit-outline</v-icon>
-            <span>Daftar Kegiatan</span>
+            <span>{{ selected.isCurated ? 'Daftar &amp; Ikuti Kurasi' : 'Daftar Kegiatan' }}</span>
             <v-icon end size="16">mdi-arrow-right</v-icon>
           </v-btn>
+
 
           <!-- Detail Page Link -->
           <div class="text-center">
@@ -309,9 +338,10 @@ const weeklyActivations = ref([
     description: 'Jalan santai menyusuri trotoar dan lorong heritage kota Makassar. Terbuka untuk semua warga dan kawan perantau.',
     schedule: 'Sabtu pagi, 06.00 – 08.30 WITA',
     scheduleShort: 'Sabtu, 06.00 WITA',
-    meetingPoint: 'Anjungan Pantai Losari (Depan Masjid Amirul Mukminin)',
-    locationShort: 'Pantai Losari',
-    feeAndQuota: 'Gratis • Terbuka untuk umum',
+    meetingPoint: '🔒 Rahasia • Dikirim via WhatsApp/DM bagi peserta yang lolos kurasi',
+    locationShort: '🔒 Tikum Rahasia',
+    feeAndQuota: 'Gratis • Sistem Kurasi Peserta',
+    isCurated: true,
     deadline: 'Jumat malam, 22.00 WITA',
     statusText: 'Open Registration',
     gformUrl: 'https://instagram.com/jalanbarengind'
@@ -394,8 +424,28 @@ const getCountByFilter = (filterVal: string) => {
   return weeklyActivations.value.filter(item => item.category === filterVal).length
 }
 
+const isCuratedEvent = (ev: any) => {
+  if (!ev) return false
+  const actSlug = ev.activation?.slug || ''
+  const actName = (ev.activation?.name || ev.activation?.title || '').toLowerCase()
+  const evName = (ev.name || '').toLowerCase()
+  const desc = (ev.description || '').toLowerCase()
+
+  if (actSlug === 'jalan-bareng-makassar' || actName.includes('jalan bareng makassar') || ev.activation_id === 2) {
+    return true
+  }
+  if (evName.includes('jalan bareng makassar') || (evName.includes('makassar') && ev.type === 'walking')) {
+    return true
+  }
+  if (desc.includes('kurasi') || desc.includes('tikum rahasia') || desc.includes('titik kumpul rahasia')) {
+    return true
+  }
+  return false
+}
+
 const getEventLocation = (event: any) => {
   if (!event) return 'Makassar & Sekitarnya'
+  if (isCuratedEvent(event)) return '🔒 Tikum Rahasia'
   if (event.meeting_point) return event.meeting_point
   if (event.description) {
     const match = event.description.match(/Titik Kumpul:?\s*<\/strong>\s*([^<]+)/i) ||
@@ -440,6 +490,7 @@ onMounted(async () => {
     if (events && events.length > 0) {
       weeklyActivations.value = events.map((ev: any) => {
         const isWalking = ev.type === 'walking'
+        const isCurated = isCuratedEvent(ev)
         return {
           id: ev.id,
           eventId: ev.id,
@@ -456,11 +507,12 @@ onMounted(async () => {
           description: ev.description ? ev.description.replace(/<[^>]*>/g, '').trim() : 'Agenda jalan dan berkumpul bersama komunitas pejalan kaki.',
           schedule: formatDateSchedule(ev.date),
           scheduleShort: formatScheduleShort(ev.date),
-          meetingPoint: getEventLocation(ev),
-          locationShort: getEventLocation(ev),
-          feeAndQuota: 'Gratis • Terbuka untuk umum',
+          meetingPoint: isCurated ? '🔒 Rahasia • Dikirim via WhatsApp/DM bagi peserta yang lolos kurasi' : getEventLocation(ev),
+          locationShort: isCurated ? '🔒 Tikum Rahasia' : getEventLocation(ev),
+          feeAndQuota: isCurated ? 'Gratis • Sistem Kurasi Peserta' : 'Gratis • Terbuka untuk umum',
           deadline: 'Sebelum kegiatan dimulai',
-          statusText: 'Open Registration',
+          statusText: isCurated ? 'Kurasi Dibuka' : 'Open Registration',
+          isCurated: isCurated,
           gformUrl: ev.registration_link || 'https://instagram.com/jalanbarengind'
         }
       })
@@ -501,6 +553,19 @@ onMounted(async () => {
   font-weight: 800 !important;
   letter-spacing: -0.035em !important;
   line-height: 1.2 !important;
+}
+
+.catalog-jump-btn {
+  background: white !important;
+  border: 1px solid #E2E8F0 !important;
+  transition: all 0.25s ease !important;
+}
+
+.catalog-jump-btn:hover {
+  border-color: #DC2626 !important;
+  color: #DC2626 !important;
+  background: #FEF2F2 !important;
+  transform: translateY(-2px);
 }
 
 .category-filter-row {
@@ -827,6 +892,16 @@ onMounted(async () => {
 .icon-box-location {
   background: #F0F9FF !important;
   border-color: #BAE6FD !important;
+}
+
+.icon-box-secret {
+  background: #FFFBEB !important;
+  border-color: #FDE68A !important;
+}
+
+.spec-item-curated {
+  background: #FFFDF5 !important;
+  border: 1px solid #FDE68A !important;
 }
 
 .icon-box-ticket {

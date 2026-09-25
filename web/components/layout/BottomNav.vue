@@ -59,11 +59,11 @@
               {{ item.icon }}
             </v-icon>
 
-            <!-- Crown badge jika admin di item profil -->
+            <!-- Crown badge jika admin / community admin di item profil -->
             <span
-              v-if="item.id === 'profil' && authStore.isAdmin"
+              v-if="item.id === 'profil' && (authStore.isAdmin || authStore.isCommunityAdmin)"
               class="admin-dot-badge"
-              title="Admin"
+              :title="authStore.isAdmin ? 'Admin' : 'Community Admin'"
             ></span>
           </div>
 
@@ -119,9 +119,9 @@
             </button>
           </div>
 
-          <!-- Shortcut Khusus Admin jika Login sebagai Admin -->
+          <!-- Shortcut Admin & Community Admin -->
           <div
-            v-if="authStore.isAdmin"
+            v-if="authStore.isAdmin || authStore.isCommunityAdmin"
             class="sheet-admin-card"
             @click="navigateToUrl('/manage/activations')"
           >
@@ -130,8 +130,10 @@
                 <v-icon size="18" color="#F59E0B">mdi-shield-crown</v-icon>
               </div>
               <div>
-                <div class="admin-card-title">Panel Administrator</div>
-                <div class="admin-card-desc">Kelola aktivasi, event, destinasi, & user</div>
+                <div class="admin-card-title">{{ authStore.isAdmin ? 'Panel Administrator' : 'Panel Manajemen' }}</div>
+                <div class="admin-card-desc">
+                  {{ authStore.isAdmin ? 'Kelola aktivasi, event, destinasi, & user' : 'Kelola aktivasi, event, & destinasi' }}
+                </div>
               </div>
             </div>
             <v-icon size="18" color="#E2E8F0">mdi-chevron-right</v-icon>

@@ -331,7 +331,7 @@
             Perubahan destinasi berhasil disimpan
           </p>
           <v-btn color="primary" block variant="flat" rounded="lg" @click="goToMyPosts">
-            {{ authStore.isAdmin ? 'Kelola Destinasi' : 'Kembali ke Postingan Saya' }}
+            {{ authStore.isAdmin || authStore.isCommunityAdmin ? 'Kelola Destinasi' : 'Kembali ke Postingan Saya' }}
           </v-btn>
         </div>
       </v-card>
@@ -673,8 +673,8 @@ const submitUpdate = async () => {
 
 const goToMyPosts = () => {
   const authStore = useAuthStore()
-  // Redirect admin to manage page, regular users to my-posts
-  if (authStore.isAdmin) {
+  // Redirect admin and community admin to manage page, regular users to my-posts
+  if (authStore.isAdmin || authStore.isCommunityAdmin) {
     router.push('/manage/destinations')
   } else {
     router.push('/destinations/my-posts')

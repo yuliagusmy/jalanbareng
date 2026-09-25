@@ -223,12 +223,12 @@
       Mitra
     </v-btn>
 
-    <!-- Admin Menu -->
-    <v-menu v-if="authStore.isAdmin" offset-y>
+    <!-- Admin & Community Admin Menu -->
+    <v-menu v-if="authStore.isAdmin || authStore.isCommunityAdmin" offset-y>
       <template v-slot:activator="{ props }">
         <v-btn v-bind="props" variant="text" :color="adminColor" class="mx-1 nav-link admin-nav-btn" rounded="pill">
           <v-icon start size="18">mdi-shield-crown-outline</v-icon>
-          Admin
+          {{ authStore.isAdmin ? 'Admin' : 'Kelola' }}
           <v-icon end size="16">mdi-chevron-down</v-icon>
         </v-btn>
       </template>
@@ -257,47 +257,51 @@
           <v-list-item-subtitle class="text-caption">Manage semua destinasi</v-list-item-subtitle>
         </v-list-item>
 
-        <v-list-item to="/manage/users" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
-          <template v-slot:prepend>
-            <v-icon color="#059669" class="mr-2">mdi-account-multiple-outline</v-icon>
-          </template>
-          <v-list-item-title class="font-weight-bold">Kelola User</v-list-item-title>
-          <v-list-item-subtitle class="text-caption">Manage semua user</v-list-item-subtitle>
-        </v-list-item>
+        <template v-if="authStore.isAdmin">
+          <v-divider class="my-2"></v-divider>
 
-        <v-list-item to="/manage/categories" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
-          <template v-slot:prepend>
-            <v-icon color="#D97706" class="mr-2">mdi-tag-multiple-outline</v-icon>
-          </template>
-          <v-list-item-title class="font-weight-bold">Kelola Kategori</v-list-item-title>
-          <v-list-item-subtitle class="text-caption">Manage kategori</v-list-item-subtitle>
-        </v-list-item>
+          <v-list-item to="/manage/users" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
+            <template v-slot:prepend>
+              <v-icon color="#059669" class="mr-2">mdi-account-multiple-outline</v-icon>
+            </template>
+            <v-list-item-title class="font-weight-bold">Kelola User</v-list-item-title>
+            <v-list-item-subtitle class="text-caption">Manage semua user</v-list-item-subtitle>
+          </v-list-item>
 
-        <v-list-item to="/manage/pages" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
-          <template v-slot:prepend>
-            <v-icon color="#0D9488" class="mr-2">mdi-file-document-multiple-outline</v-icon>
-          </template>
-          <v-list-item-title class="font-weight-bold">Kelola Halaman</v-list-item-title>
-          <v-list-item-subtitle class="text-caption">Manage halaman statis</v-list-item-subtitle>
-        </v-list-item>
+          <v-list-item to="/manage/categories" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
+            <template v-slot:prepend>
+              <v-icon color="#D97706" class="mr-2">mdi-tag-multiple-outline</v-icon>
+            </template>
+            <v-list-item-title class="font-weight-bold">Kelola Kategori</v-list-item-title>
+            <v-list-item-subtitle class="text-caption">Manage kategori</v-list-item-subtitle>
+          </v-list-item>
 
-        <v-list-item to="/manage/stories" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
-          <template v-slot:prepend>
-            <v-icon color="#E11D48" class="mr-2">mdi-feather</v-icon>
-          </template>
-          <v-list-item-title class="font-weight-bold">Kurasi Tulisan</v-list-item-title>
-          <v-list-item-subtitle class="text-caption">Moderasi cerita Jalan Bareng</v-list-item-subtitle>
-        </v-list-item>
+          <v-list-item to="/manage/pages" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
+            <template v-slot:prepend>
+              <v-icon color="#0D9488" class="mr-2">mdi-file-document-multiple-outline</v-icon>
+            </template>
+            <v-list-item-title class="font-weight-bold">Kelola Halaman</v-list-item-title>
+            <v-list-item-subtitle class="text-caption">Manage halaman statis</v-list-item-subtitle>
+          </v-list-item>
 
-        <v-divider class="my-2"></v-divider>
+          <v-list-item to="/manage/stories" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
+            <template v-slot:prepend>
+              <v-icon color="#E11D48" class="mr-2">mdi-feather</v-icon>
+            </template>
+            <v-list-item-title class="font-weight-bold">Kurasi Tulisan</v-list-item-title>
+            <v-list-item-subtitle class="text-caption">Moderasi cerita Jalan Bareng</v-list-item-subtitle>
+          </v-list-item>
 
-        <v-list-item to="/manage/settings" rounded="lg" class="mx-2 dropdown-rich-item">
-          <template v-slot:prepend>
-            <v-icon color="grey-darken-1" class="mr-2">mdi-cog-outline</v-icon>
-          </template>
-          <v-list-item-title class="font-weight-bold">Pengaturan</v-list-item-title>
-          <v-list-item-subtitle class="text-caption">Pengaturan website</v-list-item-subtitle>
-        </v-list-item>
+          <v-divider class="my-2"></v-divider>
+
+          <v-list-item to="/manage/settings" rounded="lg" class="mx-2 dropdown-rich-item">
+            <template v-slot:prepend>
+              <v-icon color="grey-darken-1" class="mr-2">mdi-cog-outline</v-icon>
+            </template>
+            <v-list-item-title class="font-weight-bold">Pengaturan</v-list-item-title>
+            <v-list-item-subtitle class="text-caption">Pengaturan website</v-list-item-subtitle>
+          </v-list-item>
+        </template>
       </v-list>
     </v-menu>
   </div>

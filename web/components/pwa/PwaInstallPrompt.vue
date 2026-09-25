@@ -48,20 +48,6 @@ onMounted(() => {
 
   // In development mode, unregister any active service worker and clear stale caches to allow Vite HMR
   if ('serviceWorker' in navigator) {
-    if (import.meta.dev) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        for (const registration of registrations) {
-          registration.unregister()
-        }
-      })
-      if ('caches' in window) {
-        caches.keys().then((keys) => {
-          keys.forEach((key) => caches.delete(key))
-        })
-      }
-      return
-    }
-
     navigator.serviceWorker.register('/sw.js').then((reg) => {
       console.log('[PWA] Service Worker registered with scope:', reg.scope)
     }).catch((err) => {
@@ -123,7 +109,7 @@ const dismissPrompt = () => {
 
 @media (max-width: 600px) {
   .pwa-install-banner {
-    bottom: 16px;
+    bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
     right: 16px;
     left: 16px;
     width: auto;
@@ -131,12 +117,13 @@ const dismissPrompt = () => {
 }
 
 .install-card {
-  border: 1px solid rgba(102, 126, 234, 0.25);
-  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.18) !important;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  box-shadow: 0 12px 32px rgba(220, 38, 38, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
 .pwa-app-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #DC2626;
+  border-radius: 14px;
 }
 
 .line-clamp-1 {

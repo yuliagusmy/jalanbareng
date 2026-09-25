@@ -386,13 +386,15 @@
                 </div>
               </div>
 
-              <div class="spec-item" v-if="getEventLocation(selected)">
-                <div class="spec-icon-box icon-box-location">
-                  <v-icon size="16" color="#0284C7">mdi-map-marker-radius</v-icon>
+              <div class="spec-item" v-if="getEventLocation(selected)" :class="{ 'spec-item-curated': isCuratedEvent(selected) }">
+                <div class="spec-icon-box" :class="isCuratedEvent(selected) ? 'icon-box-secret' : 'icon-box-location'">
+                  <v-icon size="16" :color="isCuratedEvent(selected) ? '#D97706' : '#0284C7'">
+                    {{ isCuratedEvent(selected) ? 'mdi-shield-lock-outline' : 'mdi-map-marker-radius' }}
+                  </v-icon>
                 </div>
                 <div class="spec-text">
                   <span class="spec-label">Titik Kumpul</span>
-                  <span class="spec-val">{{ getEventLocation(selected) }}</span>
+                  <span class="spec-val" :class="{ 'text-amber-darken-3 font-weight-bold': isCuratedEvent(selected) }">{{ getEventLocation(selected) }}</span>
                 </div>
               </div>
 
@@ -642,8 +644,30 @@ const handleDaftarClick = (event: any) => {
   }
 }
 
+const isCuratedEvent = (ev: any) => {
+  if (!ev) return false
+  const actSlug = ev.activation?.slug || ''
+  const actName = (ev.activation?.name || ev.activation?.title || '').toLowerCase()
+  const evName = (ev.name || '').toLowerCase()
+  const desc = (ev.description || '').toLowerCase()
+
+  if (actSlug === 'jalan-bareng-makassar' || actName.includes('jalan bareng makassar') || ev.activation_id === 2) {
+    return true
+  }
+  if (evName.includes('jalan bareng makassar') || (evName.includes('makassar') && ev.type === 'walking')) {
+    return true
+  }
+  if (desc.includes('kurasi') || desc.includes('tikum rahasia') || desc.includes('titik kumpul rahasia')) {
+    return true
+  }
+  return false
+}
+
 const getEventLocation = (event: any) => {
   if (!event) return 'Makassar & Sekitarnya'
+  if (isCuratedEvent(event)) {
+    return '🔒 Rahasia (Sistem Kurasi)'
+  }
   if (event.meeting_point) return event.meeting_point
   if (event.description) {
     const match = event.description.match(/Titik Kumpul:?\s*<\/strong>\s*([^<]+)/i) ||
@@ -1127,6 +1151,16 @@ const getEventCategory = (event: any) => {
 .icon-box-location {
   background: #F0F9FF !important;
   border-color: #BAE6FD !important;
+}
+
+.icon-box-secret {
+  background: #FFFBEB !important;
+  border-color: #FDE68A !important;
+}
+
+.spec-item-curated {
+  background: #FFFDF5 !important;
+  border: 1px solid #FDE68A !important;
 }
 
 .icon-box-ticket {

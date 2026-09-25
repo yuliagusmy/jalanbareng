@@ -28,13 +28,13 @@
           <template v-if="authStore.isLoggedIn">
             <!-- Quick Admin Panel Button (mobile & desktop) -->
             <v-btn
-              v-if="authStore.isAdmin"
+              v-if="authStore.isAdmin || authStore.isCommunityAdmin"
               to="/manage/activations"
               icon
               variant="flat"
               class="mr-1 admin-badge-btn"
-              title="Panel Admin"
-              aria-label="Panel Admin"
+              :title="authStore.isAdmin ? 'Panel Admin' : 'Panel Manajemen'"
+              :aria-label="authStore.isAdmin ? 'Panel Admin' : 'Panel Manajemen'"
             >
               <v-icon color="#DC2626" size="22">mdi-shield-crown</v-icon>
             </v-btn>
@@ -62,15 +62,19 @@
                   <v-list-item-subtitle class="text-caption">{{ authStore.user?.email }}</v-list-item-subtitle>
                 </v-list-item>
 
-                <!-- Admin Link in User Dropdown for Quick Access -->
-                <template v-if="authStore.isAdmin">
+                <!-- Admin / Community Admin Link in User Dropdown for Quick Access -->
+                <template v-if="authStore.isAdmin || authStore.isCommunityAdmin">
                   <v-divider class="my-2"></v-divider>
                   <v-list-item to="/manage/activations" rounded="lg" class="mx-2 bg-red-lighten-5">
                     <template v-slot:prepend>
                       <v-icon color="#DC2626">mdi-shield-crown</v-icon>
                     </template>
-                    <v-list-item-title class="font-weight-bold text-red-darken-3">Panel Admin</v-list-item-title>
-                    <v-list-item-subtitle class="text-caption text-red-darken-1">Kelola website & konten</v-list-item-subtitle>
+                    <v-list-item-title class="font-weight-bold text-red-darken-3">
+                      {{ authStore.isAdmin ? 'Panel Admin' : 'Panel Manajemen' }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="text-caption text-red-darken-1">
+                      {{ authStore.isAdmin ? 'Kelola website & konten' : 'Kelola event & aktivasi' }}
+                    </v-list-item-subtitle>
                   </v-list-item>
                 </template>
 

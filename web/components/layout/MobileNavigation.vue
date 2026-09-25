@@ -50,11 +50,11 @@
         <v-list-item-title>Mitra &amp; Kolaborator</v-list-item-title>
       </v-list-item>
 
-      <!-- Admin Menu -->
-      <template v-if="authStore.isAdmin">
+      <!-- Admin & Management Menu -->
+      <template v-if="authStore.isAdmin || authStore.isCommunityAdmin">
         <v-divider class="my-4"></v-divider>
         <v-list-subheader class="font-weight-bold text-uppercase text-caption mb-1 text-secondary">
-          Admin Panel
+          {{ authStore.isAdmin ? 'Admin Panel' : 'Panel Manajemen' }}
         </v-list-subheader>
 
         <v-list-item to="/manage/activations" rounded="lg" class="mb-1" color="secondary">
@@ -78,40 +78,42 @@
           <v-list-item-title>Kelola Destinasi</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/manage/users" rounded="lg" class="mb-1" color="secondary">
-          <template v-slot:prepend>
-            <v-icon color="info">mdi-account-multiple</v-icon>
-          </template>
-          <v-list-item-title>Kelola User</v-list-item-title>
-        </v-list-item>
+        <template v-if="authStore.isAdmin">
+          <v-list-item to="/manage/users" rounded="lg" class="mb-1" color="secondary">
+            <template v-slot:prepend>
+              <v-icon color="info">mdi-account-multiple</v-icon>
+            </template>
+            <v-list-item-title>Kelola User</v-list-item-title>
+          </v-list-item>
 
-        <v-list-item to="/manage/categories" rounded="lg" class="mb-1" color="secondary">
-          <template v-slot:prepend>
-            <v-icon color="warning">mdi-tag-multiple</v-icon>
-          </template>
-          <v-list-item-title>Kelola Kategori</v-list-item-title>
-        </v-list-item>
+          <v-list-item to="/manage/categories" rounded="lg" class="mb-1" color="secondary">
+            <template v-slot:prepend>
+              <v-icon color="warning">mdi-tag-multiple</v-icon>
+            </template>
+            <v-list-item-title>Kelola Kategori</v-list-item-title>
+          </v-list-item>
 
-        <v-list-item to="/manage/pages" rounded="lg" class="mb-1" color="secondary">
-          <template v-slot:prepend>
-            <v-icon color="teal">mdi-file-document-multiple</v-icon>
-          </template>
-          <v-list-item-title>Kelola Halaman</v-list-item-title>
-        </v-list-item>
+          <v-list-item to="/manage/pages" rounded="lg" class="mb-1" color="secondary">
+            <template v-slot:prepend>
+              <v-icon color="teal">mdi-file-document-multiple</v-icon>
+            </template>
+            <v-list-item-title>Kelola Halaman</v-list-item-title>
+          </v-list-item>
 
-        <v-list-item to="/manage/stories" rounded="lg" class="mb-1" color="secondary">
-          <template v-slot:prepend>
-            <v-icon color="pink">mdi-feather</v-icon>
-          </template>
-          <v-list-item-title>Kurasi Tulisan</v-list-item-title>
-        </v-list-item>
+          <v-list-item to="/manage/stories" rounded="lg" class="mb-1" color="secondary">
+            <template v-slot:prepend>
+              <v-icon color="pink">mdi-feather</v-icon>
+            </template>
+            <v-list-item-title>Kurasi Tulisan</v-list-item-title>
+          </v-list-item>
 
-        <v-list-item to="/manage/settings" rounded="lg" class="mb-1" color="secondary">
-          <template v-slot:prepend>
-            <v-icon color="grey-darken-1">mdi-cog</v-icon>
-          </template>
-          <v-list-item-title>Pengaturan</v-list-item-title>
-        </v-list-item>
+          <v-list-item to="/manage/settings" rounded="lg" class="mb-1" color="secondary">
+            <template v-slot:prepend>
+              <v-icon color="grey-darken-1">mdi-cog</v-icon>
+            </template>
+            <v-list-item-title>Pengaturan</v-list-item-title>
+          </v-list-item>
+        </template>
       </template>
 
       <!-- User Actions (if logged in) -->

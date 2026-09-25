@@ -32,7 +32,22 @@
             </div>
 
             <!-- Title & Meta -->
-            <h1 class="hero-title">{{ destination.name }}</h1>
+            <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-2">
+              <h1 class="hero-title mb-0">{{ destination.name }}</h1>
+              <v-btn
+                v-if="canEdit"
+                :to="`/destinations/${destination.id}/edit`"
+                color="white"
+                variant="flat"
+                rounded="pill"
+                size="small"
+                class="font-weight-bold"
+                style="color: #DC2626 !important;"
+              >
+                <v-icon start size="16">mdi-pencil</v-icon>
+                Edit Destinasi
+              </v-btn>
+            </div>
 
             <div class="hero-meta">
               <div class="meta-item">

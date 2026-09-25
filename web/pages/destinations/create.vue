@@ -334,7 +334,7 @@
             Destinasi berhasil dibagikan ke komunitas
           </p>
           <v-btn color="primary" block variant="flat" rounded="lg" @click="goToDestinations">
-            {{ authStore.isAdmin ? 'Kelola Destinasi' : 'Lihat Postingan Saya' }}
+            {{ authStore.isAdmin || authStore.isCommunityAdmin ? 'Kelola Destinasi' : 'Lihat Postingan Saya' }}
           </v-btn>
         </div>
       </v-card>
@@ -614,8 +614,8 @@ const submitPost = async () => {
 
 const goToDestinations = () => {
   const authStore = useAuthStore()
-  // Redirect admin to manage page, regular users to destinations
-  if (authStore.isAdmin) {
+  // Redirect admin and community admin to manage page, regular users to destinations
+  if (authStore.isAdmin || authStore.isCommunityAdmin) {
     router.push('/manage/destinations')
   } else {
     router.push('/destinations/my-posts')
