@@ -76,8 +76,10 @@ export const useImageUrl = () => {
         }
 
         // If already a full URL, return as is (with mobile LAN localhost rewrite if needed)
+        // If already a full URL, return as is (with mobile LAN localhost rewrite if needed)
+        const isLocalNetwork = import.meta.client && /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(window.location.hostname)
         if (path.startsWith('http://') || path.startsWith('https://')) {
-            if (import.meta.client && path.includes('localhost:8001') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            if (isLocalNetwork && path.includes('localhost:8001')) {
                 return path.replace('localhost:8001', `${window.location.hostname}:8001`)
             }
             return path
@@ -86,8 +88,8 @@ export const useImageUrl = () => {
         // Use apiBase which is already without /api suffix
         let apiBase = config.public.apiBase || 'http://localhost:8001'
 
-        // On client-side mobile testing (e.g. accessed via 192.168.x.x), replace localhost with LAN hostname
-        if (import.meta.client && apiBase.includes('localhost') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        // On client-side mobile testing on local LAN (e.g. accessed via 192.168.x.x), replace localhost with LAN hostname
+        if (isLocalNetwork && apiBase.includes('localhost')) {
             apiBase = apiBase.replace('localhost', window.location.hostname)
         }
 

@@ -19,22 +19,26 @@ class UserSeeder extends Seeder
         $memberRole = Role::where('name', 'member')->first();
 
         // Create Admin User
-        User::create([
-            'name' => 'Admin Jalan Bareng',
-            'email' => 'admin@jalanbareng.com',
-            'password' => Hash::make('JalanBareng2025!'),
-            'role_id' => $adminRole->id,
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@jalanbareng.com'],
+            [
+                'name' => 'Admin Jalan Bareng',
+                'password' => Hash::make('JalanBareng2025!'),
+                'role_id' => $adminRole->id,
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Create Community Admin User
-        User::create([
-            'name' => 'Community Admin',
-            'email' => 'community@jalanbareng.com',
-            'password' => Hash::make('community123'),
-            'role_id' => $communityAdminRole->id,
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'community@jalanbareng.com'],
+            [
+                'name' => 'Community Admin',
+                'password' => Hash::make('community123'),
+                'role_id' => $communityAdminRole->id,
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Create Multiple Community Admins
         $communityAdmins = [
@@ -43,14 +47,16 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($communityAdmins as $admin) {
-            User::create([
-                'name' => $admin['name'],
-                'email' => $admin['email'],
-                'password' => Hash::make('password123'),
-                'role_id' => $communityAdminRole->id,
-                'email_verified_at' => now(),
-                'phone' => '08' . rand(1000000000, 9999999999),
-            ]);
+            User::firstOrCreate(
+                ['email' => $admin['email']],
+                [
+                    'name' => $admin['name'],
+                    'password' => Hash::make('password123'),
+                    'role_id' => $communityAdminRole->id,
+                    'email_verified_at' => now(),
+                    'phone' => '081234567890',
+                ]
+            );
         }
 
         // Create Regular Members
@@ -73,14 +79,16 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($members as $member) {
-            User::create([
-                'name' => $member['name'],
-                'email' => $member['email'],
-                'password' => Hash::make('password123'),
-                'role_id' => $memberRole->id,
-                'email_verified_at' => now(),
-                'phone' => '08' . rand(1000000000, 9999999999),
-            ]);
+            User::firstOrCreate(
+                ['email' => $member['email']],
+                [
+                    'name' => $member['name'],
+                    'password' => Hash::make('password123'),
+                    'role_id' => $memberRole->id,
+                    'email_verified_at' => now(),
+                    'phone' => '081234567891',
+                ]
+            );
         }
 
         $this->command->info('Users created successfully!');

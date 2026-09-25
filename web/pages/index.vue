@@ -79,7 +79,47 @@ const scrollToRegistration = () => {
   }
 }
 
-const activationsList = ref<any[]>([])
+const activationsList = ref<any[]>([
+  {
+    id: 1,
+    name: 'Jalan Bareng Makassar',
+    slug: 'jalan-bareng-makassar',
+    category: 'city',
+    city: 'Makassar',
+    tagline: 'Ruang berjalan dan berbagi cerita di Kota Daeng',
+    hero_image: 'activations/heroes/hero_makassar.jpg',
+    is_active: true,
+    is_featured: true,
+    events_count: 50,
+    destinations_count: 12
+  },
+  {
+    id: 2,
+    name: 'Diskusi Buku Bareng',
+    slug: 'diskusi-buku-bareng',
+    category: 'theme',
+    city: 'Makassar',
+    tagline: 'Melambatkan langkah, membaca kota, bertukar refleksi bacaan',
+    hero_image: 'activations/heroes/hero_diskusi_buku.jpg',
+    is_active: true,
+    is_featured: true,
+    events_count: 12,
+    destinations_count: 4
+  },
+  {
+    id: 3,
+    name: 'Makan Bareng',
+    slug: 'makan-bareng',
+    category: 'theme',
+    city: 'Makassar',
+    tagline: 'Menyusuri denyut kuliner lokal dan cerita di baliknya',
+    hero_image: 'activations/heroes/hero_makan_bareng.jpg',
+    is_active: true,
+    is_featured: true,
+    events_count: 18,
+    destinations_count: 8
+  }
+])
 
 const stats = ref([
   { icon: 'mdi-account-multiple-check', value: '10.000+', label: 'Pendaftar Database', color: '#DC2626' },
@@ -128,8 +168,9 @@ onMounted(async () => {
     // Filter active activations
     const active = activations.filter((a: any) => a.is_active)
 
-    // Set activations list for featured section
-    activationsList.value = active
+    if (active && active.length > 0) {
+      activationsList.value = active
+    }
 
     // Dynamic events count for stats
     try {

@@ -94,7 +94,7 @@
                   <div class="featured-img-box">
                     <img
                       v-if="activation.hero_image"
-                      :src="`${apiBase}/storage/${activation.hero_image}`"
+                      :src="getImageUrl(activation.hero_image)"
                       :alt="activation.name"
                       class="featured-img"
                     />
@@ -174,7 +174,7 @@
               <div class="card-header-img-wrapper">
                 <img
                   v-if="activation.hero_image"
-                  :src="`${apiBase}/storage/${activation.hero_image}`"
+                  :src="getImageUrl(activation.hero_image)"
                   :alt="activation.name"
                   class="card-top-img"
                 />
@@ -190,7 +190,7 @@
 
                 <!-- Chapter Icon Avatar -->
                 <div v-if="activation.icon" class="activation-avatar-badge">
-                  <img :src="`${apiBase}/storage/${activation.icon}`" :alt="activation.name" />
+                  <img :src="getImageUrl(activation.icon)" :alt="activation.name" />
                 </div>
               </div>
 
@@ -291,11 +291,111 @@ definePageMeta({
 })
 
 const { api } = useApi()
+const { getImageUrl } = useImageUrl()
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
 
 const selectedCategory = ref('')
-const activations = ref<any[]>([])
+const defaultActivations = [
+  {
+    id: 1,
+    name: 'Jalan Bareng Makassar',
+    slug: 'jalan-bareng-makassar',
+    category: 'city',
+    city: 'Makassar',
+    tagline: 'Ruang berjalan dan berbagi cerita di Kota Daeng',
+    hero_image: 'activations/heroes/hero_makassar.jpg',
+    is_active: true,
+    is_featured: true,
+    events_count: 50,
+  },
+  {
+    id: 2,
+    name: 'Diskusi Buku Bareng',
+    slug: 'diskusi-buku-bareng',
+    category: 'theme',
+    city: 'Makassar',
+    tagline: 'Melambatkan langkah, membaca kota, bertukar refleksi bacaan',
+    hero_image: 'activations/heroes/hero_diskusi_buku.jpg',
+    is_active: true,
+    is_featured: true,
+    events_count: 12,
+  },
+  {
+    id: 3,
+    name: 'Makan Bareng',
+    slug: 'makan-bareng',
+    category: 'theme',
+    city: 'Makassar',
+    tagline: 'Menyusuri denyut kuliner lokal dan cerita di baliknya',
+    hero_image: 'activations/heroes/hero_makan_bareng.jpg',
+    is_active: true,
+    is_featured: false,
+    events_count: 18,
+  },
+  {
+    id: 4,
+    name: 'Explore Bareng',
+    slug: 'explore-bareng',
+    category: 'theme',
+    city: 'Makassar',
+    tagline: 'Menjelajah sudut tersembunyi, cagar budaya, dan sejarah ruang',
+    hero_image: 'activations/heroes/hero_explore_bareng.jpg',
+    is_active: true,
+    is_featured: false,
+    events_count: 15,
+  },
+  {
+    id: 5,
+    name: 'Jalan Bareng Palopo',
+    slug: 'jalan-bareng-palopo',
+    category: 'city',
+    city: 'Palopo',
+    tagline: 'Berjalan santai dan berbagi cerita di Kota Idaman',
+    hero_image: 'activations/heroes/hero_palopo.jpg',
+    is_active: true,
+    is_featured: false,
+    events_count: 8,
+  },
+  {
+    id: 6,
+    name: 'Jalan Bareng Gowa',
+    slug: 'jalan-bareng-gowa',
+    category: 'city',
+    city: 'Gowa',
+    tagline: 'Menapaki jejak sejarah kerajaan dan persawahan hijau',
+    hero_image: 'activations/heroes/hero_gowa.jpg',
+    is_active: true,
+    is_featured: false,
+    events_count: 6,
+  },
+  {
+    id: 7,
+    name: 'Jalan Bareng Bone',
+    slug: 'jalan-bareng-bone',
+    category: 'city',
+    city: 'Bone',
+    tagline: 'Langkah kaki menyusuri kehangatan Bumi Arung Palakka',
+    hero_image: 'activations/heroes/hero_bone.jpg',
+    is_active: true,
+    is_featured: false,
+    events_count: 5,
+  },
+  {
+    id: 8,
+    name: 'Jalan Bareng Jakarta Selatan',
+    slug: 'jalan-bareng-jaksel',
+    category: 'city',
+    city: 'Jakarta Selatan',
+    tagline: 'Menemukan jeda di tengah riuh metropolitan',
+    hero_image: 'activations/heroes/hero_jaksel.jpg',
+    is_active: true,
+    is_featured: false,
+    events_count: 4,
+  }
+]
+
+const activations = ref<any[]>(defaultActivations)
 const loading = ref(true)
 
 // Fetch activations
@@ -308,9 +408,17 @@ const fetchActivations = async () => {
     }
 
     const response = await api.get('/activations', { params })
-    activations.value = response.data || []
+    const data = response.data?.data || response.data
+    if (Array.isArray(data) && data.length > 0) {
+      activations.value = data
+    } else if (activations.value.length === 0) {
+      activations.value = defaultActivations
+    }
   } catch (error) {
     console.error('Error fetching activations:', error)
+    if (activations.value.length === 0) {
+      activations.value = defaultActivations
+    }
   } finally {
     loading.value = false
   }
@@ -323,7 +431,11 @@ const featuredActivations = computed(() => {
 })
 
 const filteredActivations = computed(() => {
-  return activations.value.filter(a => a.is_active)
+  let list = activations.value.filter(a => a.is_active)
+  if (selectedCategory.value) {
+    list = list.filter(a => a.category === selectedCategory.value)
+  }
+  return list
 })
 
 const categoryTitle = computed(() => {

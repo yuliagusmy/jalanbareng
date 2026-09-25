@@ -460,8 +460,72 @@ const setViewMode = (mode: 'grid' | 'map') => {
   })
 }
 
+// Default fallback destinations for offline / network resilience
+const defaultDestinations = [
+  {
+    id: 1,
+    name: 'Pantai Losari',
+    description: 'Ikon kota Makassar yang terkenal dengan sunset dan kuliner pinggir pantai. Tempat favorit pejalan kaki untuk menikmati senja.',
+    city: 'Makassar',
+    category: { id: 1, name: 'Wisata Alam & Pesisir', icon: 'mdi-beach' },
+    photos: [{ photo_path: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80' }],
+    likes_count: 42,
+    comments_count: 15
+  },
+  {
+    id: 2,
+    name: 'Fort Rotterdam & Kota Tua',
+    description: 'Benteng peninggalan Kerajaan Gowa-Tallo abad ke-17. Kawasan cagar budaya dengan arsitektur kolonial dan taman yang asri.',
+    city: 'Makassar',
+    category: { id: 2, name: 'Cagar Budaya & Sejarah', icon: 'mdi-castle' },
+    photos: [{ photo_path: 'https://images.unsplash.com/photo-1599833975787-5c143f373c30?w=800&auto=format&fit=crop&q=80' }],
+    likes_count: 38,
+    comments_count: 9
+  },
+  {
+    id: 3,
+    name: 'Kawasan Kuliner Pecinan Makassar',
+    description: 'Menelusuri jalanan legendaris Jl. Sulawesi dan sekitarnya dengan ragam kuliner peranakan dan nusantara yang kaya rasa.',
+    city: 'Makassar',
+    category: { id: 3, name: 'Wisata Kuliner', icon: 'mdi-silverware-fork-knife' },
+    photos: [{ photo_path: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80' }],
+    likes_count: 56,
+    comments_count: 21
+  },
+  {
+    id: 4,
+    name: 'Taman Macan & Koridor Hijau',
+    description: 'Ruang publik hijau di tengah kota Makassar, sering dijadikan titik kumpul aktivasi literasi dan diskusi buku santai.',
+    city: 'Makassar',
+    category: { id: 4, name: 'Ruang Terbuka Hijau', icon: 'mdi-tree' },
+    photos: [{ photo_path: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?w=800&auto=format&fit=crop&q=80' }],
+    likes_count: 29,
+    comments_count: 7
+  },
+  {
+    id: 5,
+    name: 'Pelabuhan Paotere',
+    description: 'Pelabuhan perahu tradisional Pinisi tertua di Makassar dengan suasana maritim otentik dan pemandangan perahu layar megah.',
+    city: 'Makassar',
+    category: { id: 2, name: 'Cagar Budaya & Sejarah', icon: 'mdi-sail-boat' },
+    photos: [{ photo_path: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80' }],
+    likes_count: 35,
+    comments_count: 11
+  },
+  {
+    id: 6,
+    name: 'Benteng Somba Opu Gowa',
+    description: 'Pusat pertahanan maritim kembar Kerajaan Gowa-Tallo dengan museum budaya dan rumah adat seluruh suku Sulawesi Selatan.',
+    city: 'Gowa',
+    category: { id: 2, name: 'Cagar Budaya & Sejarah', icon: 'mdi-pillar' },
+    photos: [{ photo_path: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&auto=format&fit=crop&q=80' }],
+    likes_count: 24,
+    comments_count: 6
+  }
+]
+
 // Data State
-const destinations = ref([])
+const destinations = ref<any[]>(defaultDestinations)
 const categories = ref([])
 const activations = ref([])
 const mapDestinations = ref([])
@@ -472,7 +536,7 @@ const selectedActivation = ref<number | null>(null)
 const pagination = ref({
   current_page: 1,
   per_page: 12,
-  total: 0
+  total: 6
 })
 
 const { getImageUrl } = useImageUrl()
@@ -573,16 +637,20 @@ const fetchDestinations = async () => {
     }
 
     const response = await api.get('/destinations', { params })
-    destinations.value = response.data.data || []
-
-    pagination.value = {
-      current_page: response.data.current_page,
-      per_page: response.data.per_page,
-      total: response.data.total
+    const data = response.data?.data || response.data
+    if (Array.isArray(data) && data.length > 0) {
+      destinations.value = data
+      pagination.value = {
+        current_page: response.data.current_page || 1,
+        per_page: response.data.per_page || 12,
+        total: response.data.total || data.length
+      }
     }
   } catch (error) {
     console.error('Error fetching destinations:', error)
-    destinations.value = []
+    if (destinations.value.length === 0) {
+      destinations.value = defaultDestinations
+    }
   } finally {
     loading.value = false
   }

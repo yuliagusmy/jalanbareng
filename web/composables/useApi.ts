@@ -7,7 +7,10 @@ export const useApi = () => {
 
   let baseURL = config.public.apiUrl as string || 'http://localhost:8001/api'
   if (import.meta.client && baseURL.includes('localhost') && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    baseURL = baseURL.replace('localhost', window.location.hostname)
+    const isLocalNetwork = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(window.location.hostname)
+    if (isLocalNetwork) {
+      baseURL = baseURL.replace('localhost', window.location.hostname)
+    }
   }
 
   const api: AxiosInstance = axios.create({

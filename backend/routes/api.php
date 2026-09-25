@@ -154,3 +154,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/stories/{id}', [StoryController::class, 'adminUpdate']);
     Route::delete('/admin/stories/{id}', [StoryController::class, 'adminDestroy']);
 });
+
+// One-click secure database seed trigger for production setup
+Route::get('/system/seed-database', function (\Illuminate\Http\Request $request) {
+    if ($request->query('key') !== 'jalanbareng2026') {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+    
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Database seed completed successfully!',
+            'output' => \Illuminate\Support\Facades\Artisan::output()
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+});

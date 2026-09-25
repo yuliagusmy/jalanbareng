@@ -532,13 +532,68 @@ const { api } = useApi()
 const config = useRuntimeConfig()
 const { getImageUrl } = useImageUrl()
 
+const defaultUpcomingEvents = [
+  {
+    id: 1,
+    name: 'Jelajah Kota Tua Makassar: Dari Pantai Losari ke Fort Rotterdam',
+    type: 'walking',
+    description: 'Mari jelajahi sejarah Kota Makassar melalui jalan santai menyusuri kawasan kota tua. Titik kumpul Pantai Losari.',
+    date: '2026-10-04 06:00:00',
+    poster: '/images/hero/walk_1.jpg',
+    registration_link: 'https://instagram.com/jalanbarengmakassar',
+    meeting_point: 'Anjungan Pantai Losari',
+    distance: 5.2,
+    estimated_duration: 120,
+    activation: { name: 'Jalan Bareng Makassar', slug: 'jalan-bareng-makassar', city: 'Makassar' }
+  },
+  {
+    id: 2,
+    name: 'Morning Walk: Pesisir Losari ke Tanjung Bunga',
+    type: 'walking',
+    description: 'Jalan santai pagi menyusuri pesisir pantai Makassar. Nikmati hembusan angin laut dan udara segar.',
+    date: '2026-10-11 06:00:00',
+    poster: '/images/hero/walk_2.jpg',
+    registration_link: 'https://instagram.com/jalanbarengmakassar',
+    meeting_point: 'Depan Anjungan Pantai Losari',
+    distance: 4.5,
+    estimated_duration: 90,
+    activation: { name: 'Jalan Bareng Makassar', slug: 'jalan-bareng-makassar', city: 'Makassar' }
+  },
+  {
+    id: 3,
+    name: 'Diskusi Buku Bareng: Membaca Denyut Kota di Taman',
+    type: 'regular',
+    description: 'Membawa buku favorit, jalan santai sore hari, dan sesi melingkar untuk saling bertukar refleksi bacaan.',
+    date: '2026-10-18 16:00:00',
+    poster: '/images/hero/walk_7.jpg',
+    registration_link: 'https://instagram.com/jalanbarengind',
+    meeting_point: 'Taman Macan Makassar',
+    distance: 2.0,
+    estimated_duration: 120,
+    activation: { name: 'Diskusi Buku Bareng', slug: 'diskusi-buku-bareng', city: 'Makassar' }
+  },
+  {
+    id: 4,
+    name: 'Makan Bareng: Menelisik Narasi Rasa di Kedai Legendaris',
+    type: 'regular',
+    description: 'Jalan kaki sore menyusuri gang kuliner lokal legendaris sembari menikmati santapan khas dan mendengar cerita penjual lokal.',
+    date: '2026-10-25 16:30:00',
+    poster: '/images/hero/walk_9.jpg',
+    registration_link: 'https://instagram.com/jalanbarengind',
+    meeting_point: 'Kawasan Pecinan Makassar',
+    distance: 3.0,
+    estimated_duration: 150,
+    activation: { name: 'Makan Bareng', slug: 'makan-bareng', city: 'Makassar' }
+  }
+]
+
 const tab = ref('upcoming')
-const upcomingEvents = ref<any[]>([])
+const upcomingEvents = ref<any[]>(defaultUpcomingEvents)
 const pastEvents = ref<any[]>([])
 const loadingUpcoming = ref(true)
 const loadingPast = ref(false)
 
-const upcomingPagination = ref({ current_page: 1, per_page: 6, total: 0, last_page: 1 })
+const upcomingPagination = ref({ current_page: 1, per_page: 6, total: 4, last_page: 1 })
 const pastPagination = ref({ current_page: 1, per_page: 6, total: 0, last_page: 1 })
 const selectedActivation = ref<number | null>(null)
 const activations = ref<any[]>([])
@@ -558,14 +613,21 @@ const fetchEvents = async (status = 'upcoming', page = 1) => {
     const { data, ...pagination } = response.data
 
     if (status === 'upcoming') {
-      upcomingEvents.value = data || []
-      upcomingPagination.value = pagination
+      if (Array.isArray(data) && data.length > 0) {
+        upcomingEvents.value = data
+        upcomingPagination.value = pagination
+      } else if (upcomingEvents.value.length === 0) {
+        upcomingEvents.value = defaultUpcomingEvents
+      }
     } else {
       pastEvents.value = data || []
       pastPagination.value = pagination
     }
   } catch (error) {
     console.error(`Error fetching ${status} events:`, error)
+    if (status === 'upcoming' && upcomingEvents.value.length === 0) {
+      upcomingEvents.value = defaultUpcomingEvents
+    }
   } finally {
     loading.value = false
   }
