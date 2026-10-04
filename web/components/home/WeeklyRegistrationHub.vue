@@ -129,10 +129,11 @@
         color="grey-darken-3"
         rounded="pill"
         size="large"
-        class="font-weight-bold px-6 catalog-jump-btn"
+        class="font-weight-bold px-4 px-sm-6 catalog-jump-btn"
       >
         <v-icon start size="18" color="#DC2626">mdi-calendar-multiselect</v-icon>
-        Lihat Semua Jadwal &amp; Arsip di Katalog Event
+        <span class="d-none d-sm-inline">Lihat Semua Jadwal &amp; Arsip di Katalog Event</span>
+        <span class="d-inline d-sm-none">Lihat Semua di Katalog Event</span>
         <v-icon end size="16">mdi-arrow-right</v-icon>
       </v-btn>
     </div>
@@ -1094,6 +1095,12 @@ onMounted(async () => {
     height: 42px !important;
     font-size: 0.85rem !important;
     margin-bottom: 6px !important;
+  }
+
+  .catalog-jump-btn {
+    font-size: 0.82rem !important;
+    height: 40px !important;
+    max-width: 92% !important;
   }
 }
 </style>

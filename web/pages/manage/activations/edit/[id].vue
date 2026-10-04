@@ -189,30 +189,72 @@
               <v-window-item value="gallery">
                 <v-row>
                   <v-col cols="12">
-                    <div class="d-flex justify-space-between align-center mb-4">
-                      <h3 class="text-h6">Daftar Media</h3>
-                      <v-btn color="primary" prepend-icon="mdi-plus" size="small" @click="openMediaDialog">Tambah
-                        Media</v-btn>
+                    <div class="d-flex justify-space-between align-center mb-4 flex-wrap ga-2">
+                      <div>
+                        <h3 class="text-h6 font-weight-bold">Dokumentasi Aktivasi</h3>
+                        <p class="text-caption text-grey mb-0">Foto dan video dokumentasi khusus untuk aktivasi ini</p>
+                      </div>
+                      <v-btn color="primary" prepend-icon="mdi-upload" rounded="pill" size="small" @click="openMediaDialog">
+                        Upload Dokumentasi
+                      </v-btn>
                     </div>
 
-                    <v-row>
-                      <v-col v-for="item in activation?.media" :key="item.id" cols="12" sm="4" md="3">
-                        <v-card elevation="0" border rounded="lg">
-                          <v-img v-if="item.type === 'photo'" :src="`${apiBase}/storage/${item.file_url}`" height="150"
-                            cover class="bg-grey-lighten-4"></v-img>
-                          <div v-else class="d-flex align-center justify-center bg-grey-lighten-4"
-                            style="height: 150px;">
-                            <v-icon size="48" color="red">mdi-youtube</v-icon>
+                    <v-row v-if="activation?.media && activation.media.length > 0">
+                      <v-col v-for="item in activation.media" :key="item.id" cols="12" sm="6" md="4" lg="3">
+                        <v-card elevation="0" border rounded="xl" class="overflow-hidden h-100 d-flex flex-column">
+                          <div style="position: relative; height: 160px;">
+                            <v-img v-if="item.type === 'photo'" :src="item.file_url?.startsWith('http') ? item.file_url : `${apiBase}/storage/${item.file_url}`" height="160"
+                              cover class="bg-grey-lighten-4"></v-img>
+                            <div v-else class="d-flex align-center justify-center bg-grey-lighten-4" style="height: 160px;">
+                              <v-icon size="48" color="red">mdi-youtube</v-icon>
+                            </div>
+
+                            <!-- Badges -->
+                            <div style="position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; flex-wrap: wrap;">
+                              <v-chip v-if="item.tag" size="x-small" color="primary" variant="flat">
+                                {{ item.tag }}
+                              </v-chip>
+                              <v-chip v-if="item.is_featured_home" size="x-small" color="amber-darken-3" variant="flat">
+                                ⭐ Beranda
+                              </v-chip>
+                            </div>
                           </div>
-                          <v-card-actions class="pa-2">
-                            <v-spacer></v-spacer>
+
+                          <v-card-text class="pa-3 flex-grow-1">
+                            <p class="text-caption font-weight-medium text-grey-darken-3 mb-1">
+                              {{ item.description || 'Tanpa keterangan' }}
+                            </p>
+                            <div class="d-flex flex-column ga-1 mt-2 text-caption text-grey">
+                              <span v-if="item.photographer" class="d-flex align-center ga-1">
+                                <v-icon size="12">mdi-camera-outline</v-icon>
+                                {{ item.photographer }}
+                              </span>
+                              <span v-if="item.activity_date" class="d-flex align-center ga-1">
+                                <v-icon size="12">mdi-calendar-outline</v-icon>
+                                {{ item.activity_date }}
+                              </span>
+                            </div>
+                          </v-card-text>
+
+                          <v-divider></v-divider>
+                          <v-card-actions class="pa-2 px-3 justify-end">
                             <v-btn icon size="small" color="error" variant="text" @click="deleteMedia(item.id)">
-                              <v-icon>mdi-delete</v-icon>
+                              <v-icon size="18">mdi-delete-outline</v-icon>
                             </v-btn>
                           </v-card-actions>
                         </v-card>
                       </v-col>
                     </v-row>
+
+                    <!-- Empty State -->
+                    <div v-else class="text-center pa-10 border rounded-xl bg-grey-lighten-5">
+                      <v-icon size="48" color="grey-lighten-1">mdi-image-multiple-outline</v-icon>
+                      <h4 class="text-subtitle-1 font-weight-bold text-grey-darken-2 mt-2">Belum Ada Dokumentasi</h4>
+                      <p class="text-caption text-grey mb-4">Tambahkan foto dokumentasi kegiatan untuk aktivasi ini.</p>
+                      <v-btn color="primary" variant="tonal" rounded="pill" size="small" prepend-icon="mdi-plus" @click="openMediaDialog">
+                        Upload Foto Sekarang
+                      </v-btn>
+                    </div>
                   </v-col>
                 </v-row>
               </v-window-item>
@@ -303,23 +345,103 @@
 
       <!-- Dialogs -->
       <!-- Media Dialog -->
-      <v-dialog v-model="mediaDialog" max-width="500">
+      <v-dialog v-model="mediaDialog" max-width="560">
         <v-card rounded="xl">
-          <v-card-title class="pa-4">Tambah Media</v-card-title>
-          <v-card-text>
-            <v-select v-model="mediaForm.type" label="Tipe Media" :items="['photo', 'youtube']" variant="outlined"
-              density="comfortable"></v-select>
-            <v-file-input v-if="mediaForm.type === 'photo'" v-model="mediaFile" label="File Foto" accept="image/*"
-              variant="outlined" density="comfortable"></v-file-input>
-            <v-text-field v-if="mediaForm.type === 'youtube'" v-model="mediaForm.external_url" label="URL YouTube"
-              variant="outlined" density="comfortable"></v-text-field>
-            <v-text-field v-model="mediaForm.description" label="Deskripsi" variant="outlined"
-              density="comfortable"></v-text-field>
+          <v-card-title class="pa-4 font-weight-bold">Upload Dokumentasi Kegiatan</v-card-title>
+          <v-card-text class="pt-0">
+            <v-select
+              v-model="mediaForm.type"
+              label="Tipe Media"
+              :items="[{ title: 'Foto Dokumentasi', value: 'photo' }, { title: 'Video YouTube', value: 'youtube' }]"
+              item-title="title"
+              item-value="value"
+              variant="outlined"
+              density="comfortable"
+              class="mb-3"
+            ></v-select>
+
+            <v-file-input
+              v-if="mediaForm.type === 'photo'"
+              v-model="mediaFiles"
+              label="Pilih Foto Dokumentasi"
+              accept="image/*"
+              multiple
+              chips
+              show-size
+              variant="outlined"
+              density="comfortable"
+              prepend-icon="mdi-camera-plus"
+              hint="Bisa pilih beberapa foto sekaligus (batch upload)"
+              persistent-hint
+              class="mb-3"
+            ></v-file-input>
+
+            <v-text-field
+              v-if="mediaForm.type === 'youtube'"
+              v-model="mediaForm.external_url"
+              label="URL YouTube"
+              placeholder="https://www.youtube.com/watch?v=..."
+              variant="outlined"
+              density="comfortable"
+              class="mb-3"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="mediaForm.description"
+              label="Keterangan / Cerita Foto"
+              placeholder="Contoh: Suasana pejalan kaki saat melintasi jalur pesisir..."
+              variant="outlined"
+              density="comfortable"
+              class="mb-3"
+            ></v-text-field>
+
+            <v-row dense>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="mediaForm.photographer"
+                  label="Kredit Fotografer"
+                  placeholder="@kawanpejalan"
+                  prepend-inner-icon="mdi-camera"
+                  variant="outlined"
+                  density="comfortable"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="mediaForm.tag"
+                  label="Kategori / Tag"
+                  placeholder="Walking Tour / Diskusi"
+                  prepend-inner-icon="mdi-tag-outline"
+                  variant="outlined"
+                  density="comfortable"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="mediaForm.activity_date"
+                  label="Tanggal Kegiatan"
+                  type="date"
+                  variant="outlined"
+                  density="comfortable"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" class="d-flex align-center">
+                <v-checkbox
+                  v-model="mediaForm.is_featured_home"
+                  label="Tampilkan di Beranda (Featured)"
+                  color="primary"
+                  density="compact"
+                  hide-details
+                ></v-checkbox>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions class="pa-4 pt-0">
             <v-spacer></v-spacer>
-            <v-btn variant="text" @click="mediaDialog = false">Batal</v-btn>
-            <v-btn color="primary" variant="flat" @click="submitMedia" :loading="mediaLoading">Simpan</v-btn>
+            <v-btn variant="text" rounded="pill" @click="mediaDialog = false">Batal</v-btn>
+            <v-btn color="primary" variant="flat" rounded="pill" @click="submitMedia" :loading="mediaLoading">
+              Simpan Dokumentasi
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -658,14 +780,26 @@ const submit = async () => {
 // Media Management
 const mediaDialog = ref(false)
 const mediaLoading = ref(false)
-const mediaFile = ref<File | null>(null)
-const mediaForm = reactive({ type: 'photo', external_url: '', description: '' })
+const mediaFiles = ref<File[]>([])
+const mediaForm = reactive({
+  type: 'photo',
+  external_url: '',
+  description: '',
+  photographer: '',
+  activity_date: '',
+  tag: '',
+  is_featured_home: false
+})
 
 const openMediaDialog = () => {
   mediaForm.type = 'photo'
   mediaForm.external_url = ''
   mediaForm.description = ''
-  mediaFile.value = null
+  mediaForm.photographer = ''
+  mediaForm.activity_date = ''
+  mediaForm.tag = ''
+  mediaForm.is_featured_home = false
+  mediaFiles.value = []
   mediaDialog.value = true
 }
 
@@ -674,9 +808,20 @@ const submitMedia = async () => {
   try {
     const data = new FormData()
     data.append('type', mediaForm.type)
-    data.append('description', mediaForm.description)
-    if (mediaForm.type === 'photo' && mediaFile.value) {
-      data.append('file', mediaFile.value)
+    if (mediaForm.description) data.append('description', mediaForm.description)
+    if (mediaForm.photographer) data.append('photographer', mediaForm.photographer)
+    if (mediaForm.activity_date) data.append('activity_date', mediaForm.activity_date)
+    if (mediaForm.tag) data.append('tag', mediaForm.tag)
+    data.append('is_featured_home', mediaForm.is_featured_home ? '1' : '0')
+
+    if (mediaForm.type === 'photo') {
+      if (Array.isArray(mediaFiles.value) && mediaFiles.value.length > 0) {
+        mediaFiles.value.forEach(f => {
+          data.append('files[]', f)
+        })
+      } else if (mediaFiles.value && (mediaFiles.value as any) instanceof File) {
+        data.append('files[]', mediaFiles.value as any)
+      }
     } else if (mediaForm.type === 'youtube') {
       data.append('external_url', mediaForm.external_url)
     }

@@ -818,7 +818,7 @@ const getEventCategory = (event: any) => {
 .hero-title {
   font-size: clamp(2.2rem, 4vw, 3.4rem);
   letter-spacing: -0.035em;
-  line-height: 1.12;
+  line-height: 1.15;
   color: #111827;
 }
 
@@ -1365,7 +1365,7 @@ const getEventCategory = (event: any) => {
   }
 
   .hero-title {
-    font-size: clamp(1.45rem, 6.2vw, 2.05rem);
+    font-size: 1.95rem;
     line-height: 1.15;
   }
 

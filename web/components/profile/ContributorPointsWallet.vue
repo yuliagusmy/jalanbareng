@@ -147,6 +147,15 @@
               inline
             ></v-badge>
           </button>
+          <button
+            type="button"
+            :class="['subtab-btn', { active: activeSubTab === 'badges' }]"
+            @click="activeSubTab = 'badges'"
+          >
+            <v-icon start size="16" color="#F59E0B">mdi-trophy-outline</v-icon>
+            Lencana &amp; Pencapaian
+            <span class="badge-tab-pill ml-1">{{ unlockedBadgesCount }}/6</span>
+          </button>
         </div>
       </div>
 
@@ -245,6 +254,66 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Tab Content 3: Lencana & Pencapaian -->
+      <div v-if="activeSubTab === 'badges'" class="pa-4 pa-md-6">
+        <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-5">
+          <div>
+            <h3 class="text-subtitle-1 font-weight-bold text-grey-darken-4 mb-0">Lencana Apresiasi Pejalan Kaki</h3>
+            <p class="text-caption text-grey-darken-1 mb-0">Lencana terbuka secara otomatis seiring dengan kontribusi Anda bagi kota</p>
+          </div>
+          <div class="badge-status-pill px-3 py-1 rounded-pill bg-amber-lighten-5 border border-amber-lighten-3 d-flex align-center">
+            <v-icon size="16" color="#D97706" class="mr-1.5">mdi-trophy-variant</v-icon>
+            <span class="text-caption font-weight-bold text-amber-darken-4">
+              {{ unlockedBadgesCount }} dari {{ badgesList.length }} Lencana Terbuka
+            </span>
+          </div>
+        </div>
+
+        <v-row dense>
+          <v-col v-for="b in badgesList" :key="b.id" cols="12" sm="6" md="4">
+            <div
+              class="badge-card pa-4 rounded-xl border d-flex flex-column h-100"
+              :class="{ 'badge-unlocked': b.unlocked, 'badge-locked': !b.unlocked }"
+            >
+              <div class="d-flex align-start justify-space-between mb-3">
+                <div class="badge-icon-box" :style="{ background: b.unlocked ? b.bgColor : '#F1F5F9' }">
+                  <span class="badge-emoji">{{ b.emoji }}</span>
+                </div>
+                <v-chip
+                  size="x-small"
+                  :color="b.unlocked ? '#16A34A' : '#9CA3AF'"
+                  variant="flat"
+                  class="font-weight-bold text-white"
+                >
+                  <v-icon start size="11">{{ b.unlocked ? 'mdi-check' : 'mdi-lock-outline' }}</v-icon>
+                  {{ b.unlocked ? 'Terbuka' : 'Terkunci' }}
+                </v-chip>
+              </div>
+
+              <div class="badge-title font-weight-bold text-grey-darken-4 mb-1">{{ b.title }}</div>
+              <p class="badge-desc text-caption text-grey-darken-2 mb-3 flex-grow-1">{{ b.desc }}</p>
+
+              <!-- Progress bar -->
+              <div class="badge-progress-box pt-2 border-t">
+                <div class="d-flex align-center justify-space-between text-caption font-weight-medium mb-1">
+                  <span class="text-grey">{{ b.progressLabel }}</span>
+                  <span :class="b.unlocked ? 'text-emerald-700 font-weight-bold' : 'text-grey-darken-2'">
+                    {{ b.currentValue }} / {{ b.targetValue }}
+                  </span>
+                </div>
+                <v-progress-linear
+                  :model-value="Math.min(100, (b.currentValue / b.targetValue) * 100)"
+                  :color="b.unlocked ? '#16A34A' : '#DC2626'"
+                  bg-color="#F1F5F9"
+                  rounded
+                  height="6"
+                ></v-progress-linear>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
       </div>
     </v-card>
 
@@ -370,10 +439,89 @@ import { usePoints } from '~/composables/usePoints'
 
 const { loading, walletData, fetchMyPoints, requestCashout } = usePoints()
 
-const activeSubTab = ref<'transactions' | 'cashouts'>('transactions')
+const activeSubTab = ref<'transactions' | 'cashouts' | 'badges'>('transactions')
 const cashoutDialog = ref(false)
 const submitting = ref(false)
 const modalError = ref<string | null>(null)
+
+// Gamification Badges List
+const badgesList = computed(() => {
+  const earned = walletData.value?.total_earned ?? 0
+  const balance = walletData.value?.balance ?? 0
+
+  return [
+    {
+      id: 'first_step',
+      emoji: '🥾',
+      title: 'Langkah Pertama',
+      desc: 'Bergabung di komunitas pejalan kaki dan mengaktifkan akun Jalan Bareng.',
+      bgColor: '#FEF2F2',
+      unlocked: true,
+      currentValue: 1,
+      targetValue: 1,
+      progressLabel: 'Status Akun'
+    },
+    {
+      id: 'spot_scout',
+      emoji: '📍',
+      title: 'Pionir Sudut Kota',
+      desc: 'Membagikan rekomendasi destinasi atau titik kumpul baru untuk komunitas.',
+      bgColor: '#EFF6FF',
+      unlocked: earned >= 50,
+      currentValue: Math.min(1, Math.floor(earned / 50)),
+      targetValue: 1,
+      progressLabel: 'Destinasi Disetujui'
+    },
+    {
+      id: 'active_walker',
+      emoji: '🏃',
+      title: 'Kawan Pejalan Aktif',
+      desc: 'Berpartisipasi aktif dalam kegiatan aktivasi jalan santai mingguan.',
+      bgColor: '#F0FDF4',
+      unlocked: earned >= 75,
+      currentValue: Math.min(1, Math.floor(earned / 75)),
+      targetValue: 1,
+      progressLabel: 'Aktivasi Diikuti'
+    },
+    {
+      id: 'storyteller',
+      emoji: '📝',
+      title: 'Pencerita Urban',
+      desc: 'Menuliskan kisah perjalanan atau cerita humanis di sudut kota.',
+      bgColor: '#FFF7ED',
+      unlocked: earned >= 100,
+      currentValue: Math.min(1, Math.floor(earned / 100)),
+      targetValue: 1,
+      progressLabel: 'Cerita Dipublikasikan'
+    },
+    {
+      id: 'star_contributor',
+      emoji: '🪙',
+      title: 'Kontributor Berbintang',
+      desc: 'Mengumpulkan akumulasi 250 poin kontributor dari berbagai kegiatan.',
+      bgColor: '#FEF3C7',
+      unlocked: earned >= 250,
+      currentValue: Math.min(250, earned),
+      targetValue: 250,
+      progressLabel: 'Akumulasi Poin'
+    },
+    {
+      id: 'city_guide',
+      emoji: '🌟',
+      title: 'Pemandu Urban Legendaris',
+      desc: 'Mencapai 500+ poin kontributor dan berhak mengkurasi rute jelajah kota.',
+      bgColor: '#FAF5FF',
+      unlocked: earned >= 500,
+      currentValue: Math.min(500, earned),
+      targetValue: 500,
+      progressLabel: 'Poin Menuju Legenda'
+    }
+  ]
+})
+
+const unlockedBadgesCount = computed(() => {
+  return badgesList.value.filter(b => b.unlocked).length
+})
 
 const form = ref({
   points_requested: 500,
@@ -545,5 +693,59 @@ onMounted(() => {
 
 .bg-stone-50 {
   background-color: #FAFAF9;
+}
+
+/* Badges Showcase Styling */
+.badge-tab-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.badge-card {
+  background: #FFFFFF;
+  border-color: #E2E8F0 !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.badge-card.badge-unlocked {
+  border-color: #BBF7D0 !important;
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.08);
+}
+
+.badge-card.badge-unlocked:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.12);
+}
+
+.badge-card.badge-locked {
+  opacity: 0.82;
+  background: #FAFAFA;
+}
+
+.badge-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.badge-emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.badge-title {
+  font-size: 0.95rem;
+}
+
+.badge-desc {
+  line-height: 1.4;
 }
 </style>

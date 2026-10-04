@@ -211,6 +211,14 @@
           <div class="sheet-footer">
             <button
               type="button"
+              class="sheet-secondary-btn"
+              @click="navigateToUrl('/aktivasi/kalender')"
+            >
+              <v-icon size="18">mdi-calendar-month-outline</v-icon>
+              <span>Kalender Event</span>
+            </button>
+            <button
+              type="button"
               class="sheet-primary-btn"
               @click="navigateToUrl('/aktivasi')"
             >
@@ -872,6 +880,29 @@ const getCategoryIcon = (cat: string) => {
 
 .sheet-primary-btn:active {
   background: #B91C1C;
+  transform: scale(0.98);
+}
+
+.sheet-secondary-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  color: #DC2626;
+  border: 1.5px solid #DC2626;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.sheet-secondary-btn:active {
+  background: rgba(220, 38, 38, 0.08);
   transform: scale(0.98);
 }
 

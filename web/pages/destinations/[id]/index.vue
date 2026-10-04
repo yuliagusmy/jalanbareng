@@ -34,19 +34,35 @@
             <!-- Title & Meta -->
             <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-2">
               <h1 class="hero-title mb-0">{{ destination.name }}</h1>
-              <v-btn
-                v-if="canEdit"
-                :to="`/destinations/${destination.id}/edit`"
-                color="white"
-                variant="flat"
-                rounded="pill"
-                size="small"
-                class="font-weight-bold"
-                style="color: #DC2626 !important;"
-              >
-                <v-icon start size="16">mdi-pencil</v-icon>
-                Edit Destinasi
-              </v-btn>
+              <div class="d-flex align-center ga-2">
+                <v-btn
+                  variant="flat"
+                  :color="isBookmarked(destination.id) ? '#DC2626' : 'white'"
+                  rounded="pill"
+                  size="small"
+                  class="font-weight-bold"
+                  :style="isBookmarked(destination.id) ? 'color: white !important;' : 'color: #111827 !important;'"
+                  @click="handleToggleBookmark"
+                >
+                  <v-icon start size="16">
+                    {{ isBookmarked(destination.id) ? 'mdi-bookmark-check' : 'mdi-bookmark-outline' }}
+                  </v-icon>
+                  {{ isBookmarked(destination.id) ? 'Tersimpan' : 'Simpan Destinasi' }}
+                </v-btn>
+                <v-btn
+                  v-if="canEdit"
+                  :to="`/destinations/${destination.id}/edit`"
+                  color="white"
+                  variant="flat"
+                  rounded="pill"
+                  size="small"
+                  class="font-weight-bold"
+                  style="color: #DC2626 !important;"
+                >
+                  <v-icon start size="16">mdi-pencil</v-icon>
+                  Edit Destinasi
+                </v-btn>
+              </div>
             </div>
 
             <div class="hero-meta">
@@ -120,18 +136,30 @@
               <div class="photo-grid">
                 <div v-for="(photo, index) in destination.photos" :key="photo.id" class="photo-item"
                   @click="openGallery(index)">
-                  <img :src="getImageUrl(photo.photo_path)" :alt="`Photo ${index + 1}`" class="gallery-image" />
+                  <img :src="getImageUrl(photo.photo_path)" :alt="`Photo ${index + 1}`" class="gallery-image"
+                    @error="(e: any) => e.target.src = '/images/hero/walk_1.jpg'" />
                   <div v-if="photo.is_primary" class="primary-label">Utama</div>
                 </div>
               </div>
             </section>
 
+            <!-- Walker Experience & Amenities Guide -->
+            <DestinationWalkerGuide
+              :category-name="destination.category?.name"
+              :destination-name="destination.name"
+            />
+
             <!-- Map Section -->
             <section class="content-block">
-              <h2 class="section-title">Lokasi</h2>
+              <h2 class="section-title">Lokasi & Navigasi</h2>
               <div class="map-card">
-                <div v-if="destination.latitude && destination.longitude">
-                  <div ref="mapContainer" style="height: 400px; border-radius: 12px; overflow: hidden;"></div>
+                <div v-if="destination.latitude && destination.longitude" class="destination-map-frame">
+                  <ClientOnly>
+                    <DestinationMapViewer
+                      :destinations="[destination]"
+                      :map-center="{ lat: Number(destination.latitude), lng: Number(destination.longitude) }"
+                    />
+                  </ClientOnly>
                 </div>
 
                 <div class="map-info">
@@ -143,7 +171,7 @@
                   <v-btn :href="getGoogleMapsUrl()" target="_blank" color="primary" variant="flat" size="default"
                     class="mt-4">
                     <v-icon start size="20">mdi-directions</v-icon>
-                    Petunjuk Arah
+                    Petunjuk Arah Google Maps
                   </v-btn>
                 </div>
               </div>
@@ -162,105 +190,10 @@
 
             <!-- Comments -->
             <section class="content-block">
-              <h2 class="section-title">Komentar ({{ destination.comments?.length || 0 }})</h2>
-
-              <!-- Comment Form -->
-              <div v-if="authStore.isLoggedIn" class="comment-form">
-                <textarea v-model="newComment" placeholder="Tulis komentar Anda..." class="comment-textarea"
-                  rows="4"></textarea>
-                <div class="comment-actions">
-                  <v-btn color="primary" variant="flat" :loading="submittingComment" :disabled="!newComment.trim()"
-                    @click="submitComment">
-                    Kirim Komentar
-                  </v-btn>
-                </div>
-              </div>
-
-              <div v-else class="login-prompt">
-                <p>Silakan login untuk memberikan komentar</p>
-                <v-btn to="/login" color="primary" variant="outlined" size="small">
-                  Login
-                </v-btn>
-              </div>
-
-              <!-- Comments List -->
-              <div v-if="destination.comments && destination.comments.length > 0" class="comments-list">
-                <div v-for="comment in destination.comments" :key="comment.id" class="comment-item">
-                  <div class="comment-header">
-                    <div class="comment-avatar">
-                      <v-avatar size="40">
-                        <v-img v-if="comment.user?.photo && !commentImageError[comment.id]"
-                          :src="getImageUrl(comment.user.photo)" @error="commentImageError[comment.id] = true"></v-img>
-                        <v-icon v-else>mdi-account-circle</v-icon>
-                      </v-avatar>
-                    </div>
-                    <div class="comment-meta">
-                      <div class="comment-author">{{ comment.user?.name }}</div>
-                      <div class="comment-date">{{ formatDate(comment.created_at) }}</div>
-                    </div>
-                  </div>
-                  <div class="comment-content">{{ comment.content }}</div>
-                  <div class="comment-actions">
-                    <button class="comment-action-btn" @click="toggleCommentLike(comment.id)">
-                      <v-icon size="16" :color="comment.is_liked ? 'red' : ''">{{ comment.is_liked ? 'mdi-heart' :
-                        'mdi-heart-outline' }}</v-icon>
-                      <span>{{ comment.likes_count || 0 }}</span>
-                    </button>
-                    <button v-if="authStore.isLoggedIn" class="comment-action-btn" @click="replyTo(comment.id)">
-                      <v-icon size="16">mdi-reply</v-icon>
-                      <span>Balas</span>
-                    </button>
-                  </div>
-
-                  <!-- Reply Form -->
-                  <div v-if="replyingTo === comment.id" class="reply-form">
-                    <textarea v-model="replyComment" placeholder="Tulis balasan..." class="reply-textarea"
-                      rows="2"></textarea>
-                    <div class="reply-actions">
-                      <v-btn size="small" color="primary" variant="flat" :loading="submittingReply"
-                        :disabled="!replyComment.trim()" @click="submitReply(comment.id)">
-                        Kirim
-                      </v-btn>
-                      <v-btn size="small" variant="text" @click="cancelReply">
-                        Batal
-                      </v-btn>
-                    </div>
-                  </div>
-
-                  <!-- Replies -->
-                  <div v-if="comment.replies && comment.replies.length > 0" class="replies-list">
-                    <div v-for="reply in comment.replies" :key="reply.id" class="reply-item">
-                      <div class="comment-header">
-                        <div class="comment-avatar">
-                          <v-avatar size="32">
-                            <v-img v-if="reply.user?.photo && !commentImageError[reply.id]"
-                              :src="getImageUrl(reply.user.photo)" @error="commentImageError[reply.id] = true"></v-img>
-                            <v-icon v-else size="small">mdi-account-circle</v-icon>
-                          </v-avatar>
-                        </div>
-                        <div class="comment-meta">
-                          <div class="comment-author">{{ reply.user?.name }}</div>
-                          <div class="comment-date">{{ formatDate(reply.created_at) }}</div>
-                        </div>
-                      </div>
-                      <div class="comment-content">{{ reply.content }}</div>
-                      <div class="comment-actions">
-                        <button class="comment-action-btn" @click="toggleCommentLike(reply.id)">
-                          <v-icon size="16" :color="reply.is_liked ? 'red' : ''">{{ reply.is_liked ? 'mdi-heart' :
-                            'mdi-heart-outline' }}</v-icon>
-                          <span>{{ reply.likes_count || 0 }}</span>
-                        </button>
-                        <!-- No reply button on replies (max 1 level) -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div v-else class="empty-comments">
-                <v-icon size="48" color="grey-lighten-1">mdi-comment-outline</v-icon>
-                <p>Belum ada komentar</p>
-              </div>
+              <DestinationCommentSection
+                :destination-id="destination.id"
+                :destination-name="destination.name"
+              />
             </section>
           </v-col>
 
@@ -419,6 +352,7 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter, useHead } from '#app'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
+import { useBookmarks } from '~/composables/useBookmarks'
 import { useRuntimeConfig } from '#app'
 
 definePageMeta({
@@ -430,24 +364,19 @@ const router = useRouter()
 const { api } = useApi()
 const authStore = useAuthStore()
 const config = useRuntimeConfig()
-
-// Load Google Maps in head with API key from config
-useHead({
-  script: [
-    {
-      src: `https://maps.googleapis.com/maps/api/js?key=${config.public.googleMapsApiKey}`,
-      async: true,
-      defer: true,
-    }
-  ]
-})
-
-// Google Maps
-const mapContainer = ref<HTMLElement | null>(null)
-let map: any = null
-let marker: any = null
+const { isBookmarked, toggleBookmark } = useBookmarks()
 
 const destination = ref<any>(null)
+
+const handleToggleBookmark = () => {
+  if (!destination.value) return
+  const isSaved = toggleBookmark(destination.value)
+  snackbarText.value = isSaved
+    ? `"${destination.value.name}" disimpan ke daftar destinasi Anda!`
+    : `"${destination.value.name}" dihapus dari tersimpan.`
+  snackbarColor.value = isSaved ? 'success' : 'info'
+  snackbar.value = true
+}
 
 useSeoMeta({
   title: () => destination.value ? `${destination.value.name} - Jalan Bareng` : 'Detail Destinasi - Jalan Bareng',
@@ -482,12 +411,39 @@ const replyComment = ref('')
 const submittingReply = ref(false)
 const commentImageError = ref({})
 
-const visitTips = ref([
-  { text: 'Kunjungi di pagi hari untuk pencahayaan terbaik saat berfoto' },
-  { text: 'Bawa botol minum dan gunakan sunscreen untuk kenyamanan' },
-  { text: 'Hormati lingkungan sekitar dan jaga kebersihan' },
-  { text: 'Bagikan pengalaman Anda di komentar untuk membantu pengunjung lain' }
-])
+const visitTips = computed(() => {
+  const cat = (destination.value?.category?.name || '').toLowerCase()
+  if (cat.includes('kuliner')) {
+    return [
+      { text: 'Datang lebih awal sebelum jam makan siang untuk menghindari antrean panjang' },
+      { text: 'Tanyakan menu khas andalan dan cerita racikan bumbu legendaris setempat' },
+      { text: 'Siapkan metode pembayaran tunai maupun QRIS untuk fleksibilitas' },
+      { text: 'Berbagi meja dengan ramah jika tempat duduk pejalan sedang ramai' }
+    ]
+  }
+  if (cat.includes('pantai') || cat.includes('alam')) {
+    return [
+      { text: 'Kunjungi saat pagi 06:30 atau golden hour sore menjelang matahari terbenam' },
+      { text: 'Bawa botol minum pribadi dan gunakan alas kaki santai yang nyaman untuk jalan kaki' },
+      { text: 'Gunakan tabir surya (sunscreen) atau topi jika berjalan saat cuaca cerah' },
+      { text: 'Jaga kebersihan pesisir dengan tidak meninggalkan sampah plastik apapun' }
+    ]
+  }
+  if (cat.includes('sejarah') || cat.includes('museum')) {
+    return [
+      { text: 'Luangkan waktu 1–2 jam untuk membaca narasi kurasi dan menikmati arsitektur ruang' },
+      { text: 'Hormati rambu konservasi dan jangan menyentuh dinding cagar budaya yang rapuh' },
+      { text: 'Ikuti agenda jelajah bersama kurator lokal atau aktivasi Jalan Bareng' },
+      { text: 'Ambil foto tanpa blitz jika berada di dalam ruang pamer bersejarah' }
+    ]
+  }
+  return [
+    { text: 'Kunjungi di pagi hari atau sore hari untuk pencahayaan terbaik saat berjalan' },
+    { text: 'Bawa botol minum pribadi dan gunakan alas kaki santai yang nyaman' },
+    { text: 'Hormati lingkungan sekitar dan jaga kebersihan fasilitas ruang publik' },
+    { text: 'Bagikan pengalaman dan tips berjalan Anda di kolom komentar untuk kawan pejalan lain' }
+  ]
+})
 
 const canEdit = computed(() => {
   if (!authStore.isLoggedIn || !destination.value) return false
@@ -558,87 +514,7 @@ const showSnackbar = (text: string, color: string = 'success') => {
   snackbar.value = true
 }
 
-const waitForGoogleMaps = () => {
-  return new Promise<void>((resolve) => {
-    if (typeof window !== 'undefined' && (window as any).google?.maps) {
-      resolve()
-      return
-    }
 
-    // Poll for Google Maps to be available
-    const checkInterval = setInterval(() => {
-      if ((window as any).google?.maps) {
-        clearInterval(checkInterval)
-        resolve()
-      }
-    }, 100)
-
-    // Timeout after 10 seconds
-    setTimeout(() => {
-      clearInterval(checkInterval)
-      resolve()
-    }, 10000)
-  })
-}
-
-const initMap = async () => {
-  if (!destination.value || !destination.value.latitude || !destination.value.longitude) {
-    console.log('No destination data or coordinates')
-    return
-  }
-
-  try {
-    console.log('Waiting for Google Maps...')
-    await waitForGoogleMaps()
-    console.log('Google Maps ready')
-
-    await nextTick()
-
-    if (!mapContainer.value) {
-      console.error('Map container not found')
-      return
-    }
-
-    const lat = parseFloat(destination.value.latitude)
-    const lng = parseFloat(destination.value.longitude)
-
-    console.log('Initializing map at:', lat, lng)
-
-    const google = (window as any).google
-    map = new google.maps.Map(mapContainer.value, {
-      center: { lat, lng },
-      zoom: 15,
-      mapTypeControl: true,
-      streetViewControl: true,
-      fullscreenControl: true,
-    })
-
-    console.log('Map initialized')
-
-    marker = new google.maps.Marker({
-      position: { lat, lng },
-      map: map,
-      title: destination.value.name,
-    })
-
-    console.log('Marker added')
-
-    const infoWindow = new google.maps.InfoWindow({
-      content: `
-        <div style="padding: 8px;">
-          <div style="font-weight: 600; margin-bottom: 4px; font-size: 14px;">${destination.value.name}</div>
-          <div style="font-size: 12px; color: #666;">${destination.value.category?.name || ''}</div>
-        </div>
-      `
-    })
-
-    marker.addListener('click', () => {
-      infoWindow.open(map, marker)
-    })
-  } catch (error) {
-    console.error('Error initializing Google Maps:', error)
-  }
-}
 
 const fetchDestination = async () => {
   loading.value = true
@@ -654,12 +530,6 @@ const fetchDestination = async () => {
     destination.value = null
   } finally {
     loading.value = false
-
-    // Initialize map after loading is complete and DOM is updated
-    await nextTick()
-    setTimeout(() => {
-      initMap()
-    }, 300)
   }
 }
 
@@ -1134,6 +1004,20 @@ onMounted(() => {
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.destination-map-frame {
+  height: 460px;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .destination-map-frame {
+    height: 380px;
+  }
 }
 
 .map-info {

@@ -32,8 +32,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const isSuperAdminRoute = superAdminOnlyRoutes.some(route => to.path.startsWith(route))
 
   if (isSuperAdminRoute && !isSuperAdmin) {
-    console.log('Admin middleware - community_admin tried to access super-admin route, redirecting to manage/activations')
-    return navigateTo('/manage/activations')
+    console.log('Admin middleware - community_admin tried to access super-admin route, redirecting to manage dashboard')
+    return navigateTo('/manage')
   }
 
   console.log('Admin middleware - access granted')

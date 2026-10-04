@@ -277,7 +277,30 @@ class ActivationController extends Controller
     }
 
     /**
-     * Upload media for activation
+     * Get aggregated media from all active activations for homepage / global showcase
+     */
+    public function allMedia(Request $request)
+    {
+        $query = ActivationMedia::with(['activation:id,name,slug,city,category,color_theme'])
+            ->whereHas('activation', function ($q) {
+                $q->where('is_active', true);
+            })
+            ->where('type', 'photo')
+            ->orderByDesc('is_featured_home')
+            ->orderByDesc('id');
+
+        if ($request->has('limit')) {
+            $query->limit((int) $request->limit);
+        }
+
+        return response()->json([
+            'data' => $query->get(),
+            'message' => 'Media agregat berhasil diambil'
+        ]);
+    }
+
+    /**
+     * Upload media for activation with dedicated slug directory and batch support
      */
     public function uploadMedia(Request $request, $id)
     {
@@ -285,32 +308,49 @@ class ActivationController extends Controller
 
         $validated = $request->validate([
             'type' => 'required|in:photo,video,youtube',
-            'file' => 'required_if:type,photo,video|file|max:10240',
+            'file' => 'nullable|file|max:10240',
+            'files.*' => 'nullable|file|max:10240',
             'external_url' => 'required_if:type,youtube|url',
             'description' => 'nullable|string',
+            'photographer' => 'nullable|string|max:100',
+            'activity_date' => 'nullable|date',
+            'tag' => 'nullable|string|max:50',
+            'is_featured_home' => 'nullable|boolean',
             'sort_order' => 'nullable|integer',
         ]);
 
-        $mediaData = [
+        $folder = "activations/{$activation->slug}/media";
+        $results = [];
+        $baseMeta = [
             'activation_id' => $activation->id,
             'type' => $validated['type'],
             'description' => $validated['description'] ?? null,
+            'photographer' => $validated['photographer'] ?? null,
+            'activity_date' => $validated['activity_date'] ?? null,
+            'tag' => $validated['tag'] ?? null,
+            'is_featured_home' => $request->boolean('is_featured_home'),
             'sort_order' => $validated['sort_order'] ?? 0,
         ];
 
-        if ($request->hasFile('file')) {
-            $mediaData['file_url'] = $request->file('file')->store('activations/media', 'public');
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $results[] = ActivationMedia::create(array_merge($baseMeta, [
+                    'file_url' => $file->store($folder, 'public'),
+                ]));
+            }
+        } elseif ($request->hasFile('file') || isset($validated['external_url'])) {
+            if ($request->hasFile('file')) {
+                $baseMeta['file_url'] = $request->file('file')->store($folder, 'public');
+            }
+            if (isset($validated['external_url'])) {
+                $baseMeta['external_url'] = $validated['external_url'];
+            }
+            $results[] = ActivationMedia::create($baseMeta);
         }
-
-        if (isset($validated['external_url'])) {
-            $mediaData['external_url'] = $validated['external_url'];
-        }
-
-        $media = ActivationMedia::create($mediaData);
 
         return response()->json([
-            'message' => 'Media uploaded successfully',
-            'media' => $media
+            'message' => 'Media berhasil diunggah',
+            'data' => count($results) === 1 ? $results[0] : $results,
         ], 201);
     }
 

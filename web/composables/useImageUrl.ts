@@ -43,29 +43,29 @@ export const useImageUrl = () => {
         'gathering.jpg': '/images/hero/walk_4.jpg',
         'photography.jpg': '/images/hero/walk_11.jpg',
 
-        // Destinations Seed Photos -> curated fast-loading CDN images
-        'pantai-1.jpg': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
-        'pantai-2.jpg': 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&auto=format&fit=crop&q=80',
-        'coto.jpg': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80',
-        'seafood.jpg': 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800&auto=format&fit=crop&q=80',
-        'island.jpg': 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80',
-        'fort.jpg': 'https://images.unsplash.com/photo-1599833975787-5c143f373c30?w=800&auto=format&fit=crop&q=80',
-        'mosque.jpg': 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800&auto=format&fit=crop&q=80',
-        'monument.jpg': 'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&auto=format&fit=crop&q=80',
-        'park.jpg': 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?w=800&auto=format&fit=crop&q=80',
-        'bridge.jpg': 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80',
-        'mall.jpg': 'https://images.unsplash.com/photo-1567449303078-57ad995bd301?w=800&auto=format&fit=crop&q=80',
-        'market.jpg': 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&auto=format&fit=crop&q=80',
-        'food-1.jpg': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop&q=80',
-        'food-2.jpg': 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&auto=format&fit=crop&q=80',
-        'food-3.jpg': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&auto=format&fit=crop&q=80',
-        'dessert.jpg': 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=800&auto=format&fit=crop&q=80',
+        // Destinations Seed Photos -> local storage assets
+        'pantai-1.jpg': '/storage/destinations/pantai-1.jpg',
+        'pantai-2.jpg': '/storage/destinations/pantai-2.jpg',
+        'coto.jpg': '/storage/destinations/coto.jpg',
+        'seafood.jpg': '/storage/destinations/seafood.jpg',
+        'island.jpg': '/storage/destinations/island.jpg',
+        'fort.jpg': '/storage/destinations/fort.jpg',
+        'mosque.jpg': '/storage/destinations/mosque.jpg',
+        'monument.jpg': '/storage/destinations/monument.jpg',
+        'park.jpg': '/storage/destinations/park.jpg',
+        'bridge.jpg': '/storage/destinations/bridge.jpg',
+        'mall.jpg': '/storage/destinations/mall.jpg',
+        'market.jpg': '/storage/destinations/market.jpg',
+        'food-1.jpg': '/storage/destinations/food-1.jpg',
+        'food-2.jpg': '/storage/destinations/food-2.jpg',
+        'food-3.jpg': '/storage/destinations/food-3.jpg',
+        'dessert.jpg': '/storage/destinations/dessert.jpg',
     }
 
     const getImageUrl = (path: string | null | undefined): string => {
         // Return placeholder if no path
         if (!path) {
-            return 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&auto=format&fit=crop&q=80'
+            return '/images/hero/walk_1.jpg'
         }
 
         // Check if path ends with any of our known static assets
@@ -73,6 +73,13 @@ export const useImageUrl = () => {
             if (path.endsWith(filename)) {
                 return targetUrl
             }
+        }
+
+        // If path is an unseeded placeholder or generic photo id, provide stable local fallbacks
+        if (path.includes('placeholder-') || path.includes('photo-')) {
+            const num = parseInt(path.replace(/\D/g, '') || '1', 10)
+            const walkIdx = ((num % 14) + 1)
+            return `/images/hero/walk_${walkIdx}.jpg`
         }
 
         // If already a full URL, return as is (with mobile LAN localhost rewrite if needed)

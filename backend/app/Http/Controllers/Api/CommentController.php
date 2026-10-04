@@ -8,6 +8,42 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function index(Request $request)
+    {
+        $request->validate([
+            'commentable_type' => 'required|string',
+            'commentable_id'   => 'required|integer',
+        ]);
+
+        $commentableType = $this->normalizeCommentableType($request->commentable_type);
+        $currentUserId = $request->user()?->id;
+
+        $likedIds = collect();
+        if ($currentUserId) {
+            $likedIds = \App\Models\Like::where('user_id', $currentUserId)
+                ->where('likeable_type', 'App\Models\Comment')
+                ->pluck('likeable_id');
+        }
+
+        $comments = Comment::with(['user', 'replies.user'])
+            ->where('commentable_type', $commentableType)
+            ->where('commentable_id', $request->commentable_id)
+            ->whereNull('parent_id')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($comment) use ($likedIds) {
+                $comment->is_liked = $likedIds->contains($comment->id);
+                if ($comment->replies) {
+                    $comment->replies->each(function ($reply) use ($likedIds) {
+                        $reply->is_liked = $likedIds->contains($reply->id);
+                    });
+                }
+                return $comment;
+            });
+
+        return response()->json(['comments' => $comments]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

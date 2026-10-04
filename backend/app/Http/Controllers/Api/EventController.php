@@ -42,8 +42,18 @@ class EventController extends Controller
             $query->where('type', 'walking');
         }
 
+        // Filter by month and year (for calendar view)
+        if ($request->has('month') && $request->has('year')) {
+            $query->whereMonth('date', $request->integer('month'))
+                  ->whereYear('date', $request->integer('year'));
+        } elseif ($request->has('year')) {
+            $query->whereYear('date', $request->integer('year'));
+        }
+
         $perPage = $request->input('per_page', 20);
-        $events = $query->latest('date')->paginate($perPage);
+        // Support ascending sort for calendar use
+        $sortDir = $request->input('sort', 'desc') === 'asc' ? 'asc' : 'desc';
+        $events = $query->orderBy('date', $sortDir)->paginate($perPage);
 
         return response()->json($events);
     }

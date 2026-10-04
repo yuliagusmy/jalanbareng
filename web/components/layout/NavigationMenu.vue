@@ -193,6 +193,19 @@
           <!-- Pinned Footer Action (Always Visible) -->
           <div class="dropdown-pinned-footer pa-3 border-t">
             <v-btn
+              to="/aktivasi/kalender"
+              block
+              variant="outlined"
+              color="#DC2626"
+              rounded="pill"
+              size="default"
+              class="footer-calendar-btn font-weight-bold mb-2"
+              @click="isAktivasiMenuOpen = false"
+            >
+              <v-icon start size="16">mdi-calendar-month-outline</v-icon>
+              Kalender Event
+            </v-btn>
+            <v-btn
               to="/aktivasi"
               block
               color="#DC2626"

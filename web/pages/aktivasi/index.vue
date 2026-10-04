@@ -22,39 +22,46 @@
               Jelajahi inisiatif jalan kaki, jejaring komunitas lokal, dan ruang kreatif di berbagai sudut kota bersama Jalan Bareng.
             </p>
 
-            <!-- Category Filter Chips -->
+            <!-- Category Filter Chips (Mirrors Bottom Sheet Style) -->
             <div class="category-filters-wrapper">
               <button
                 type="button"
                 :class="['filter-btn', { active: selectedCategory === '' }]"
                 @click="selectedCategory = ''"
               >
-                <v-icon start size="18">mdi-view-grid-outline</v-icon>
-                Semua Aktivasi
+                <v-icon start size="16">mdi-view-grid-outline</v-icon>
+                <span>Semua</span>
+                <span class="chip-count">{{ activeTotal }}</span>
               </button>
+
               <button
                 type="button"
                 :class="['filter-btn', { active: selectedCategory === 'city' }]"
                 @click="selectedCategory = 'city'"
               >
-                <v-icon start size="18">mdi-city-variant-outline</v-icon>
-                Aktivasi Kota
+                <v-icon start size="16">mdi-city-variant-outline</v-icon>
+                <span>Kota</span>
+                <span class="chip-count">{{ cityActivations.length }}</span>
               </button>
+
               <button
                 type="button"
                 :class="['filter-btn', { active: selectedCategory === 'theme' }]"
                 @click="selectedCategory = 'theme'"
               >
-                <v-icon start size="18">mdi-palette-outline</v-icon>
-                Aktivasi Tematik
+                <v-icon start size="16">mdi-palette-outline</v-icon>
+                <span>Tematik</span>
+                <span class="chip-count">{{ themeActivations.length }}</span>
               </button>
+
               <button
                 type="button"
                 :class="['filter-btn', { active: selectedCategory === 'space' }]"
                 @click="selectedCategory = 'space'"
               >
-                <v-icon start size="18">mdi-storefront-outline</v-icon>
-                Ruang Kreatif
+                <v-icon start size="16">mdi-storefront-outline</v-icon>
+                <span>Ruang Komunal</span>
+                <span class="chip-count">{{ spaceActivations.length }}</span>
               </button>
             </div>
           </v-col>
@@ -64,15 +71,29 @@
 
     <!-- Main Content Container -->
     <v-container class="py-6 py-md-10">
-      <!-- Featured Activations (When 'Semua' is active) -->
-      <section v-if="featuredActivations.length > 0" class="mb-14">
+      <!-- Active Filter Banner (When a specific category is chosen) -->
+      <div v-if="selectedCategory" class="filter-status-banner mb-8 d-flex align-center justify-space-between flex-wrap ga-3">
+        <div class="d-flex align-center ga-2">
+          <span class="text-body-2 font-weight-medium text-grey-darken-2">Menyaring berdasarkan:</span>
+          <span class="filter-status-pill">
+            {{ getCategoryTitle(selectedCategory) }} ({{ getCategoryList(selectedCategory).length }})
+          </span>
+        </div>
+        <button type="button" class="btn-reset-filter" @click="selectedCategory = ''">
+          <v-icon size="14" class="mr-1">mdi-close-circle-outline</v-icon>
+          Tampilkan Semua Bagian
+        </button>
+      </div>
+
+      <!-- Featured Activations (Shown on 'Semua' view) -->
+      <section v-if="selectedCategory === '' && featuredActivations.length > 0" class="mb-14">
         <div class="section-header-row mb-6">
           <div>
-            <div class="d-inline-flex align-center ga-1 text-caption font-weight-bold text-primary-red text-uppercase tracking-wider mb-2 mb-md-2.5">
+            <div class="section-eyebrow d-inline-flex align-center ga-1.5 mb-2">
               <v-icon size="14" color="#DC2626">mdi-fire</v-icon>
-              <span>Sorotan Komunitas</span>
+              <span>SOROTAN KOMUNITAS</span>
             </div>
-            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2 mb-md-3">Aktivasi Pilihan</h2>
+            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2">Aktivasi Pilihan</h2>
             <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">Program yang aktif bergerak setiap pekan</p>
           </div>
         </div>
@@ -97,6 +118,7 @@
                       :src="getImageUrl(activation.hero_image)"
                       :alt="activation.name"
                       class="featured-img"
+                      loading="lazy"
                     />
                     <div v-else class="img-placeholder">
                       <v-icon size="48" color="grey-lighten-1">mdi-image-outline</v-icon>
@@ -108,8 +130,8 @@
                   </div>
                 </v-col>
                 <v-col cols="12" sm="7" class="d-flex flex-column">
-                  <div class="pa-3.5 pa-sm-6 d-flex flex-column h-100">
-                    <div class="d-flex align-center justify-space-between mb-1.5">
+                  <div class="pa-4 pa-sm-6 d-flex flex-column h-100">
+                    <div class="d-flex align-center justify-space-between mb-2">
                       <span class="category-pill">
                         {{ getCategoryLabel(activation.category) }}
                       </span>
@@ -127,7 +149,7 @@
                       {{ activation.tagline }}
                     </p>
 
-                    <div class="mt-auto pt-2 border-top d-flex align-center justify-space-between">
+                    <div class="mt-auto pt-3 border-top d-flex align-center justify-space-between">
                       <span class="event-count-text">
                         <v-icon size="14" class="mr-1 text-grey-darken-1">mdi-calendar-outline</v-icon>
                         {{ activation.events_count || 0 }} Agenda
@@ -145,112 +167,143 @@
         </v-row>
       </section>
 
-      <!-- All Activations Grid -->
-      <section class="mb-14">
-        <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-6">
-          <div>
-            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2 mb-md-3">{{ categoryTitle }}</h2>
-            <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
-              Menampilkan {{ filteredActivations.length }} komunitas dan aktivasi jalan kaki
-            </p>
-          </div>
-        </div>
+      <!-- Loading Skeletons -->
+      <v-row v-if="loading" class="mb-12">
+        <v-col v-for="i in 6" :key="i" cols="12" sm="6" md="4">
+          <v-skeleton-loader type="image, article" class="rounded-xl border" />
+        </v-col>
+      </v-row>
 
-        <!-- Grid Cards (2 columns on mobile 390px) -->
-        <v-row v-if="!loading && filteredActivations.length > 0" dense>
-          <v-col
-            v-for="activation in filteredActivations"
-            :key="activation.id"
-            cols="6"
-            sm="6"
-            md="4"
-          >
-            <v-card
-              :to="`/aktivasi/${activation.slug}`"
-              elevation="0"
-              class="activation-card h-100 d-flex flex-column"
-            >
-              <!-- Card Image Header -->
-              <div class="card-header-img-wrapper">
-                <img
-                  v-if="activation.hero_image"
-                  :src="getImageUrl(activation.hero_image)"
-                  :alt="activation.name"
-                  class="card-top-img"
-                />
-                <div v-else class="img-placeholder h-100">
-                  <v-icon size="36" color="grey-lighten-1">mdi-image-outline</v-icon>
+      <div v-if="!loading">
+        <!-- 1. BAGIAN AKTIVASI KOTA -->
+        <section
+          v-if="(selectedCategory === '' || selectedCategory === 'city') && cityActivations.length > 0"
+          id="section-kota"
+          class="activation-section mb-14"
+        >
+          <div class="section-header-box mb-6">
+            <div class="d-flex align-center justify-space-between flex-wrap ga-3">
+              <div>
+                <div class="section-eyebrow d-inline-flex align-center ga-1.5 mb-2">
+                  <v-icon size="15" color="#DC2626">mdi-city-variant-outline</v-icon>
+                  <span>JEJARING REGIONAL</span>
                 </div>
-
-                <div class="card-tag-group">
-                  <span class="category-pill-solid">
-                    {{ getCategoryLabel(activation.category) }}
-                  </span>
-                </div>
-
-                <!-- Chapter Icon Avatar -->
-                <div v-if="activation.icon" class="activation-avatar-badge">
-                  <img :src="getImageUrl(activation.icon)" :alt="activation.name" />
-                </div>
-              </div>
-
-              <!-- Card Content -->
-              <div class="pa-2.5 pa-sm-4 d-flex flex-column flex-grow-1">
-                <div class="d-flex align-center justify-space-between mb-1">
-                  <span v-if="activation.city" class="city-indicator text-truncate">
-                    <v-icon size="12" class="mr-0.5 text-grey">mdi-map-marker-outline</v-icon>
-                    {{ activation.city }}
-                  </span>
-                  <span class="event-count-chip">
-                    {{ activation.events_count || 0 }} Event
-                  </span>
-                </div>
-
-                <h3 class="card-title text-subtitle-2 text-sm-h6 font-weight-bold text-grey-darken-4 mb-1">
-                  {{ activation.name }}
-                </h3>
-
-                <p v-if="activation.tagline" class="card-desc text-caption text-grey-darken-1 mb-2 d-none d-sm-block flex-grow-1">
-                  {{ activation.tagline }}
+                <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-1">Aktivasi Kota</h2>
+                <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
+                  Chapter pejalan kaki di berbagai kota yang rutin berkumpul dan mengeksplorasi sudut kota bersama warga
                 </p>
-                <div v-else class="flex-grow-1"></div>
-
-                <div class="pt-2 border-top d-flex align-center justify-space-between mt-auto">
-                  <span class="text-caption text-grey-darken-1 font-weight-medium d-none d-sm-inline">
-                    Jalan Bareng Chapter
-                  </span>
-                  <span class="action-link-text ml-auto">
-                    Eksplor
-                    <v-icon size="13" class="ml-0.5">mdi-arrow-right</v-icon>
-                  </span>
-                </div>
               </div>
-            </v-card>
-          </v-col>
-        </v-row>
+              <div class="section-badge-counter">
+                <v-icon size="16" class="mr-1">mdi-map-marker-multiple-outline</v-icon>
+                <span>{{ cityActivations.length }} Chapter Kota</span>
+              </div>
+            </div>
+          </div>
 
-        <!-- Empty State -->
-        <div v-if="!loading && filteredActivations.length === 0" class="empty-state-box text-center py-16">
+          <v-row dense>
+            <v-col
+              v-for="activation in cityActivations"
+              :key="activation.id"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <ActivationCard :activation="activation" />
+            </v-col>
+          </v-row>
+        </section>
+
+        <!-- 2. BAGIAN AKTIVASI TEMATIK -->
+        <section
+          v-if="(selectedCategory === '' || selectedCategory === 'theme') && themeActivations.length > 0"
+          id="section-tematik"
+          class="activation-section mb-14"
+        >
+          <div class="section-header-box mb-6">
+            <div class="d-flex align-center justify-space-between flex-wrap ga-3">
+              <div>
+                <div class="section-eyebrow d-inline-flex align-center ga-1.5 mb-2">
+                  <v-icon size="15" color="#DC2626">mdi-palette-outline</v-icon>
+                  <span>INISIATIF & MINAT</span>
+                </div>
+                <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-1">Aktivasi Tematik</h2>
+                <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
+                  Eksplorasi jalan kaki dengan fokus minat khusus: literasi buku, denyut kuliner rempah, kerelawanan, dan kriya tangan
+                </p>
+              </div>
+              <div class="section-badge-counter">
+                <v-icon size="16" class="mr-1">mdi-lightbulb-on-outline</v-icon>
+                <span>{{ themeActivations.length }} Inisiatif Tematik</span>
+              </div>
+            </div>
+          </div>
+
+          <v-row dense>
+            <v-col
+              v-for="activation in themeActivations"
+              :key="activation.id"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <ActivationCard :activation="activation" />
+            </v-col>
+          </v-row>
+        </section>
+
+        <!-- 3. BAGIAN RUANG KOMUNAL -->
+        <section
+          v-if="(selectedCategory === '' || selectedCategory === 'space') && spaceActivations.length > 0"
+          id="section-ruang-komunal"
+          class="activation-section mb-14"
+        >
+          <div class="section-header-box mb-6">
+            <div class="d-flex align-center justify-space-between flex-wrap ga-3">
+              <div>
+                <div class="section-eyebrow d-inline-flex align-center ga-1.5 mb-2">
+                  <v-icon size="15" color="#DC2626">mdi-storefront-outline</v-icon>
+                  <span>SIMPUL & RUANG FISIK</span>
+                </div>
+                <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-1">Ruang Komunal & Kreatif</h2>
+                <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
+                  Titik temu fisik, studio workshop kriya, sudut baca warga, dan rumah inkubasi kolaborasi komunitas pejalan
+                </p>
+              </div>
+              <div class="section-badge-counter">
+                <v-icon size="16" class="mr-1">mdi-home-heart</v-icon>
+                <span>{{ spaceActivations.length }} Ruang Komunal</span>
+              </div>
+            </div>
+          </div>
+
+          <v-row dense>
+            <v-col
+              v-for="activation in spaceActivations"
+              :key="activation.id"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <ActivationCard :activation="activation" />
+            </v-col>
+          </v-row>
+        </section>
+
+        <!-- Empty State jika kategori kosong -->
+        <div v-if="filteredTotal === 0" class="empty-state-box text-center py-16">
           <v-icon size="56" color="grey-lighten-1" class="mb-3">mdi-compass-off-outline</v-icon>
-          <h3 class="text-h6 font-weight-bold text-grey-darken-3 mb-2">Belum ada aktivasi untuk kategori ini</h3>
+          <h3 class="text-h6 font-weight-bold text-grey-darken-3 mb-2">Belum ada aktivasi untuk bagian ini</h3>
           <p class="text-body-2 text-grey-darken-1 mx-auto mb-4" style="max-width: 420px;">
-            Komunitas untuk kategori ini sedang dipersiapkan. Anda dapat menjelajahi seluruh aktivasi yang sudah aktif.
+            Inisiatif komunitas untuk bagian ini sedang dipersiapkan. Anda dapat menjelajahi seluruh aktivasi yang sudah aktif.
           </p>
           <button type="button" class="btn-primary-pill" @click="selectedCategory = ''">
             Tampilkan Semua Aktivasi
           </button>
         </div>
+      </div>
 
-        <!-- Loading Skeletons -->
-        <v-row v-if="loading">
-          <v-col v-for="i in 6" :key="i" cols="12" sm="6" md="4">
-            <v-skeleton-loader type="image, article" class="rounded-xl border" />
-          </v-col>
-        </v-row>
-      </section>
-
-      <!-- Collaborative Invitation Section (Antislop: Honest & Editorial) -->
-      <section class="kolaborasi-section mt-12">
+      <!-- Kolaborasi Section -->
+      <section class="kolaborasi-section mt-8">
         <div class="kolaborasi-card pa-8 pa-md-12">
           <v-row align="center">
             <v-col cols="12" md="8">
@@ -282,9 +335,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
 import { useRuntimeConfig, useSeoMeta, definePageMeta } from '#imports'
+import ActivationCard from '~/components/activations/ActivationCard.vue'
 
 definePageMeta({
   layout: 'default'
@@ -293,189 +347,88 @@ definePageMeta({
 const { api } = useApi()
 const { getImageUrl } = useImageUrl()
 const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
 
 const selectedCategory = ref('')
-const defaultActivations = [
-  {
-    id: 1,
-    name: 'Jalan Bareng Makassar',
-    slug: 'jalan-bareng-makassar',
-    category: 'city',
-    city: 'Makassar',
-    tagline: 'Ruang berjalan dan berbagi cerita di Kota Daeng',
-    hero_image: 'activations/heroes/hero_makassar.jpg',
-    is_active: true,
-    is_featured: true,
-    events_count: 50,
-  },
-  {
-    id: 2,
-    name: 'Diskusi Buku Bareng',
-    slug: 'diskusi-buku-bareng',
-    category: 'theme',
-    city: 'Makassar',
-    tagline: 'Melambatkan langkah, membaca kota, bertukar refleksi bacaan',
-    hero_image: 'activations/heroes/hero_diskusi_buku.jpg',
-    is_active: true,
-    is_featured: true,
-    events_count: 12,
-  },
-  {
-    id: 3,
-    name: 'Makan Bareng',
-    slug: 'makan-bareng',
-    category: 'theme',
-    city: 'Makassar',
-    tagline: 'Menyusuri denyut kuliner lokal dan cerita di baliknya',
-    hero_image: 'activations/heroes/hero_makan_bareng.jpg',
-    is_active: true,
-    is_featured: false,
-    events_count: 18,
-  },
-  {
-    id: 4,
-    name: 'Explore Bareng',
-    slug: 'explore-bareng',
-    category: 'theme',
-    city: 'Makassar',
-    tagline: 'Menjelajah sudut tersembunyi, cagar budaya, dan sejarah ruang',
-    hero_image: 'activations/heroes/hero_explore_bareng.jpg',
-    is_active: true,
-    is_featured: false,
-    events_count: 15,
-  },
-  {
-    id: 5,
-    name: 'Jalan Bareng Palopo',
-    slug: 'jalan-bareng-palopo',
-    category: 'city',
-    city: 'Palopo',
-    tagline: 'Berjalan santai dan berbagi cerita di Kota Idaman',
-    hero_image: 'activations/heroes/hero_palopo.jpg',
-    is_active: true,
-    is_featured: false,
-    events_count: 8,
-  },
-  {
-    id: 6,
-    name: 'Jalan Bareng Gowa',
-    slug: 'jalan-bareng-gowa',
-    category: 'city',
-    city: 'Gowa',
-    tagline: 'Menapaki jejak sejarah kerajaan dan persawahan hijau',
-    hero_image: 'activations/heroes/hero_gowa.jpg',
-    is_active: true,
-    is_featured: false,
-    events_count: 6,
-  },
-  {
-    id: 7,
-    name: 'Jalan Bareng Bone',
-    slug: 'jalan-bareng-bone',
-    category: 'city',
-    city: 'Bone',
-    tagline: 'Langkah kaki menyusuri kehangatan Bumi Arung Palakka',
-    hero_image: 'activations/heroes/hero_bone.jpg',
-    is_active: true,
-    is_featured: false,
-    events_count: 5,
-  },
-  {
-    id: 8,
-    name: 'Jalan Bareng Jakarta Selatan',
-    slug: 'jalan-bareng-jaksel',
-    category: 'city',
-    city: 'Jakarta Selatan',
-    tagline: 'Menemukan jeda di tengah riuh metropolitan',
-    hero_image: 'activations/heroes/hero_jaksel.jpg',
-    is_active: true,
-    is_featured: false,
-    events_count: 4,
-  }
-]
-
-const activations = ref<any[]>(defaultActivations)
 const loading = ref(true)
+const activations = ref<any[]>([])
 
-// Fetch activations
 const fetchActivations = async () => {
   loading.value = true
   try {
-    const params: any = {}
-    if (selectedCategory.value) {
-      params.category = selectedCategory.value
-    }
-
-    const response = await api.get('/activations', { params })
+    const response = await api.get('/activations')
     const data = response.data?.data || response.data
-    if (Array.isArray(data) && data.length > 0) {
+    if (Array.isArray(data)) {
       activations.value = data
-    } else if (activations.value.length === 0) {
-      activations.value = defaultActivations
     }
   } catch (error) {
     console.error('Error fetching activations:', error)
-    if (activations.value.length === 0) {
-      activations.value = defaultActivations
-    }
   } finally {
     loading.value = false
   }
 }
 
-// Computed
-const featuredActivations = computed(() => {
-  if (selectedCategory.value !== '') return []
-  return activations.value.filter(a => a.is_featured && a.is_active).slice(0, 2)
+// Computeds for separation
+const activeActivations = computed(() => activations.value.filter(a => a.is_active))
+const activeTotal = computed(() => activeActivations.value.length)
+
+const cityActivations = computed(() =>
+  activeActivations.value.filter(a => a.category === 'city')
+)
+
+const themeActivations = computed(() =>
+  activeActivations.value.filter(a => a.category === 'theme')
+)
+
+const spaceActivations = computed(() =>
+  activeActivations.value.filter(a => a.category === 'space')
+)
+
+const featuredActivations = computed(() =>
+  activeActivations.value.filter(a => a.is_featured).slice(0, 2)
+)
+
+const filteredTotal = computed(() => {
+  if (selectedCategory.value === 'city') return cityActivations.value.length
+  if (selectedCategory.value === 'theme') return themeActivations.value.length
+  if (selectedCategory.value === 'space') return spaceActivations.value.length
+  return activeTotal.value
 })
 
-const filteredActivations = computed(() => {
-  let list = activations.value.filter(a => a.is_active)
-  if (selectedCategory.value) {
-    list = list.filter(a => a.category === selectedCategory.value)
-  }
-  return list
-})
+const getCategoryList = (cat: string) => {
+  if (cat === 'city') return cityActivations.value
+  if (cat === 'theme') return themeActivations.value
+  if (cat === 'space') return spaceActivations.value
+  return activeActivations.value
+}
 
-const categoryTitle = computed(() => {
+const getCategoryTitle = (cat: string) => {
   const titles: Record<string, string> = {
-    '': 'Semua Komunitas & Aktivasi',
-    'city': 'Aktivasi Kota',
-    'theme': 'Aktivasi Tematik',
-    'space': 'Ruang Kreatif'
+    city: 'Aktivasi Kota',
+    theme: 'Aktivasi Tematik',
+    space: 'Ruang Komunal'
   }
-  return titles[selectedCategory.value] || 'Semua Aktivasi'
-})
+  return titles[cat] || 'Semua Aktivasi'
+}
 
-// Helper functions
 const getCategoryLabel = (category: string) => {
   const labels: Record<string, string> = {
     city: 'Aktivasi Kota',
     theme: 'Tematik',
-    space: 'Ruang Kreatif',
+    space: 'Ruang Komunal',
     other: 'Komunitas'
   }
   return labels[category] || 'Komunitas'
 }
 
-// Watch category changes
-watch(selectedCategory, () => {
-  fetchActivations()
-})
-
-// Initial fetch
 onMounted(() => {
   fetchActivations()
 })
 
-// SEO
 useSeoMeta({
   title: 'Aktivasi Komunitas - Jalan Bareng',
   ogTitle: 'Aktivasi Komunitas - Jalan Bareng',
-  description: 'Temukan berbagai program aktivasi, chapter kota, dan ruang kreatif Jalan Bareng di seluruh Indonesia.',
-  ogDescription: 'Temukan berbagai program aktivasi, chapter kota, dan ruang kreatif Jalan Bareng di seluruh Indonesia.',
-  ogImage: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1200&h=630&fit=crop',
+  description: 'Temukan berbagai program aktivasi, chapter kota, gerakan tematik, dan ruang komunal Jalan Bareng di seluruh Indonesia.',
+  ogDescription: 'Temukan berbagai program aktivasi, chapter kota, gerakan tematik, dan ruang komunal Jalan Bareng di seluruh Indonesia.',
   twitterCard: 'summary_large_image',
 })
 </script>
@@ -524,7 +477,7 @@ useSeoMeta({
   max-width: 680px;
 }
 
-/* Filter Buttons */
+/* Filter Buttons (Mirrors Bottom Sheet Style) */
 .category-filters-wrapper {
   display: flex;
   align-items: center;
@@ -537,12 +490,13 @@ useSeoMeta({
 .filter-btn {
   display: inline-flex;
   align-items: center;
-  padding: 8px 18px;
+  gap: 8px;
+  padding: 7px 16px;
   border-radius: 9999px;
   border: 1px solid #E2E8F0;
   background: #FFFFFF;
-  color: #4B5563;
-  font-size: 0.88rem;
+  color: #475569;
+  font-size: 0.86rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -558,7 +512,86 @@ useSeoMeta({
   background: #DC2626;
   border-color: #DC2626;
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.28);
+}
+
+.chip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #F1F5F9;
+  color: #475569;
+}
+
+.filter-btn.active .chip-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* Filter Status Banner */
+.filter-status-banner {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  padding: 12px 18px;
+  border-radius: 14px;
+}
+
+.filter-status-pill {
+  background: #DC2626;
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+.btn-reset-filter {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: #64748B;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-reset-filter:hover {
+  color: #DC2626;
+  background: #FEF2F2;
+}
+
+/* Section Header Box */
+.section-header-box {
+  padding-bottom: 8px;
+  border-bottom: 2px solid #F1F5F9;
+}
+
+.section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #DC2626;
+  text-transform: uppercase;
+}
+
+.section-badge-counter {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
 }
 
 /* Featured Activation Card */
@@ -616,297 +649,105 @@ useSeoMeta({
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Activation Card */
-.activation-card {
-  border: 1px solid #E5E7EB;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #FFFFFF;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  text-decoration: none;
-}
-
-.activation-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.08);
-  border-color: #CBD5E1;
-}
-
-.card-header-img-wrapper {
-  position: relative;
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-  background: #F3F4F6;
-}
-
-.card-top-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.activation-card:hover .card-top-img {
-  transform: scale(1.05);
-}
-
-.card-tag-group {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 2;
-}
-
 .category-pill {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 9999px;
-  background: #F3F4F6;
-  color: #374151;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.category-pill-solid {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  background: rgba(17, 24, 39, 0.75);
-  backdrop-filter: blur(4px);
-  color: #FFFFFF;
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: #DC2626;
+  background: #FEF2F2;
+  padding: 2px 8px;
+  border-radius: 9999px;
 }
 
 .city-indicator {
   display: inline-flex;
   align-items: center;
   font-size: 0.78rem;
-  color: #6B7280;
-  font-weight: 500;
+  font-weight: 600;
+  color: #4B5563;
 }
 
-.event-count-chip {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: #FEF2F2;
-  color: #DC2626;
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.activation-avatar-badge {
-  position: absolute;
-  bottom: 12px;
-  right: 14px;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 2.5px solid #FFFFFF;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  background: #FFFFFF;
-  z-index: 3;
-}
-
-.activation-avatar-badge img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.card-title {
-  letter-spacing: -0.015em;
+.featured-card-heading {
+  font-size: 1.25rem;
   line-height: 1.3;
 }
 
 .card-desc {
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-height: 1.5;
 }
 
-.border-top {
-  border-top: 1px solid #F1F5F9;
+.event-count-text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #4B5563;
+  display: inline-flex;
+  align-items: center;
 }
 
 .action-link-text {
   display: inline-flex;
   align-items: center;
-  color: #DC2626;
-  font-weight: 700;
-  font-size: 0.85rem;
-  transition: transform 0.2s ease;
-}
-
-.featured-card:hover .action-link-text,
-.activation-card:hover .action-link-text {
-  transform: translateX(3px);
-}
-
-.event-count-text {
-  display: inline-flex;
-  align-items: center;
   font-size: 0.82rem;
-  color: #6B7280;
-}
-
-/* Image Placeholder */
-.img-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #F3F4F6;
-  width: 100%;
-}
-
-/* Kolaborasi Section */
-.kolaborasi-card {
-  border-radius: 24px;
-  border: 1px solid #E2E8F0;
-  background: #FAFAFA;
+  font-weight: 700;
+  color: #DC2626;
 }
 
 .btn-primary-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 24px;
+  padding: 12px 28px;
   border-radius: 9999px;
   background: #DC2626;
   color: #FFFFFF;
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   border: none;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
 }
 
 .btn-primary-pill:hover {
   background: #B91C1C;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
 }
 
-/* Empty State */
+/* Kolaborasi Card */
+.kolaborasi-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.kolaborasi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #DC2626, #F87171);
+}
+
 .empty-state-box {
-  background: #FAFAFA;
-  border: 1px dashed #CBD5E1;
+  background: #F9FAFB;
+  border: 1px dashed #E5E7EB;
   border-radius: 20px;
 }
 
-/* Mobile Responsiveness (Compact 390px Standards) */
-@media (max-width: 600px) {
-  .aktivasi-hero {
-    padding-top: 24px;
-    padding-bottom: 24px;
-  }
-
-  .hero-title {
-    font-size: clamp(1.5rem, 6.2vw, 2.05rem);
-    line-height: 1.15;
-  }
-
-  .hero-subtitle {
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin-bottom: 20px !important;
-  }
-
-  .category-filters-wrapper {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 8px;
-    padding: 4px 16px 10px 16px;
-    margin-left: -16px;
-    margin-right: -16px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .category-filters-wrapper::-webkit-scrollbar {
-    display: none;
-  }
-
-  .filter-btn {
-    font-size: 0.78rem !important;
-    min-height: 32px !important;
-    height: 32px !important;
-    padding: 0 14px !important;
-    gap: 4px;
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-  }
-
-  .filter-btn :deep(.v-icon) {
-    font-size: 14px !important;
-  }
-
-  .featured-card {
-    border-radius: 16px;
-  }
-
-  .featured-img-col {
-    min-height: 140px;
-  }
-
-  .featured-img-box {
-    min-height: 140px;
-  }
-
-  .featured-card-heading {
-    font-size: 1.05rem;
-    line-height: 1.3;
-  }
-
-  .activation-card {
-    border-radius: 14px;
-  }
-
-  .card-header-img-wrapper {
-    height: 105px;
-  }
-
-  .card-title {
-    font-size: 0.825rem !important;
-    line-height: 1.3 !important;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .category-pill,
-  .category-pill-solid {
-    font-size: 0.625rem;
-    padding: 2px 6px;
-  }
-
-  .event-count-chip {
-    font-size: 0.625rem;
-    padding: 1px 5px;
-  }
-
-  .city-indicator {
-    font-size: 0.68rem;
-  }
-
-  .action-link-text {
-    font-size: 0.72rem;
-  }
-
-  .activation-avatar-badge {
-    width: 30px;
-    height: 30px;
-    bottom: -10px;
-    right: 10px;
-  }
+.img-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #F3F4F6;
 }
 </style>

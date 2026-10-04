@@ -22,8 +22,15 @@
             class="gallery-img"
             loading="lazy"
           />
+          <div v-if="item.tag" class="gallery-tag-badge">
+            {{ item.tag }}
+          </div>
           <div class="gallery-overlay">
             <v-icon color="white" size="24">mdi-magnify-plus-outline</v-icon>
+            <div v-if="item.photographer" class="gallery-credit-overlay">
+              <v-icon size="12" class="mr-1">mdi-camera-outline</v-icon>
+              <span>{{ item.photographer }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -70,9 +77,24 @@
             class="lightbox-img"
           />
         </div>
-        <p v-if="currentMedia?.description" class="pa-3 text-caption text-white text-center ma-0" style="background: rgba(0,0,0,0.6);">
-          {{ currentMedia.description }}
-        </p>
+        <div v-if="currentMedia" class="pa-3 text-caption text-white" style="background: rgba(0,0,0,0.75);">
+          <p v-if="currentMedia.description" class="ma-0 mb-2 font-weight-medium text-body-2 text-center text-sm-left">
+            {{ currentMedia.description }}
+          </p>
+          <div class="d-flex flex-wrap align-center justify-center justify-sm-start ga-3 text-grey-lighten-2 text-caption">
+            <span v-if="currentMedia.tag" class="lightbox-meta-pill">
+              <v-icon size="12" class="mr-1">mdi-tag-outline</v-icon>{{ currentMedia.tag }}
+            </span>
+            <span v-if="currentMedia.photographer" class="d-inline-flex align-center">
+              <v-icon size="13" class="mr-1 text-grey">mdi-camera-outline</v-icon>
+              <span>{{ currentMedia.photographer }}</span>
+            </span>
+            <span v-if="currentMedia.activity_date" class="d-inline-flex align-center">
+              <v-icon size="13" class="mr-1 text-grey">mdi-calendar-blank-outline</v-icon>
+              <span>{{ formatDate(currentMedia.activity_date) }}</span>
+            </span>
+          </div>
+        </div>
         <!-- Controls -->
         <div class="lightbox-controls">
           <v-btn icon size="small" color="white" variant="text" @click="previousImage">
@@ -143,6 +165,20 @@ const getYouTubeEmbedUrl = (url: string) => {
   const match = url.match(regExp)
   const videoId = match && match[2].length === 11 ? match[2] : null
   return videoId ? `https://www.youtube.com/embed/${videoId}` : url
+}
+
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return ''
+  try {
+    const date = new Date(dateStr)
+    return new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }).format(date)
+  } catch {
+    return dateStr
+  }
 }
 </script>
 
@@ -296,5 +332,48 @@ const getYouTubeEmbedUrl = (url: string) => {
   gap: 8px;
   padding: 8px 12px;
   background: rgba(0, 0, 0, 0.7);
+}
+
+.gallery-tag-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.gallery-credit-overlay {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  border-radius: 6px;
+  padding: 3px 6px;
+  pointer-events: none;
+}
+
+.lightbox-meta-pill {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
 }
 </style>

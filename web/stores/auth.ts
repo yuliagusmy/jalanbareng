@@ -17,6 +17,7 @@ interface User {
   instagram?: string
   facebook?: string
   twitter?: string
+  created_at?: string
 }
 
 interface AuthState {

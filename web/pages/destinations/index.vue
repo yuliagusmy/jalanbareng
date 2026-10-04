@@ -26,17 +26,27 @@
             <div class="category-filters-wrapper">
               <button
                 type="button"
-                :class="['filter-btn', { active: !selectedCategory }]"
+                :class="['filter-btn', { active: !selectedCategory && !showOnlyBookmarked }]"
                 @click="selectCategory(null)"
               >
                 <v-icon start size="18">mdi-view-grid-outline</v-icon>
                 Semua Kategori ({{ pagination.total || destinations.length }})
               </button>
               <button
+                type="button"
+                :class="['filter-btn bookmark-chip-btn', { active: showOnlyBookmarked }]"
+                @click="toggleBookmarksFilter"
+              >
+                <v-icon start size="18" :color="showOnlyBookmarked ? '#DC2626' : '#DC2626'">
+                  {{ showOnlyBookmarked ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}
+                </v-icon>
+                Disimpan ({{ bookmarksCount }})
+              </button>
+              <button
                 v-for="category in categories"
                 :key="category.id"
                 type="button"
-                :class="['filter-btn', { active: selectedCategory === category.id }]"
+                :class="['filter-btn', { active: selectedCategory === category.id && !showOnlyBookmarked }]"
                 @click="selectCategory(category.id)"
               >
                 <v-icon start size="18">{{ category.icon || 'mdi-map-marker' }}</v-icon>
@@ -260,9 +270,21 @@
                   <div class="card-tag-group" v-if="dest.category_name">
                     <span class="category-pill-solid">{{ dest.category_name }}</span>
                   </div>
+                  <!-- Bookmark Button -->
+                  <button
+                    type="button"
+                    class="card-bookmark-btn"
+                    :class="{ 'is-bookmarked': isBookmarked(dest.id) }"
+                    :aria-label="isBookmarked(dest.id) ? 'Hapus dari Tersimpan' : 'Simpan Destinasi'"
+                    @click.stop.prevent="handleToggleBookmark(dest)"
+                  >
+                    <v-icon size="15" :color="isBookmarked(dest.id) ? '#DC2626' : '#FFFFFF'">
+                      {{ isBookmarked(dest.id) ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}
+                    </v-icon>
+                  </button>
                 </div>
-                <div class="pa-4">
-                  <h4 class="card-title text-subtitle-1 font-weight-bold text-grey-darken-4 mb-1">
+                <div class="card-body-content">
+                  <h4 class="card-title text-subtitle-1 font-weight-bold text-grey-darken-4 mb-2">
                     {{ dest.name }}
                   </h4>
                   <div class="d-flex align-center justify-space-between mt-2">
@@ -285,29 +307,46 @@
       <section v-else class="mb-14">
         <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-6">
           <div>
-            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2 mb-md-2.5">Direktori Destinasi</h2>
+            <h2 class="text-h4 font-weight-black text-grey-darken-4 mb-2 mb-md-2.5">
+              {{ showOnlyBookmarked ? 'Destinasi yang Anda Simpan' : 'Direktori Destinasi' }}
+            </h2>
             <p class="text-body-2 text-md-body-1 text-grey-darken-1 mb-0">
-              Menampilkan {{ destinations.length }} dari {{ pagination.total }} destinasi komunitas
+              {{ showOnlyBookmarked
+                ? `Menampilkan ${displayedDestinations.length} spot pilihan yang ingin Anda kunjungi`
+                : `Menampilkan ${destinations.length} dari ${pagination.total} destinasi komunitas`
+              }}
             </p>
           </div>
         </div>
 
         <!-- Grid Cards (2 columns on mobile 390px) -->
-        <v-row v-if="!loading && destinations.length > 0" dense>
-          <v-col v-for="destination in destinations" :key="destination.id" cols="6" sm="6" md="3">
+        <v-row v-if="!loading && displayedDestinations.length > 0" dense>
+          <v-col v-for="destination in displayedDestinations" :key="destination.id" cols="6" sm="6" md="3">
             <v-card elevation="0" class="destination-card h-100" :to="`/destinations/${destination.id}`">
               <div class="card-header-img-wrapper">
                 <img :src="getImageUrl(destination.primary_photo)" :alt="destination.name" class="card-top-img" />
                 <div class="card-img-overlay"></div>
-                <div class="card-tag-group" v-if="destination.category">
+                <div class="card-tag-group" v-if="destination.category || destination.category_name">
                   <span class="category-pill-solid">
-                    {{ destination.category.name }}
+                    {{ destination.category?.name || destination.category_name }}
                   </span>
                 </div>
+                <!-- Bookmark Button -->
+                <button
+                  type="button"
+                  class="card-bookmark-btn"
+                  :class="{ 'is-bookmarked': isBookmarked(destination.id) }"
+                  :aria-label="isBookmarked(destination.id) ? 'Hapus dari Tersimpan' : 'Simpan Destinasi'"
+                  @click.stop.prevent="handleToggleBookmark(destination)"
+                >
+                  <v-icon size="15" :color="isBookmarked(destination.id) ? '#DC2626' : '#FFFFFF'">
+                    {{ isBookmarked(destination.id) ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}
+                  </v-icon>
+                </button>
               </div>
 
-              <div class="pa-2.5 pa-sm-4">
-                <h4 class="card-title text-subtitle-2 text-sm-subtitle-1 font-weight-bold text-grey-darken-4 mb-1">
+              <div class="card-body-content">
+                <h4 class="card-title text-subtitle-2 text-sm-subtitle-1 font-weight-bold text-grey-darken-4 mb-2">
                   {{ destination.name }}
                 </h4>
 
@@ -332,10 +371,14 @@
         </v-row>
 
         <!-- Empty State -->
-        <div v-else-if="!loading && destinations.length === 0" class="empty-state-box text-center pa-12">
-          <v-icon size="56" color="grey-lighten-1">mdi-map-marker-off-outline</v-icon>
-          <h3 class="text-h5 font-weight-bold text-grey-darken-3 mt-4 mb-2">Tidak ada destinasi ditemukan</h3>
-          <p class="text-body-2 text-grey-darken-1 mb-0">Coba ubah kata kunci atau filter pencarian</p>
+        <div v-else-if="!loading && displayedDestinations.length === 0" class="empty-state-box text-center pa-12">
+          <v-icon size="56" color="grey-lighten-1">{{ showOnlyBookmarked ? 'mdi-bookmark-outline' : 'mdi-map-marker-off-outline' }}</v-icon>
+          <h3 class="text-h5 font-weight-bold text-grey-darken-3 mt-4 mb-2">
+            {{ showOnlyBookmarked ? 'Belum ada destinasi yang disimpan' : 'Tidak ada destinasi ditemukan' }}
+          </h3>
+          <p class="text-body-2 text-grey-darken-1 mb-0">
+            {{ showOnlyBookmarked ? 'Klik ikon bookmark pada kartu destinasi untuk menyimpannya ke daftar kunjungan Anda.' : 'Coba ubah kata kunci atau filter pencarian' }}
+          </p>
         </div>
 
         <!-- Loading State -->
@@ -430,6 +473,14 @@
         </div>
       </section>
     </v-container>
+
+    <!-- Toast Notification -->
+    <v-snackbar v-model="snackbar" :color="snackbarColor" location="bottom" rounded="pill">
+      <div class="d-flex align-center ga-2">
+        <v-icon size="18" color="white">{{ snackbarColor === 'success' ? 'mdi-bookmark-check' : 'mdi-information-outline' }}</v-icon>
+        <span>{{ snackbarText }}</span>
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
@@ -439,6 +490,7 @@ import LargeDestinationMapSection from '~/components/destinations/LargeDestinati
 import FeaturedLandmarksSection from '~/components/destinations/FeaturedLandmarksSection.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
+import { useBookmarks } from '~/composables/useBookmarks'
 import { useRuntimeConfig, useRoute, useRouter, useSeoMeta } from '#app'
 
 definePageMeta({
@@ -458,6 +510,40 @@ const authStore = useAuthStore()
 const { api } = useApi()
 const route = useRoute()
 const router = useRouter()
+const { bookmarks, bookmarksCount, isBookmarked, toggleBookmark } = useBookmarks()
+
+const showOnlyBookmarked = ref(false)
+const snackbar = ref(false)
+const snackbarText = ref('')
+const snackbarColor = ref('success')
+
+const showToast = (text: string, color: string = 'success') => {
+  snackbarText.value = text
+  snackbarColor.value = color
+  snackbar.value = true
+}
+
+const handleToggleBookmark = (dest: any) => {
+  const isNowSaved = toggleBookmark(dest)
+  showToast(
+    isNowSaved ? `"${dest.name}" disimpan ke daftar favorit Anda!` : `"${dest.name}" dihapus dari daftar tersimpan.`,
+    isNowSaved ? 'success' : 'info'
+  )
+}
+
+const toggleBookmarksFilter = () => {
+  showOnlyBookmarked.value = !showOnlyBookmarked.value
+  if (showOnlyBookmarked.value) {
+    selectedCategory.value = null
+  }
+}
+
+const displayedDestinations = computed(() => {
+  if (showOnlyBookmarked.value) {
+    return bookmarks.value
+  }
+  return destinations.value
+})
 
 // View Mode State: 'grid' or 'map'
 const viewMode = ref<'grid' | 'map'>((route.query.view as 'grid' | 'map') || 'grid')
@@ -786,7 +872,7 @@ onMounted(() => {
 .hero-title {
   font-size: clamp(2.2rem, 4vw, 3.4rem);
   letter-spacing: -0.035em;
-  line-height: 1.12;
+  line-height: 1.15;
   color: #111827;
 }
 
@@ -969,6 +1055,10 @@ onMounted(() => {
   font-weight: 600;
 }
 
+.card-body-content {
+  padding: 16px 18px 18px 18px;
+}
+
 .card-title {
   letter-spacing: -0.015em;
   line-height: 1.3;
@@ -1035,7 +1125,7 @@ onMounted(() => {
   }
 
   .hero-title {
-    font-size: clamp(1.5rem, 6.2vw, 2.05rem);
+    font-size: 1.95rem;
     line-height: 1.15;
   }
 
@@ -1083,6 +1173,10 @@ onMounted(() => {
     border-radius: 14px;
   }
 
+  .card-body-content {
+    padding: 12px 14px 14px 14px !important;
+  }
+
   .card-header-img-wrapper {
     height: 105px;
   }
@@ -1110,7 +1204,7 @@ onMounted(() => {
   }
 
   .map-embed-wrapper {
-    height: 280px;
+    height: 380px;
   }
 
   .kolaborasi-card {
@@ -1127,5 +1221,41 @@ onMounted(() => {
     white-space: nowrap !important;
     max-width: 100% !important;
   }
+}
+
+/* Bookmark Button on Destination Cards */
+.card-bookmark-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-bookmark-btn:hover {
+  background: #FFFFFF;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card-bookmark-btn:hover .v-icon {
+  color: #DC2626 !important;
+}
+
+.card-bookmark-btn.is-bookmarked {
+  background: #FFFFFF;
+  border-color: #FEE2E2;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
 }
 </style>

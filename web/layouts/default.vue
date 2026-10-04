@@ -29,7 +29,7 @@
             <!-- Quick Admin Panel Button (mobile & desktop) -->
             <v-btn
               v-if="authStore.isAdmin || authStore.isCommunityAdmin"
-              to="/manage/activations"
+              to="/manage"
               icon
               variant="flat"
               class="mr-1 admin-badge-btn"
@@ -42,30 +42,36 @@
             <NotificationBell class="mr-1" />
             <v-menu offset-y>
               <template v-slot:activator="{ props }">
-                <v-btn icon v-bind="props" class="ml-2 avatar-btn">
-                  <v-avatar size="40" class="avatar-shadow">
+                <v-btn icon v-bind="props" class="ml-2 avatar-btn" aria-label="Menu Pengguna">
+                  <v-avatar size="40" class="avatar-shadow" color="#FEF2F2">
                     <v-img v-if="authStore.user?.photo" :src="getImageUrl(authStore.user.photo)"
-                      :alt="authStore.user.name"></v-img>
-                    <v-icon v-else color="white">mdi-account-circle</v-icon>
+                      :alt="authStore.user.name" cover></v-img>
+                    <span v-else-if="authStore.user?.name" class="text-subtitle-2 font-weight-bold" style="color: #DC2626;">
+                      {{ authStore.user.name.charAt(0).toUpperCase() }}
+                    </span>
+                    <v-icon v-else color="#DC2626" size="22">mdi-account</v-icon>
                   </v-avatar>
                 </v-btn>
               </template>
               <v-list min-width="280" rounded="xl" class="py-2">
                 <v-list-item class="px-4 py-3">
                   <template v-slot:prepend>
-                    <v-avatar size="48">
-                      <v-img v-if="authStore.user?.photo" :src="getImageUrl(authStore.user.photo)"></v-img>
-                      <v-icon v-else size="large">mdi-account-circle</v-icon>
+                    <v-avatar size="48" color="#FEF2F2">
+                      <v-img v-if="authStore.user?.photo" :src="getImageUrl(authStore.user.photo)" cover></v-img>
+                      <span v-else-if="authStore.user?.name" class="text-h6 font-weight-bold" style="color: #DC2626;">
+                        {{ authStore.user.name.charAt(0).toUpperCase() }}
+                      </span>
+                      <v-icon v-else size="large" color="#DC2626">mdi-account</v-icon>
                     </v-avatar>
                   </template>
-                  <v-list-item-title class="font-weight-bold">{{ authStore.user?.name }}</v-list-item-title>
+                  <v-list-item-title class="font-weight-bold">{{ authStore.user?.name || 'Pejalan Kaki' }}</v-list-item-title>
                   <v-list-item-subtitle class="text-caption">{{ authStore.user?.email }}</v-list-item-subtitle>
                 </v-list-item>
 
                 <!-- Admin / Community Admin Link in User Dropdown for Quick Access -->
                 <template v-if="authStore.isAdmin || authStore.isCommunityAdmin">
                   <v-divider class="my-2"></v-divider>
-                  <v-list-item to="/manage/activations" rounded="lg" class="mx-2 bg-red-lighten-5">
+                  <v-list-item to="/manage" rounded="lg" class="mx-2 bg-red-lighten-5">
                     <template v-slot:prepend>
                       <v-icon color="#DC2626">mdi-shield-crown</v-icon>
                     </template>
@@ -170,10 +176,9 @@ const handleLogout = async () => {
 onMounted(async () => {
   const authStore = useAuthStore()
   const authToken = useCookie('auth_token')
-  if (authToken.value && !authStore.isLoggedIn) {
+  if (authToken.value && !authStore.user) {
     await authStore.fetchUser()
   }
-
 })
 
 const api = useApi()

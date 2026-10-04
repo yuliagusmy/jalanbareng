@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\PointController;
+use App\Http\Controllers\Api\AdminStatsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,6 +62,7 @@ Route::get('/profile/{user}', [ProfileController::class, 'show']);
 Route::get('/users', [UserController::class, 'index']);
 
 // Activations
+Route::get('/activations/media/all', [ActivationController::class, 'allMedia']);
 Route::get('/activations', [ActivationController::class, 'index']);
 Route::get('/activations/{slug}', [ActivationController::class, 'show']);
 
@@ -94,6 +96,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/events/{event}/leave', [EventController::class, 'leave']);
 
     // Comments
+    Route::get('/comments', [CommentController::class, 'index']);
     Route::post('/comments', [CommentController::class, 'store']);
     Route::put('/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
@@ -149,6 +152,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/settings', [SettingController::class, 'index']);
     Route::put('/admin/settings', [SettingController::class, 'update']);
     
+    // Admin Reports
+    Route::get('/admin/reports/members', [AdminReportController::class, 'exportMembers']);
+    Route::get('/admin/reports/participants', [AdminReportController::class, 'exportParticipants']);
+    
+    // Admin Dashboard Stats
+    Route::get('/admin/stats', [AdminStatsController::class, 'overview']);
+
     // Stories (Admin curation)
     Route::get('/admin/stories', [StoryController::class, 'adminIndex']);
     Route::put('/admin/stories/{id}/status', [StoryController::class, 'adminUpdateStatus']);

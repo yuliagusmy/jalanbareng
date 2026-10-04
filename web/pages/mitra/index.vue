@@ -431,7 +431,7 @@
             <h4 class="text-subtitle-1 font-weight-bold text-grey-darken-4 mb-3">
               Tertarik Berkolaborasi dengan Komunitas Jalan Bareng?
             </h4>
-            <div class="d-flex align-center justify-center flex-wrap ga-3">
+            <div class="d-flex align-center justify-center flex-wrap ga-3 mb-8">
               <a
                 href="https://wa.me/6281234567890?text=Halo%20Tim%20Jalan%20Bareng,%20kami%20tertarik%20untuk%20mengajukan%20kolaborasi/kemitraan."
                 target="_blank"
@@ -450,6 +450,9 @@
               </a>
             </div>
           </div>
+
+          <!-- Interactive Partner / Checkpoint Registration Form -->
+          <PartnerApplicationForm />
         </div>
       </section>
     </v-container>
@@ -459,6 +462,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useSeoMeta } from '#app'
+import PartnerApplicationForm from '~/components/mitra/PartnerApplicationForm.vue'
 
 definePageMeta({
   layout: 'default'

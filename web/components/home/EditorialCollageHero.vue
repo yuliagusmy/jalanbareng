@@ -163,8 +163,11 @@ const emitScroll = () => {
   emit('scroll-to-registration')
 }
 
-// Pool of 12 authentic community photography assets
-const photoPool = [
+const { api } = useApi()
+const config = useRuntimeConfig()
+
+// Pool of community photography assets (gabungan dokumentasi server dan aset lokal)
+const photoPool = ref<string[]>([
   '/images/hero/walk_1.jpg',
   '/images/hero/walk_2.jpg',
   '/images/hero/walk_3.jpg',
@@ -177,7 +180,7 @@ const photoPool = [
   '/images/hero/walk_10.jpg',
   '/images/hero/walk_11.jpg',
   '/images/hero/walk_12.jpg'
-]
+])
 
 // 7 cards state. Direct image swap layer without background color flash
 const cards = ref([
@@ -190,6 +193,35 @@ const cards = ref([
   { id: 6, current: '/images/hero/walk_7.jpg', prev: '/images/hero/walk_7.jpg' }
 ])
 
+const fetchCommunityMedia = async () => {
+  try {
+    const res = await api.get('/activations/media/all?limit=30')
+    const items = res.data?.data || res.data || []
+    if (Array.isArray(items) && items.length > 0) {
+      const serverPhotos = items
+        .map((m: any) => {
+          if (!m.file_url) return null
+          if (m.file_url.startsWith('http')) return m.file_url
+          const cleanApiUrl = (config.public.apiBase as string) || (config.public.apiUrl as string)?.replace('/api', '') || 'http://localhost:8001'
+          return `${cleanApiUrl}/storage/${m.file_url}`
+        })
+        .filter(Boolean)
+
+      if (serverPhotos.length > 0) {
+        photoPool.value = Array.from(new Set([...serverPhotos, ...photoPool.value]))
+        cards.value.forEach((card, idx) => {
+          if (serverPhotos[idx]) {
+            card.current = serverPhotos[idx]
+            card.prev = serverPhotos[idx]
+          }
+        })
+      }
+    }
+  } catch {
+    // Graceful fallback ke foto lokal
+  }
+}
+
 // Automatic one-by-one photo rotation logic
 const cardRotationSequence = [3, 1, 5, 0, 4, 2, 6]
 let sequenceIndex = 0
@@ -200,7 +232,7 @@ const swapOnePhoto = () => {
   sequenceIndex = (sequenceIndex + 1) % cardRotationSequence.length
 
   const currentActiveUrls = cards.value.map(c => c.current)
-  const availablePhotos = photoPool.filter(p => !currentActiveUrls.includes(p))
+  const availablePhotos = photoPool.value.filter(p => !currentActiveUrls.includes(p))
 
   if (availablePhotos.length === 0) return
 
@@ -254,9 +286,9 @@ const typeLoop = () => {
 
 onMounted(() => {
   typeLoop()
-  // Preload all images in the pool for instant decoding
+  fetchCommunityMedia()
   if (typeof window !== 'undefined') {
-    photoPool.forEach(src => {
+    photoPool.value.forEach(src => {
       const img = new Image()
       img.src = src
     })

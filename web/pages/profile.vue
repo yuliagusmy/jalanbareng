@@ -1,217 +1,362 @@
 <template>
   <div class="profile-page">
-    <!-- Hero Section with Cover -->
-    <div class="profile-hero">
-      <div class="hero-gradient"></div>
-      <v-container class="hero-content">
-        <div class="d-flex align-center flex-column flex-md-row">
-          <!-- Avatar -->
-          <v-avatar :size="isMobile ? 120 : 140" class="profile-avatar elevation-8" :key="photoUpdateKey">
-            <v-img v-if="getPhotoUrl(authStore.user?.photo)" :src="getPhotoUrlWithCache(authStore.user?.photo)"
-              :alt="authStore.user?.name" cover>
-              <template v-slot:error>
-                <v-icon size="x-large">mdi-account-circle</v-icon>
-              </template>
-            </v-img>
-            <v-icon v-else size="x-large">mdi-account-circle</v-icon>
-          </v-avatar>
+    <!-- Hero Section: Editorial Jalan Bareng Aesthetic -->
+    <section class="profile-hero">
+      <div class="hero-overlay-glow"></div>
+      <v-container class="hero-container">
+        <div class="d-flex align-center flex-column flex-md-row ga-6 hero-content-row">
+          <!-- Avatar with dynamic fallback -->
+          <div class="avatar-wrapper">
+            <v-avatar :size="isMobile ? 104 : 124" class="profile-avatar">
+              <v-img
+                v-if="userPhotoUrl"
+                :src="userPhotoUrl"
+                :alt="authStore.user?.name || 'Profil'"
+                cover
+              >
+                <template v-slot:error>
+                  <span class="avatar-initial">{{ userInitial }}</span>
+                </template>
+              </v-img>
+              <span v-else class="avatar-initial">{{ userInitial }}</span>
+            </v-avatar>
+            <button
+              type="button"
+              class="avatar-edit-badge"
+              aria-label="Ubah foto profil"
+              @click="isEditing = true"
+            >
+              <v-icon size="15" color="white">mdi-camera</v-icon>
+            </button>
+          </div>
 
-          <!-- User Info -->
-          <div class="user-info-section">
-            <h1 class="user-name">{{ authStore.user?.name }}</h1>
+          <!-- User Details -->
+          <div class="user-hero-details flex-grow-1 text-center text-md-left">
+            <div class="d-flex align-center justify-center justify-md-start flex-wrap ga-2 mb-2">
+              <span class="profile-kicker">PROFIL PEJALAN KAKI</span>
+              <span class="role-pill" :class="roleClass">
+                <v-icon size="13" class="mr-1">{{ roleIcon }}</v-icon>
+                {{ roleLabel }}
+              </span>
+            </div>
+
+            <h1 class="user-name">
+              {{ authStore.user?.name || 'Pengguna Jalan Bareng' }}
+            </h1>
+
             <p class="user-email">
-              <v-icon size="small" class="mr-1">mdi-email-outline</v-icon>
-              {{ authStore.user?.email }}
+              <v-icon size="16" class="mr-1 opacity-75">mdi-email-outline</v-icon>
+              <span>{{ authStore.user?.email || 'Memuat akun...' }}</span>
             </p>
-            <div class="user-stats">
-              <div class="stat-item">
-                <v-icon size="small" color="primary" class="mr-1">mdi-map-marker</v-icon>
-                <span class="stat-value">{{ profileData?.destinations_count || 0 }}</span>
-                <span class="stat-label">Destinasi</span>
+
+            <!-- Quick Stat Counters -->
+            <div class="user-hero-stats">
+              <div class="stat-pill">
+                <v-icon size="16" color="#DC2626">mdi-map-marker</v-icon>
+                <span class="stat-num">{{ profileData?.destinations_count || 0 }}</span>
+                <span class="stat-txt">Destinasi</span>
               </div>
               <div class="stat-divider"></div>
-              <div class="stat-item">
-                <v-icon size="small" color="success" class="mr-1">mdi-calendar-check</v-icon>
-                <span class="stat-value">{{ profileData?.events_count || 0 }}</span>
-                <span class="stat-label">Event</span>
+              <div class="stat-pill">
+                <v-icon size="16" color="#16A34A">mdi-calendar-check</v-icon>
+                <span class="stat-num">{{ profileData?.events_count || 0 }}</span>
+                <span class="stat-txt">Event Diikuti</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-pill">
+                <v-icon size="16" color="#D97706">mdi-wallet-bifold-outline</v-icon>
+                <span class="stat-num">{{ profileData?.points || 0 }}</span>
+                <span class="stat-txt">Poin</span>
               </div>
             </div>
           </div>
+
+          <!-- Hero Action Button -->
+          <div class="hero-action-box d-none d-md-block">
+            <v-btn
+              color="#DC2626"
+              variant="flat"
+              rounded="pill"
+              size="large"
+              class="font-weight-bold text-white px-6 edit-hero-btn"
+              @click="isEditing = true"
+            >
+              <v-icon start size="18">mdi-pencil</v-icon>
+              Edit Profil
+            </v-btn>
+          </div>
         </div>
       </v-container>
-    </div>
+    </section>
 
-    <!-- Main Content -->
+    <!-- Main Content Container -->
     <v-container class="content-section">
       <v-row>
-        <!-- Main Content Card -->
+        <!-- Main Content (Tabs & Content) -->
         <v-col cols="12" lg="8">
           <v-card elevation="0" rounded="xl" class="main-card">
-            <!-- Tabs -->
-            <v-tabs v-model="tab" color="primary" align-tabs="start" class="tabs-header" hide-slider>
-              <v-tab value="profile" class="custom-tab">
-                <v-icon start size="small">mdi-account</v-icon>
-                Profil
-              </v-tab>
-              <v-tab value="points" class="custom-tab">
-                <v-icon start size="small" color="#DC2626">mdi-wallet-bifold-outline</v-icon>
-                Poin Kontributor
-              </v-tab>
-              <v-tab value="destinations" class="custom-tab">
-                <v-icon start size="small">mdi-map-marker-multiple</v-icon>
-                Destinasi
-                <v-chip v-if="profileData?.destinations_count" size="x-small" class="ml-2" color="primary">
-                  {{ profileData.destinations_count }}
-                </v-chip>
-              </v-tab>
-              <v-tab value="events" class="custom-tab">
-                <v-icon start size="small">mdi-calendar-star</v-icon>
-                Event
-                <v-chip v-if="profileData?.events_count" size="x-small" class="ml-2" color="success">
-                  {{ profileData.events_count }}
-                </v-chip>
-              </v-tab>
-            </v-tabs>
+            <!-- Tabs Bar -->
+            <div class="tabs-bar-wrapper">
+              <v-tabs
+                v-model="tab"
+                color="#DC2626"
+                slider-color="#DC2626"
+                align-tabs="start"
+                class="custom-tabs"
+              >
+                <v-tab value="profile" class="tab-item">
+                  <v-icon start size="18">mdi-badge-account-outline</v-icon>
+                  Informasi Profil
+                </v-tab>
+                <v-tab value="points" class="tab-item">
+                  <v-icon start size="18" color="#DC2626">mdi-wallet-bifold-outline</v-icon>
+                  Poin Kontributor
+                </v-tab>
+                <v-tab value="destinations" class="tab-item">
+                  <v-icon start size="18">mdi-map-marker-multiple-outline</v-icon>
+                  Destinasi
+                  <span v-if="profileData?.destinations_count" class="tab-badge ml-2">
+                    {{ profileData.destinations_count }}
+                  </span>
+                </v-tab>
+                <v-tab value="events" class="tab-item">
+                  <v-icon start size="18">mdi-calendar-star-outline</v-icon>
+                  Event
+                  <span v-if="profileData?.events_count" class="tab-badge success-badge ml-2">
+                    {{ profileData.events_count }}
+                  </span>
+                </v-tab>
+                <v-tab value="saved" class="tab-item">
+                  <v-icon start size="18" color="#DC2626">mdi-bookmark-outline</v-icon>
+                  Disimpan
+                  <span v-if="bookmarksCount" class="tab-badge ml-2">
+                    {{ bookmarksCount }}
+                  </span>
+                </v-tab>
+              </v-tabs>
+            </div>
 
             <v-divider></v-divider>
 
-            <!-- Tab Content -->
+            <!-- Tabs Windows -->
             <v-window v-model="tab">
-              <!-- Profile Tab -->
+              <!-- TAB 1: Profile Information -->
               <v-window-item value="profile">
-                <div class="tab-content">
-                  <div class="section-header">
+                <div class="tab-inner-content">
+                  <div class="section-title-row d-flex align-center justify-space-between flex-wrap ga-3 mb-6">
                     <div>
-                      <h3 class="section-title">Informasi Profil</h3>
-                      <p class="section-subtitle">Detail informasi pribadi Anda</p>
+                      <h2 class="section-title">Informasi Pribadi & Kontak</h2>
+                      <p class="section-subtitle">Data akun Anda yang terdaftar di komunitas Jalan Bareng</p>
                     </div>
-                    <v-btn color="primary" variant="flat" @click="startEdit" rounded="lg">
-                      <v-icon start>mdi-pencil</v-icon>
-                      Edit Profil
+                    <v-btn
+                      variant="outlined"
+                      color="#DC2626"
+                      rounded="pill"
+                      size="default"
+                      class="font-weight-bold"
+                      @click="isEditing = true"
+                    >
+                      <v-icon start size="16">mdi-pencil-outline</v-icon>
+                      Perbarui Data
                     </v-btn>
                   </div>
 
-                  <v-card elevation="0" class="info-card">
-                    <v-row>
-                      <!-- Contact Info -->
-                      <v-col cols="12" md="6">
-                        <div class="info-item">
-                          <div class="info-icon">
-                            <v-icon color="primary">mdi-phone</v-icon>
-                          </div>
-                          <div class="info-content">
-                            <p class="info-label">Nomor Telepon</p>
-                            <p class="info-value">{{ authStore.user?.phone || 'Belum diisi' }}</p>
-                          </div>
-                        </div>
-                      </v-col>
+                  <!-- Details Grid -->
+                  <div class="info-tiles-grid">
+                    <!-- Nama Lengkap -->
+                    <div class="info-tile">
+                      <div class="tile-icon-box">
+                        <v-icon color="#DC2626" size="20">mdi-account</v-icon>
+                      </div>
+                      <div class="tile-content">
+                        <span class="tile-label">Nama Lengkap</span>
+                        <div class="tile-value">{{ authStore.user?.name || '-' }}</div>
+                      </div>
+                    </div>
 
-                      <!-- Social Media -->
-                      <v-col cols="12" md="6">
-                        <div class="info-item">
-                          <div class="info-icon">
-                            <v-icon color="pink">mdi-instagram</v-icon>
-                          </div>
-                          <div class="info-content">
-                            <p class="info-label">Instagram</p>
-                            <p class="info-value">
-                              <a v-if="authStore.user?.instagram" :href="authStore.user.instagram" target="_blank"
-                                class="social-link">
-                                Lihat Profil
-                                <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
-                              </a>
-                              <span v-else>Belum diisi</span>
-                            </p>
-                          </div>
+                    <!-- Email -->
+                    <div class="info-tile">
+                      <div class="tile-icon-box">
+                        <v-icon color="#0284C7" size="20">mdi-email</v-icon>
+                      </div>
+                      <div class="tile-content">
+                        <div class="d-flex align-center ga-2">
+                          <span class="tile-label">Alamat Email</span>
+                          <span class="verified-chip">Terverifikasi</span>
                         </div>
-                      </v-col>
+                        <div class="tile-value">{{ authStore.user?.email || '-' }}</div>
+                      </div>
+                    </div>
 
-                      <v-col cols="12" md="6">
-                        <div class="info-item">
-                          <div class="info-icon">
-                            <v-icon color="blue">mdi-facebook</v-icon>
-                          </div>
-                          <div class="info-content">
-                            <p class="info-label">Facebook</p>
-                            <p class="info-value">
-                              <a v-if="authStore.user?.facebook" :href="authStore.user.facebook" target="_blank"
-                                class="social-link">
-                                Lihat Profil
-                                <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
-                              </a>
-                              <span v-else>Belum diisi</span>
-                            </p>
-                          </div>
+                    <!-- Telepon / WA -->
+                    <div class="info-tile">
+                      <div class="tile-icon-box">
+                        <v-icon color="#16A34A" size="20">mdi-whatsapp</v-icon>
+                      </div>
+                      <div class="tile-content">
+                        <span class="tile-label">WhatsApp / Telepon</span>
+                        <div class="tile-value">
+                          <a
+                            v-if="authStore.user?.phone"
+                            :href="`https://wa.me/${cleanPhone(authStore.user.phone)}`"
+                            target="_blank"
+                            class="active-link"
+                          >
+                            {{ authStore.user.phone }}
+                            <v-icon size="14" class="ml-1">mdi-open-in-new</v-icon>
+                          </a>
+                          <span v-else class="text-grey">Belum diisi</span>
                         </div>
-                      </v-col>
+                      </div>
+                    </div>
 
-                      <v-col cols="12" md="6">
-                        <div class="info-item">
-                          <div class="info-icon">
-                            <v-icon color="light-blue">mdi-twitter</v-icon>
-                          </div>
-                          <div class="info-content">
-                            <p class="info-label">Twitter / X</p>
-                            <p class="info-value">
-                              <a v-if="authStore.user?.twitter" :href="authStore.user.twitter" target="_blank"
-                                class="social-link">
-                                Lihat Profil
-                                <v-icon size="x-small" class="ml-1">mdi-open-in-new</v-icon>
-                              </a>
-                              <span v-else>Belum diisi</span>
-                            </p>
-                          </div>
+                    <!-- Tanggal Bergabung -->
+                    <div class="info-tile">
+                      <div class="tile-icon-box">
+                        <v-icon color="#F59E0B" size="20">mdi-calendar-check</v-icon>
+                      </div>
+                      <div class="tile-content">
+                        <span class="tile-label">Bergabung Sejak</span>
+                        <div class="tile-value">{{ formatJoinDate(authStore.user?.created_at) }}</div>
+                      </div>
+                    </div>
+
+                    <!-- Instagram -->
+                    <div class="info-tile">
+                      <div class="tile-icon-box instagram">
+                        <v-icon color="#E1306C" size="20">mdi-instagram</v-icon>
+                      </div>
+                      <div class="tile-content">
+                        <span class="tile-label">Instagram</span>
+                        <div class="tile-value">
+                          <a
+                            v-if="authStore.user?.instagram"
+                            :href="formatSocialUrl(authStore.user.instagram, 'instagram')"
+                            target="_blank"
+                            class="active-link"
+                          >
+                            {{ getSocialHandle(authStore.user.instagram) }}
+                            <v-icon size="14" class="ml-1">mdi-open-in-new</v-icon>
+                          </a>
+                          <span v-else class="text-grey">Belum dihubungkan</span>
                         </div>
-                      </v-col>
-                    </v-row>
-                  </v-card>
+                      </div>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div class="info-tile">
+                      <div class="tile-icon-box facebook">
+                        <v-icon color="#1877F2" size="20">mdi-facebook</v-icon>
+                      </div>
+                      <div class="tile-content">
+                        <span class="tile-label">Facebook</span>
+                        <div class="tile-value">
+                          <a
+                            v-if="authStore.user?.facebook"
+                            :href="formatSocialUrl(authStore.user.facebook, 'facebook')"
+                            target="_blank"
+                            class="active-link"
+                          >
+                            {{ getSocialHandle(authStore.user.facebook) }}
+                            <v-icon size="14" class="ml-1">mdi-open-in-new</v-icon>
+                          </a>
+                          <span v-else class="text-grey">Belum dihubungkan</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Twitter / X -->
+                    <div class="info-tile">
+                      <div class="tile-icon-box x-twitter">
+                        <v-icon color="#111827" size="20">mdi-twitter</v-icon>
+                      </div>
+                      <div class="tile-content">
+                        <span class="tile-label">Twitter / X</span>
+                        <div class="tile-value">
+                          <a
+                            v-if="authStore.user?.twitter"
+                            :href="formatSocialUrl(authStore.user.twitter, 'twitter')"
+                            target="_blank"
+                            class="active-link"
+                          >
+                            {{ getSocialHandle(authStore.user.twitter) }}
+                            <v-icon size="14" class="ml-1">mdi-open-in-new</v-icon>
+                          </a>
+                          <span v-else class="text-grey">Belum dihubungkan</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Status Role -->
+                    <div class="info-tile">
+                      <div class="tile-icon-box">
+                        <v-icon color="#7C3AED" size="20">mdi-shield-check</v-icon>
+                      </div>
+                      <div class="tile-content">
+                        <span class="tile-label">Status Keanggotaan</span>
+                        <div class="tile-value">{{ roleLabel }}</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </v-window-item>
 
-              <!-- Points & Contributor Wallet Tab -->
+              <!-- TAB 2: Poin Kontributor -->
               <v-window-item value="points">
-                <div class="tab-content pt-2">
+                <div class="tab-inner-content pt-4">
                   <ContributorPointsWallet />
                 </div>
               </v-window-item>
 
-              <!-- Destinations Tab -->
+              <!-- TAB 3: Destinasi Ditambahkan -->
               <v-window-item value="destinations">
-                <div class="tab-content">
-                  <!-- Loading -->
-                  <div v-if="loading" class="loading-state">
-                    <v-progress-circular indeterminate color="primary" size="48"></v-progress-circular>
-                    <p class="mt-4 text-grey">Memuat destinasi...</p>
+                <div class="tab-inner-content">
+                  <div v-if="loading" class="text-center py-12">
+                    <v-progress-circular indeterminate color="#DC2626" size="44"></v-progress-circular>
+                    <p class="mt-3 text-caption text-grey">Memuat daftar destinasi...</p>
                   </div>
 
-                  <!-- Has Destinations -->
-                  <div v-else-if="userDestinations.length > 0">
+                  <div v-else-if="userDestinations.length > 0" class="destinations-grid">
                     <v-row>
-                      <v-col v-for="destination in userDestinations" :key="destination.id" cols="12" sm="6">
-                        <v-card hover rounded="xl" class="destination-card" :to="`/destinations/${destination.id}`">
-                          <v-img :src="getImageUrl(destination.primary_photo)" height="200" cover
-                            class="destination-image">
+                      <v-col
+                        v-for="destination in userDestinations"
+                        :key="destination.id"
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-card
+                          hover
+                          rounded="xl"
+                          class="destination-tile-card"
+                          :to="`/destinations/${destination.id}`"
+                        >
+                          <v-img
+                            :src="getImageUrl(destination.primary_photo)"
+                            height="180"
+                            cover
+                            class="dest-img"
+                          >
                             <template v-slot:placeholder>
-                              <div class="d-flex align-center justify-center fill-height">
-                                <v-progress-circular indeterminate color="white"></v-progress-circular>
+                              <div class="d-flex align-center justify-center fill-height bg-grey-lighten-3">
+                                <v-progress-circular indeterminate color="#DC2626"></v-progress-circular>
                               </div>
                             </template>
                           </v-img>
                           <v-card-text class="pa-4">
-                            <h4 class="destination-name">{{ destination.name }}</h4>
-                            <p class="destination-category">
-                              <v-icon size="small" class="mr-1">mdi-folder-outline</v-icon>
+                            <h4 class="dest-title">{{ destination.name }}</h4>
+                            <p class="dest-category">
+                              <v-icon size="14" class="mr-1" color="#DC2626">mdi-folder-outline</v-icon>
                               {{ destination.category?.name || 'Tanpa Kategori' }}
                             </p>
-                            <div class="destination-meta">
-                              <div class="meta-item">
-                                <v-icon size="small" color="red">mdi-heart</v-icon>
-                                <span>{{ destination.likes_count || 0 }}</span>
-                              </div>
-                              <div class="meta-item">
-                                <v-icon size="small" color="primary">mdi-comment</v-icon>
-                                <span>{{ destination.comments_count || 0 }}</span>
-                              </div>
+                            <div class="dest-meta d-flex align-center ga-3">
+                              <span class="meta-stat">
+                                <v-icon size="14" color="#EF4444" class="mr-1">mdi-heart</v-icon>
+                                {{ destination.likes_count || 0 }}
+                              </span>
+                              <span class="meta-stat">
+                                <v-icon size="14" color="#0284C7" class="mr-1">mdi-comment-outline</v-icon>
+                                {{ destination.comments_count || 0 }}
+                              </span>
                             </div>
                           </v-card-text>
                         </v-card>
@@ -219,48 +364,62 @@
                     </v-row>
                   </div>
 
-                  <!-- Empty State -->
-                  <div v-else class="empty-state">
-                    <v-icon size="80" color="grey-lighten-2">mdi-map-marker-off-outline</v-icon>
-                    <h3 class="empty-title">Belum Ada Destinasi</h3>
-                    <p class="empty-text">Anda belum menambahkan destinasi apapun</p>
-                    <v-btn color="primary" variant="flat" to="/destinations/create" rounded="lg" size="large">
-                      <v-icon start>mdi-plus</v-icon>
-                      Tambah Destinasi
+                  <div v-else class="empty-tab-state text-center py-12">
+                    <v-icon size="64" color="#D1D5DB">mdi-map-marker-off-outline</v-icon>
+                    <h3 class="empty-title mt-3">Belum Ada Destinasi</h3>
+                    <p class="empty-subtitle">Bagikan spot jalan kaki favorit Anda kepada teman komunitas</p>
+                    <v-btn
+                      color="#DC2626"
+                      variant="flat"
+                      to="/destinations/create"
+                      rounded="pill"
+                      size="large"
+                      class="mt-4 font-weight-bold text-white px-6"
+                    >
+                      <v-icon start size="18">mdi-plus</v-icon>
+                      Tambah Destinasi Baru
                     </v-btn>
                   </div>
                 </div>
               </v-window-item>
 
-              <!-- Events Tab -->
+              <!-- TAB 4: Event Diikuti -->
               <v-window-item value="events">
-                <div class="tab-content">
-                  <!-- Loading -->
-                  <div v-if="loading" class="loading-state">
-                    <v-progress-circular indeterminate color="primary" size="48"></v-progress-circular>
-                    <p class="mt-4 text-grey">Memuat event...</p>
+                <div class="tab-inner-content">
+                  <div v-if="loading" class="text-center py-12">
+                    <v-progress-circular indeterminate color="#DC2626" size="44"></v-progress-circular>
+                    <p class="mt-3 text-caption text-grey">Memuat daftar event...</p>
                   </div>
 
-                  <!-- Has Events -->
-                  <div v-else-if="userEvents.length > 0">
+                  <div v-else-if="userEvents.length > 0" class="events-grid">
                     <v-row>
-                      <v-col v-for="event in userEvents" :key="event.id" cols="12" sm="6">
-                        <v-card hover rounded="xl" class="event-card" :to="`/events/${event.id}`">
-                          <v-img :src="getImageUrl(event.poster)" height="200" cover class="event-image">
-                            <template v-slot:placeholder>
-                              <div class="d-flex align-center justify-center fill-height">
-                                <v-progress-circular indeterminate color="white"></v-progress-circular>
-                              </div>
-                            </template>
-                            <div v-if="event.type === 'walking'" class="event-badge">
-                              <v-icon size="small" class="mr-1">mdi-walk</v-icon>
+                      <v-col
+                        v-for="event in userEvents"
+                        :key="event.id"
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-card
+                          hover
+                          rounded="xl"
+                          class="event-tile-card"
+                          :to="`/events/${event.id}`"
+                        >
+                          <v-img
+                            :src="getImageUrl(event.poster)"
+                            height="180"
+                            cover
+                            class="event-img"
+                          >
+                            <span v-if="event.type === 'walking'" class="event-type-badge">
+                              <v-icon size="13" class="mr-1">mdi-walk</v-icon>
                               Jalan Kaki
-                            </div>
+                            </span>
                           </v-img>
                           <v-card-text class="pa-4">
-                            <h4 class="event-name">{{ event.name }}</h4>
+                            <h4 class="event-title">{{ event.name }}</h4>
                             <p class="event-date">
-                              <v-icon size="small" class="mr-1">mdi-calendar</v-icon>
+                              <v-icon size="14" class="mr-1" color="#16A34A">mdi-calendar-outline</v-icon>
                               {{ formatDate(event.date) }}
                             </p>
                           </v-card-text>
@@ -269,14 +428,94 @@
                     </v-row>
                   </div>
 
-                  <!-- Empty State -->
-                  <div v-else class="empty-state">
-                    <v-icon size="80" color="grey-lighten-2">mdi-calendar-blank-outline</v-icon>
-                    <h3 class="empty-title">Belum Ada Event</h3>
-                    <p class="empty-text">Anda belum mengikuti event apapun</p>
-                    <v-btn color="primary" variant="flat" to="/events" rounded="lg" size="large">
-                      <v-icon start>mdi-calendar-star</v-icon>
-                      Lihat Event
+                  <div v-else class="empty-tab-state text-center py-12">
+                    <v-icon size="64" color="#D1D5DB">mdi-calendar-blank-outline</v-icon>
+                    <h3 class="empty-title mt-3">Belum Mengikuti Event</h3>
+                    <p class="empty-subtitle">Ikuti jalan santai atau kegiatan komunitas berikutnya bersama kami</p>
+                    <v-btn
+                      color="#DC2626"
+                      variant="flat"
+                      to="/events"
+                      rounded="pill"
+                      size="large"
+                      class="mt-4 font-weight-bold text-white px-6"
+                    >
+                      <v-icon start size="18">mdi-compass-outline</v-icon>
+                      Jelajahi Event Komunitas
+                    </v-btn>
+                  </div>
+                </div>
+              </v-window-item>
+
+              <!-- TAB 5: Destinasi yang Disimpan / Ingin Dikunjungi -->
+              <v-window-item value="saved">
+                <div class="tab-inner-content">
+                  <div v-if="bookmarks.length > 0" class="destinations-grid">
+                    <v-row>
+                      <v-col
+                        v-for="destination in bookmarks"
+                        :key="destination.id"
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-card
+                          hover
+                          rounded="xl"
+                          class="destination-tile-card"
+                          :to="`/destinations/${destination.id}`"
+                        >
+                          <div class="position-relative">
+                            <v-img
+                              :src="getImageUrl(destination.primary_photo)"
+                              height="180"
+                              cover
+                              class="dest-img"
+                            ></v-img>
+                            <button
+                              type="button"
+                              class="card-remove-bookmark-btn"
+                              title="Hapus dari tersimpan"
+                              aria-label="Hapus dari tersimpan"
+                              @click.stop.prevent="removeBookmark(destination.id)"
+                            >
+                              <v-icon size="16" color="#DC2626">mdi-trash-can-outline</v-icon>
+                            </button>
+                          </div>
+                          <v-card-text class="pa-4">
+                            <h4 class="dest-title">{{ destination.name }}</h4>
+                            <p class="dest-category">
+                              <v-icon size="14" class="mr-1" color="#DC2626">mdi-folder-outline</v-icon>
+                              {{ destination.category?.name || destination.category_name || 'Tanpa Kategori' }}
+                            </p>
+                            <div class="dest-meta d-flex align-center justify-space-between">
+                              <span class="meta-stat">
+                                <v-icon size="14" color="#EF4444" class="mr-1">mdi-heart</v-icon>
+                                {{ destination.likes_count || 0 }}
+                              </span>
+                              <span class="text-caption font-weight-bold" style="color: #DC2626;">
+                                Buka Spot <v-icon size="12">mdi-arrow-right</v-icon>
+                              </span>
+                            </div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </div>
+
+                  <div v-else class="empty-tab-state text-center py-12">
+                    <v-icon size="64" color="#D1D5DB">mdi-bookmark-outline</v-icon>
+                    <h3 class="empty-title mt-3">Belum Ada Destinasi Disimpan</h3>
+                    <p class="empty-subtitle">Tandai tempat jalan kaki yang ingin Anda kunjungi saat menjelajahi katalog</p>
+                    <v-btn
+                      color="#DC2626"
+                      variant="flat"
+                      to="/destinations"
+                      rounded="pill"
+                      size="large"
+                      class="mt-4 font-weight-bold text-white px-6"
+                    >
+                      <v-icon start size="18">mdi-compass-outline</v-icon>
+                      Jelajahi Direktori Destinasi
                     </v-btn>
                   </div>
                 </div>
@@ -287,25 +526,24 @@
 
         <!-- Sidebar -->
         <v-col cols="12" lg="4">
-          <!-- Admin Panel Quick Access (Administrator & Community Admin) -->
+          <!-- Administrator Quick Panel (for Admin / Community Admin) -->
           <v-card
             v-if="authStore.isAdmin || authStore.isCommunityAdmin"
             elevation="0"
             rounded="xl"
-            class="sidebar-card mb-4"
-            style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white;"
+            class="admin-access-card mb-4"
           >
-            <v-card-text class="pa-6">
+            <v-card-text class="pa-5">
               <div class="d-flex align-center ga-3 mb-3">
                 <v-avatar color="rgba(255,255,255,0.12)" size="42">
-                  <v-icon color="#F59E0B" size="24">mdi-shield-crown</v-icon>
+                  <v-icon color="#F59E0B" size="22">mdi-shield-crown</v-icon>
                 </v-avatar>
                 <div>
                   <h3 class="text-subtitle-1 font-weight-bold text-white mb-0">
-                    {{ authStore.isAdmin ? 'Panel Administrator' : 'Panel Manajemen Komunitas' }}
+                    {{ authStore.isAdmin ? 'Panel Administrator' : 'Panel Manajemen' }}
                   </h3>
                   <p class="text-caption text-grey-lighten-2 mb-0">
-                    {{ authStore.isAdmin ? 'Kelola sistem, event, & aktivasi' : 'Kelola event, destinasi, & aktivasi' }}
+                    {{ authStore.isAdmin ? 'Kelola website, user, & aktivasi' : 'Kelola aktivasi & destinasi' }}
                   </p>
                 </div>
               </div>
@@ -314,56 +552,104 @@
                 color="#DC2626"
                 variant="flat"
                 size="large"
-                rounded="lg"
+                rounded="pill"
                 to="/manage/activations"
-                class="font-weight-bold"
+                class="font-weight-bold text-white"
               >
-                <v-icon start>mdi-view-dashboard-outline</v-icon>
-                {{ authStore.isAdmin ? 'Masuk ke Panel Admin' : 'Masuk ke Panel Manajemen' }}
+                <v-icon start size="18">mdi-view-dashboard-outline</v-icon>
+                Buka Panel Manajemen
               </v-btn>
             </v-card-text>
           </v-card>
 
-          <!-- Quick Actions -->
+          <!-- Aksi Cepat Card -->
           <v-card elevation="0" rounded="xl" class="sidebar-card mb-4">
-            <v-card-text class="pa-6">
-              <h3 class="sidebar-title">Aksi Cepat</h3>
-              <div class="quick-actions">
-                <v-btn block variant="tonal" color="primary" size="large" rounded="lg" class="mb-3" @click="startEdit">
-                  <v-icon start>mdi-account-edit</v-icon>
-                  Edit Profil
+            <v-card-text class="pa-5">
+              <h3 class="sidebar-card-title mb-4">
+                <v-icon size="18" color="#DC2626" class="mr-1">mdi-flash-outline</v-icon>
+                Aksi Cepat
+              </h3>
+              <div class="quick-actions-list d-flex flex-column ga-2">
+                <v-btn
+                  block
+                  color="#DC2626"
+                  variant="flat"
+                  size="large"
+                  rounded="pill"
+                  class="font-weight-bold text-white"
+                  @click="isEditing = true"
+                >
+                  <v-icon start size="18">mdi-account-edit-outline</v-icon>
+                  Edit Profil Saya
                 </v-btn>
-                <v-btn block variant="tonal" color="success" size="large" rounded="lg" class="mb-3"
-                  to="/destinations/create">
-                  <v-icon start>mdi-map-marker-plus</v-icon>
+
+                <v-btn
+                  block
+                  variant="outlined"
+                  color="#111827"
+                  size="large"
+                  rounded="pill"
+                  to="/destinations/create"
+                  class="font-weight-bold"
+                >
+                  <v-icon start size="18" color="#16A34A">mdi-map-marker-plus</v-icon>
                   Tambah Destinasi
                 </v-btn>
-                <v-btn block variant="tonal" color="warning" size="large" rounded="lg" @click="authStore.logout">
-                  <v-icon start>mdi-logout</v-icon>
-                  Keluar
+
+                <v-btn
+                  block
+                  variant="tonal"
+                  color="#4B5563"
+                  size="large"
+                  rounded="pill"
+                  to="/destinations/my-posts"
+                  class="font-weight-medium"
+                >
+                  <v-icon start size="18">mdi-post-outline</v-icon>
+                  Kelola Postingan Saya
+                </v-btn>
+
+                <v-divider class="my-2"></v-divider>
+
+                <v-btn
+                  block
+                  variant="text"
+                  color="#EF4444"
+                  size="large"
+                  rounded="pill"
+                  class="font-weight-bold logout-btn"
+                  @click="handleLogout"
+                >
+                  <v-icon start size="18">mdi-logout</v-icon>
+                  Keluar dari Akun
                 </v-btn>
               </div>
             </v-card-text>
           </v-card>
 
-          <!-- Account Info -->
+          <!-- Status & Keanggotaan Card -->
           <v-card elevation="0" rounded="xl" class="sidebar-card">
-            <v-card-text class="pa-6">
-              <h3 class="sidebar-title">Informasi Akun</h3>
-              <div class="account-info">
-                <div class="account-item">
-                  <v-icon size="small" color="primary" class="mr-2">mdi-shield-check</v-icon>
-                  <span class="account-label">Status:</span>
-                  <v-chip size="small"
-                    :color="authStore.isAdmin ? 'error' : (authStore.isCommunityAdmin ? 'warning' : 'success')"
-                    variant="flat">
-                    {{ authStore.isAdmin ? 'Admin' : (authStore.isCommunityAdmin ? 'Community Admin' : 'Member') }}
-                  </v-chip>
+            <v-card-text class="pa-5">
+              <h3 class="sidebar-card-title mb-4">
+                <v-icon size="18" color="#0284C7" class="mr-1">mdi-shield-account-outline</v-icon>
+                Keanggotaan
+              </h3>
+              <div class="account-summary-list d-flex flex-column ga-3">
+                <div class="summary-row d-flex align-center justify-space-between py-2 border-b">
+                  <span class="text-caption text-grey-darken-1">Status Komunitas</span>
+                  <span class="role-pill-sm" :class="roleClass">{{ roleLabel }}</span>
                 </div>
-                <div class="account-item">
-                  <v-icon size="small" color="primary" class="mr-2">mdi-calendar-clock</v-icon>
-                  <span class="account-label">Bergabung:</span>
-                  <span class="account-value">{{ formatJoinDate(authStore.user?.created_at) }}</span>
+                <div class="summary-row d-flex align-center justify-space-between py-2 border-b">
+                  <span class="text-caption text-grey-darken-1">Bergabung Sejak</span>
+                  <span class="text-caption font-weight-bold text-grey-darken-4">
+                    {{ formatJoinDate(authStore.user?.created_at) }}
+                  </span>
+                </div>
+                <div class="summary-row d-flex align-center justify-space-between py-2">
+                  <span class="text-caption text-grey-darken-1">ID Pejalan</span>
+                  <span class="text-caption font-family-mono text-grey-darken-2">
+                    #{{ authStore.user?.id || '-' }}
+                  </span>
                 </div>
               </div>
             </v-card-text>
@@ -372,112 +658,27 @@
       </v-row>
     </v-container>
 
-    <!-- Edit Profile Dialog -->
-    <v-dialog v-model="isEditing" max-width="900" persistent scrollable>
-      <v-card rounded="xl">
-        <v-card-title class="pa-6 bg-gradient">
-          <div class="d-flex align-center">
-            <v-icon class="mr-3" color="primary" size="32">mdi-account-edit</v-icon>
-            <div>
-              <h2 class="text-h5 font-weight-bold">Edit Profil</h2>
-              <p class="text-caption text-grey mb-0">Perbarui informasi profil Anda</p>
-            </div>
-          </div>
-        </v-card-title>
+    <!-- Modular Edit Profile Dialog -->
+    <ProfileEditDialog
+      v-model="isEditing"
+      @saved="onProfileSaved"
+    />
 
-        <v-divider></v-divider>
-
-        <v-card-text class="pa-6">
-          <v-form ref="formRef">
-            <!-- Photo Section - DISABLED -->
-            <div class="photo-section" v-if="false">
-              <h3 class="section-title-sm mb-4">Foto Profil</h3>
-              <div class="photo-upload-container">
-                <div class="photo-preview-wrapper">
-                  <v-avatar size="160" class="photo-preview-avatar elevation-4" :key="photoUpdateKey">
-                    <v-img :src="photoPreview || getPhotoUrlWithCache(authStore.user?.photo)" cover>
-                      <template v-slot:error>
-                        <v-icon size="x-large">mdi-account-circle</v-icon>
-                      </template>
-                    </v-img>
-                  </v-avatar>
-                </div>
-                <div class="photo-upload-input">
-                  <v-file-input v-model="formData.photo" label="Pilih foto baru" accept="image/*" variant="outlined"
-                    density="comfortable" rounded="lg" prepend-icon="" prepend-inner-icon="mdi-camera"
-                    @update:model-value="handlePhotoSelect" hide-details="auto"></v-file-input>
-                  <p class="text-caption text-grey mt-2">
-                    <v-icon size="x-small" class="mr-1">mdi-information</v-icon>
-                    Format: JPG, PNG • Max: 2MB
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Divider removed when photo section is hidden -->
-            <v-divider class="my-6" v-if="false"></v-divider>
-
-            <!-- Basic Info -->
-            <div class="form-section">
-              <h3 class="section-title-sm mb-4">Informasi Dasar</h3>
-              <v-text-field v-model="formData.name" label="Nama Lengkap *" variant="outlined" rounded="lg"
-                density="comfortable" :rules="[rules.required]" prepend-inner-icon="mdi-account" hide-details="auto"
-                class="mb-4"></v-text-field>
-
-              <v-text-field v-model="formData.phone" label="Nomor Telepon" variant="outlined" rounded="lg"
-                density="comfortable" prepend-inner-icon="mdi-phone" placeholder="+62 812 3456 7890"
-                hide-details="auto"></v-text-field>
-            </div>
-
-            <v-divider class="my-6"></v-divider>
-
-            <!-- Social Media -->
-            <div class="form-section">
-              <h3 class="section-title-sm mb-4">Media Sosial</h3>
-              <v-text-field v-model="formData.instagram" label="Instagram URL" variant="outlined" rounded="lg"
-                density="comfortable" prepend-inner-icon="mdi-instagram" placeholder="https://instagram.com/username"
-                hide-details="auto" class="mb-4"></v-text-field>
-
-              <v-text-field v-model="formData.facebook" label="Facebook URL" variant="outlined" rounded="lg"
-                density="comfortable" prepend-inner-icon="mdi-facebook" placeholder="https://facebook.com/username"
-                hide-details="auto" class="mb-4"></v-text-field>
-
-              <v-text-field v-model="formData.twitter" label="Twitter / X URL" variant="outlined" rounded="lg"
-                density="comfortable" prepend-inner-icon="mdi-twitter" placeholder="https://twitter.com/username"
-                hide-details="auto"></v-text-field>
-            </div>
-          </v-form>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions class="pa-6">
-          <v-spacer></v-spacer>
-          <v-btn variant="text" @click="cancelEdit" :disabled="saving" size="large" rounded="lg">
-            Batal
-          </v-btn>
-          <v-btn color="primary" variant="flat" size="large" rounded="lg" :loading="saving" @click="updateProfile">
-            <v-icon start>mdi-content-save</v-icon>
-            Simpan Perubahan
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Snackbar -->
-    <v-snackbar v-model="snackbar" :color="snackbarColor" location="top">
+    <!-- Toast Notification -->
+    <v-snackbar v-model="snackbar" :color="snackbarColor" location="top" rounded="pill">
       {{ snackbarText }}
     </v-snackbar>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import ContributorPointsWallet from '~/components/profile/ContributorPointsWallet.vue'
+import ProfileEditDialog from '~/components/profile/ProfileEditDialog.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
-import { useImageCompressor } from '~/composables/useImageCompressor'
-import { useRuntimeConfig } from '#app'
+import { useImageUrl } from '~/composables/useImageUrl'
+import { useBookmarks } from '~/composables/useBookmarks'
 import { useDisplay } from 'vuetify'
 
 definePageMeta({
@@ -487,64 +688,78 @@ definePageMeta({
 
 const authStore = useAuthStore()
 const { api } = useApi()
-const config = useRuntimeConfig()
+const { getImageUrl } = useImageUrl()
 const { mobile } = useDisplay()
+const { bookmarks, bookmarksCount, removeBookmark } = useBookmarks()
 
 const isMobile = computed(() => mobile.value)
-
 const tab = ref('profile')
 const isEditing = ref(false)
-const saving = ref(false)
 const loading = ref(false)
+
 const profileData = ref<any>(null)
 const userDestinations = ref<any[]>([])
 const userEvents = ref<any[]>([])
-const formRef = ref<any>(null)
-const { compressImage } = useImageCompressor()
-const photoPreview = ref<string | null>(null)
-const photoUpdateKey = ref(0)
 
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
-const formData = ref({
-  name: '',
-  phone: '',
-  instagram: '',
-  facebook: '',
-  twitter: '',
-  photo: null as File[] | null,
-  _method: 'PUT'
-})
-
-const rules = {
-  required: (v: string) => !!v || 'Field ini wajib diisi'
-}
-
-const showSnackbar = (text: string, color: string = 'success') => {
+const showToast = (text: string, color: string = 'success') => {
   snackbarText.value = text
   snackbarColor.value = color
   snackbar.value = true
 }
 
-const getPhotoUrl = (path: string | undefined) => {
-  if (!path) return null
-  if (path.startsWith('http')) return path
-  return `${config.public.apiUrl.replace('/api', '')}/storage/${path}`
+const userInitial = computed(() => {
+  if (authStore.user?.name) {
+    return authStore.user.name.charAt(0).toUpperCase()
+  }
+  return 'J'
+})
+
+const userPhotoUrl = computed(() => {
+  if (!authStore.user?.photo) return null
+  return getImageUrl(authStore.user.photo)
+})
+
+const roleLabel = computed(() => {
+  if (authStore.isAdmin) return 'Administrator'
+  if (authStore.isCommunityAdmin) return 'Community Admin'
+  return 'Member Pejalan Kaki'
+})
+
+const roleClass = computed(() => {
+  if (authStore.isAdmin) return 'role-admin'
+  if (authStore.isCommunityAdmin) return 'role-comm-admin'
+  return 'role-member'
+})
+
+const roleIcon = computed(() => {
+  if (authStore.isAdmin) return 'mdi-shield-crown'
+  if (authStore.isCommunityAdmin) return 'mdi-shield-star'
+  return 'mdi-walk'
+})
+
+const cleanPhone = (phone: string) => {
+  return phone.replace(/\D/g, '')
 }
 
-const getImageUrl = (path: string) => {
-  if (!path) return 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=600&fit=crop'
-  if (path.startsWith('http')) return path
-  return `${config.public.apiUrl.replace('/api', '')}/storage/${path}`
+const formatSocialUrl = (url: string, platform: string) => {
+  if (url.startsWith('http://') || url.startsWith('https://')) return url
+  const clean = url.replace('@', '')
+  if (platform === 'instagram') return `https://instagram.com/${clean}`
+  if (platform === 'facebook') return `https://facebook.com/${clean}`
+  if (platform === 'twitter') return `https://x.com/${clean}`
+  return url
 }
 
-const getPhotoUrlWithCache = (path: string | undefined) => {
-  const baseUrl = getPhotoUrl(path)
-  if (!baseUrl) return null
-  // Add timestamp to prevent caching
-  return `${baseUrl}?t=${photoUpdateKey.value}`
+const getSocialHandle = (url: string) => {
+  if (!url) return ''
+  const clean = url.replace(/\/$/, '')
+  const parts = clean.split('/')
+  const handle = parts[parts.length - 1]
+  return handle.startsWith('@') ? handle : `@${handle}`
 }
 
 const formatDate = (date: string) => {
@@ -564,93 +779,8 @@ const formatJoinDate = (date: string | undefined) => {
   })
 }
 
-const setFormData = () => {
-  const user = authStore.user
-  formData.value = {
-    name: user?.name || '',
-    phone: user?.phone || '',
-    instagram: user?.instagram || '',
-    facebook: user?.facebook || '',
-    twitter: user?.twitter || '',
-    photo: null,
-    _method: 'PUT'
-  }
-  photoPreview.value = null
-}
-
-const startEdit = () => {
-  setFormData()
-  isEditing.value = true
-}
-
-const cancelEdit = () => {
-  isEditing.value = false
-  photoPreview.value = null
-}
-
-const handlePhotoSelect = async (files: File[]) => {
-  const file = files?.[0]
-  if (file) {
-    try {
-      // Compress avatar to WebP (max 800x800)
-      const res = await compressImage(file, 800, 800, 0.85)
-      formData.value.photo = [res.file]
-      photoPreview.value = res.previewUrl
-    } catch (e) {
-      formData.value.photo = [file]
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        photoPreview.value = e.target?.result as string
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-}
-
-const updateProfile = async () => {
-  if (!formRef.value) return
-
-  const { valid } = await formRef.value.validate()
-  if (!valid) {
-    showSnackbar('Mohon lengkapi form dengan benar', 'error')
-    return
-  }
-
-  saving.value = true
-  try {
-    const data = new FormData()
-
-    data.append('name', formData.value.name)
-    data.append('_method', 'PUT')
-
-    if (formData.value.phone) data.append('phone', formData.value.phone)
-    if (formData.value.instagram) data.append('instagram', formData.value.instagram)
-    if (formData.value.facebook) data.append('facebook', formData.value.facebook)
-    if (formData.value.twitter) data.append('twitter', formData.value.twitter)
-
-    if (formData.value.photo && formData.value.photo.length > 0) {
-      data.append('photo', formData.value.photo[0])
-    }
-
-    const response = await api.post('/profile', data, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-
-    if (response.data.user) {
-      authStore.setUser(response.data.user)
-      // Force photo refresh by updating key
-      photoUpdateKey.value = Date.now()
-    }
-
-    showSnackbar('Profil berhasil diperbarui!', 'success')
-    cancelEdit()
-    await fetchProfileData()
-  } catch (error: any) {
-    console.error('Error updating profile:', error)
-    showSnackbar(error.response?.data?.message || 'Gagal memperbarui profil', 'error')
-  } finally {
-    saving.value = false
-  }
+const handleLogout = async () => {
+  await authStore.logout()
 }
 
 const fetchProfileData = async () => {
@@ -664,89 +794,154 @@ const fetchProfileData = async () => {
     userEvents.value = response.data.user.participated_events || []
   } catch (error) {
     console.error('Error fetching profile data:', error)
-    showSnackbar('Gagal memuat data profil', 'error')
   } finally {
     loading.value = false
   }
 }
 
-onMounted(() => {
-  fetchProfileData()
+const onProfileSaved = async () => {
+  showToast('Profil Anda berhasil diperbarui!', 'success')
+  await fetchProfileData()
+}
+
+// Watch user if populated later
+watch(
+  () => authStore.user?.id,
+  (newId) => {
+    if (newId && !profileData.value) {
+      fetchProfileData()
+    }
+  }
+)
+
+onMounted(async () => {
+  if (!authStore.user) {
+    await authStore.fetchUser()
+  }
+  await fetchProfileData()
 })
 </script>
 
 <style scoped>
-/* ============================================
-   CLEAN PROFILE PAGE DESIGN
-   ============================================ */
-
 .profile-page {
-  background: #fafafa;
+  background: #FAFAF9;
   min-height: 100vh;
 }
 
-/* Hero Section */
+/* ==========================================================================
+   Editorial Hero Section
+   ========================================================================== */
 .profile-hero {
   position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 48px 0 40px;
+  background: #0F172A;
+  background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
+  padding: 40px 0 48px;
   overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.hero-gradient {
+.hero-overlay-glow {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background:
-    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 15% 30%, rgba(220, 38, 38, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 85% 80%, rgba(245, 158, 11, 0.08) 0%, transparent 60%);
+  pointer-events: none;
 }
 
-.hero-content {
+.hero-container {
   position: relative;
   z-index: 2;
-  padding-top: 90px;
+  padding-top: 20px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
 }
 
 .profile-avatar {
-  border: 5px solid rgba(255, 255, 255, 0.3);
-  background: white;
-  margin-bottom: 24px;
+  border: 4px solid #FFFFFF;
+  background: #FEF2F2;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
-@media (min-width: 960px) {
-  .profile-avatar {
-    margin-bottom: 0;
-    margin-right: 32px;
-  }
+.avatar-initial {
+  font-size: 42px;
+  font-weight: 800;
+  color: #DC2626;
 }
 
-/* User Info */
-.user-info-section {
-  text-align: center;
-  color: white;
+.avatar-edit-badge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #DC2626;
+  border: 2.5px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
 }
 
-@media (min-width: 960px) {
-  .user-info-section {
-    text-align: left;
-  }
+.avatar-edit-badge:hover {
+  transform: scale(1.1);
+}
+
+.profile-kicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #94A3B8;
+  text-transform: uppercase;
+}
+
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.role-pill.role-admin {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+
+.role-pill.role-comm-admin {
+  background: #D97706;
+  color: #FFFFFF;
+}
+
+.role-pill.role-member {
+  background: rgba(255, 255, 255, 0.15);
+  color: #F1F5F9;
 }
 
 .user-name {
-  font-size: 32px;
-  font-weight: 700;
-  color: white;
-  margin: 0 0 8px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #FFFFFF;
+  margin: 0 0 4px;
+  line-height: 1.15;
 }
 
 .user-email {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 20px;
+  font-size: 0.95rem;
+  color: #CBD5E1;
+  margin: 0 0 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -758,363 +953,335 @@ onMounted(() => {
   }
 }
 
-.user-stats {
+.user-hero-stats {
   display: flex;
-  gap: 24px;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
 }
 
 @media (min-width: 960px) {
-  .user-stats {
+  .user-hero-stats {
     justify-content: flex-start;
   }
 }
 
-.stat-item {
+.stat-pill {
   display: flex;
   align-items: center;
   gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.stat-value {
-  font-size: 20px;
+.stat-num {
+  font-size: 0.95rem;
   font-weight: 700;
-  color: white;
+  color: #FFFFFF;
 }
 
-.stat-label {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
+.stat-txt {
+  font-size: 0.8rem;
+  color: #94A3B8;
 }
 
 .stat-divider {
   width: 1px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.3);
+  height: 16px;
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* Content Section */
+.edit-hero-btn {
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35) !important;
+  letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Content Section & Cards
+   ========================================================================== */
 .content-section {
-  margin-top: -40px;
+  margin-top: -24px;
   padding-bottom: 80px;
 }
 
-/* Main Card */
 .main-card {
-  border: 1px solid #e0e0e0;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
   overflow: hidden;
 }
 
-/* Tabs */
-.tabs-header {
-  background: white;
+.tabs-bar-wrapper {
+  background: #FFFFFF;
+  padding: 4px 8px 0;
 }
 
-.custom-tab {
-  text-transform: none;
-  font-weight: 600;
-  letter-spacing: 0;
+.tab-item {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  letter-spacing: 0 !important;
+  min-height: 48px !important;
 }
 
-/* Tab Content */
-.tab-content {
-  padding: 32px;
-  min-height: 400px;
+.tab-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  background: #FEF2F2;
+  color: #DC2626;
 }
 
-/* Section Header */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
-  gap: 16px;
+.tab-badge.success-badge {
+  background: #F0FDF4;
+  color: #16A34A;
+}
+
+.tab-inner-content {
+  padding: 28px;
+  min-height: 380px;
+}
+
+@media (max-width: 600px) {
+  .tab-inner-content {
+    padding: 18px 14px;
+  }
 }
 
 .section-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
 .section-subtitle {
-  font-size: 14px;
-  color: #666;
-  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #6B7280;
+  margin: 2px 0 0;
 }
 
-.section-title-sm {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
+/* ==========================================================================
+   Info Tiles Grid
+   ========================================================================== */
+.info-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
 }
 
-/* Info Card */
-.info-card {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 24px;
-}
-
-.info-item {
+.info-tile {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 20px;
-  background: white;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: #FAFAF9;
+  border-radius: 16px;
+  border: 1px solid #F1F5F9;
+  transition: all 0.2s ease;
+}
+
+.info-tile:hover {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.tile-icon-box {
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
-  margin-bottom: 16px;
-  transition: all 0.2s;
-}
-
-.info-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.info-icon {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  background: #FEF2F2;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
-  border-radius: 10px;
-}
-
-.info-content {
-  flex: 1;
-}
-
-.info-label {
-  font-size: 13px;
-  color: #666;
-  margin: 0 0 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-}
-
-.info-value {
-  font-size: 15px;
-  color: #1a1a1a;
-  font-weight: 500;
-  margin: 0;
-}
-
-.social-link {
-  color: #1976d2;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  transition: color 0.2s;
-}
-
-.social-link:hover {
-  color: #1565c0;
-  text-decoration: underline;
-}
-
-/* Destination Card */
-.destination-card,
-.event-card {
-  transition: all 0.3s;
-  overflow: hidden;
-}
-
-.destination-card:hover,
-.event-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
-}
-
-.destination-image,
-.event-image {
-  position: relative;
-}
-
-.destination-name,
-.event-name {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.destination-category,
-.event-date {
-  font-size: 13px;
-  color: #666;
-  margin: 0 0 12px;
-  display: flex;
-  align-items: center;
-}
-
-.destination-meta {
-  display: flex;
-  gap: 16px;
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  color: #666;
-}
-
-.event-badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(76, 175, 80, 0.95);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  backdrop-filter: blur(4px);
-}
-
-/* Empty State */
-.empty-state,
-.loading-state {
-  text-align: center;
-  padding: 80px 24px;
-}
-
-.empty-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 16px 0 8px;
-}
-
-.empty-text {
-  font-size: 14px;
-  color: #666;
-  margin: 0 0 24px;
-}
-
-/* Sidebar */
-.sidebar-card {
-  border: 1px solid #e0e0e0;
-  overflow: hidden;
-}
-
-.sidebar-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 16px;
-}
-
-.quick-actions {
-  display: flex;
-  flex-direction: column;
-}
-
-.account-info {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.account-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
-
-.account-label {
-  font-size: 14px;
-  color: #666;
-  font-weight: 500;
-  margin-right: 8px;
-}
-
-.account-value {
-  font-size: 14px;
-  color: #1a1a1a;
-  font-weight: 600;
-}
-
-/* Edit Dialog */
-.bg-gradient {
-  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
-}
-
-.photo-section {
-  margin-bottom: 24px;
-}
-
-.photo-upload-container {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.photo-preview-wrapper {
   flex-shrink: 0;
 }
 
-.photo-preview-avatar {
-  border: 3px dashed #e0e0e0;
-  background: #fafafa;
+.tile-icon-box.instagram {
+  background: #FDF2F8;
 }
 
-.photo-upload-input {
+.tile-icon-box.facebook {
+  background: #EFF6FF;
+}
+
+.tile-icon-box.x-twitter {
+  background: #F3F4F6;
+}
+
+.tile-content {
   flex: 1;
-  min-width: 250px;
+  min-width: 0;
 }
 
-.form-section {
-  margin-bottom: 24px;
+.tile-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
 }
 
-/* Responsive */
-@media (max-width: 960px) {
-  .user-name {
-    font-size: 24px;
-  }
-
-  .tab-content {
-    padding: 20px;
-  }
-
-  .section-header {
-    flex-direction: column;
-  }
+.tile-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-@media (max-width: 600px) {
-  .profile-hero {
-    padding: 32px 0 32px;
-  }
+.active-link {
+  color: #DC2626;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+}
 
-  .user-stats {
-    flex-direction: column;
-    gap: 12px;
-  }
+.active-link:hover {
+  text-decoration: underline;
+}
 
-  .stat-divider {
-    display: none;
-  }
+.verified-chip {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: #ECFDF5;
+  color: #059669;
+}
+
+/* ==========================================================================
+   Destinations & Events Cards
+   ========================================================================== */
+.destination-tile-card,
+.event-tile-card {
+  border: 1px solid #E5E7EB;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.destination-tile-card:hover,
+.event-tile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.dest-title,
+.event-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.dest-category,
+.event-date {
+  font-size: 0.8rem;
+  color: #6B7280;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.meta-stat {
+  font-size: 0.8rem;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+}
+
+.event-type-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(22, 163, 74, 0.9);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+}
+
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
+.admin-access-card {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border: 1px solid #334155;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15);
+}
+
+.sidebar-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+  display: flex;
+  align-items: center;
+}
+
+.role-pill-sm {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.role-pill-sm.role-admin {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.role-pill-sm.role-comm-admin {
+  background: #FFFBEB;
+  color: #D97706;
+}
+
+.role-pill-sm.role-member {
+  background: #F1F5F9;
+  color: #475569;
+}
+
+.logout-btn:hover {
+  background: #FEF2F2 !important;
+}
+
+.card-remove-bookmark-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.card-remove-bookmark-btn:hover {
+  transform: scale(1.1);
+  background: #FEF2F2;
 }
 </style>

@@ -98,10 +98,12 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'phone' => $user->phone,
                 'photo' => $user->photo,
-                'role' => $user->role->name,
+                'role' => $user->role ? $user->role->name : 'member',
+                'role_id' => $user->role_id,
                 'instagram' => $user->instagram,
                 'facebook' => $user->facebook,
                 'twitter' => $user->twitter,
+                'created_at' => $user->created_at ? $user->created_at->toISOString() : null,
             ],
         ]);
     }
