@@ -224,6 +224,18 @@
             </template>
             <v-list-item-title>Kurasi Tulisan</v-list-item-title>
           </v-list-item>
+
+          <v-list-item
+            to="/manage/cashouts"
+            rounded="lg"
+            class="mb-2"
+            color="primary"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-hand-coin</v-icon>
+            </template>
+            <v-list-item-title>Pencairan Poin</v-list-item-title>
+          </v-list-item>
         </template>
       </v-list>
 

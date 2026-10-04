@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             SettingSeeder::class,
             StorySeeder::class,
+            PointSeeder::class,
         ]);
     }
 }

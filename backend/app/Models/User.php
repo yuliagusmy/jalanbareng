@@ -110,6 +110,21 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'banned_by');
     }
 
+    public function points(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(UserPoint::class);
+    }
+
+    public function pointTransactions(): HasMany
+    {
+        return $this->hasMany(PointTransaction::class);
+    }
+
+    public function cashoutRequests(): HasMany
+    {
+        return $this->hasMany(CashoutRequest::class);
+    }
+
     // Role checking helpers
     public function isAdmin(): bool
     {

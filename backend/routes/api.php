@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\StoryController;
+use App\Http\Controllers\Api\PointController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -153,6 +154,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/admin/stories/{id}/status', [StoryController::class, 'adminUpdateStatus']);
     Route::post('/admin/stories/{id}', [StoryController::class, 'adminUpdate']);
     Route::delete('/admin/stories/{id}', [StoryController::class, 'adminDestroy']);
+
+    // Points & Contributor Wallet
+    Route::get('/points/me', [PointController::class, 'myPoints']);
+    Route::post('/points/cashout', [PointController::class, 'requestCashout']);
+
+    // Admin Points & Cashouts
+    Route::get('/admin/cashouts', [PointController::class, 'adminCashoutIndex']);
+    Route::post('/admin/cashouts/{id}/status', [PointController::class, 'adminUpdateCashoutStatus']); // POST for file upload (struk)
 });
 
 // One-click secure database seed trigger for production setup

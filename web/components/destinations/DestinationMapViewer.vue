@@ -9,11 +9,13 @@ import { useRouter } from 'vue-router'
 interface Destination {
   id: number;
   name: string;
-  slug: string;
-  latitude: number;
-  longitude: number;
-  primary_photo: string;
-  category_name: string;
+  slug?: string;
+  latitude: number | string;
+  longitude: number | string;
+  primary_photo?: string;
+  photos?: Array<{ photo_path: string }>;
+  category_name?: string;
+  category?: { id?: number; name?: string; icon?: string };
 }
 
 const props = defineProps({
@@ -36,7 +38,7 @@ let markers: any[] = []
 let google: any = null
 let activeInfoWindow: any = null
 
-const getImageUrl = (path: string) => {
+const getImageUrl = (path?: string) => {
   if (!path) return 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=300&fit=crop'
   if (path.startsWith('http')) return path
   return `${config.public.apiUrl.replace('/api', '')}/storage/${path}`
@@ -109,7 +111,11 @@ const updateMarkers = (destinations: Destination[]) => {
   activeInfoWindow = new google.maps.InfoWindow()
 
   destinations.forEach(dest => {
-    const position = { lat: Number(dest.latitude), lng: Number(dest.longitude) }
+    const lat = Number(dest.latitude)
+    const lng = Number(dest.longitude)
+    if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) return
+
+    const position = { lat, lng }
 
     const marker = new google.maps.marker.AdvancedMarkerElement({
       position,
@@ -118,12 +124,19 @@ const updateMarkers = (destinations: Destination[]) => {
     })
 
     const destinationUrl = `/destinations/${dest.id}`
+    const photo = dest.primary_photo || (dest.photos && dest.photos[0] ? dest.photos[0].photo_path : '')
+    const photoUrl = getImageUrl(photo)
+    const categoryName = dest.category_name || dest.category?.name || 'Destinasi Pejalan'
+
     const contentString = `
-      <div style="width: 250px; font-family: sans-serif;">
-        <img src="${getImageUrl(dest.primary_photo)}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;">
-        <h3 style="margin: 10px 0 5px; font-size: 16px;">${dest.name}</h3>
-        <p style="margin: 0 0 10px; font-size: 14px; color: #555;">${dest.category_name || 'Destinasi'}</p>
-        <button id="info-window-link-${dest.id}" style="background: none; border: none; padding: 0; color: #1976D2; font-weight: bold; font-size: 14px; cursor: pointer;">Lihat Detail →</button>
+      <div style="width: 250px; font-family: Inter, system-ui, -apple-system, sans-serif; padding: 4px;">
+        <img src="${photoUrl}" alt="${dest.name}" style="width: 100%; height: 125px; object-fit: cover; border-radius: 12px; margin-bottom: 8px; display: block;" onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=300&fit=crop'">
+        <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 800; color: #111827; line-height: 1.3;">${dest.name}</h3>
+        <p style="margin: 0 0 10px; font-size: 12px; color: #6B7280; font-weight: 600;">${categoryName}</p>
+        <button id="info-window-link-${dest.id}" style="background: #DC2626; color: #FFFFFF; border: none; padding: 7px 16px; border-radius: 9999px; font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);">
+          <span>Lihat Panduan Detail</span>
+          <span>&rarr;</span>
+        </button>
       </div>
     `
 

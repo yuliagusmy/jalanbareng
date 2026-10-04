@@ -1,6 +1,6 @@
 <template>
   <div class="destinations-index-page">
-    <!-- Editorial Hero Section -->
+    <!-- 1. Editorial Hero Section (Temukan Destinasi & Sudut Kota) -->
     <section class="destinations-hero">
       <v-container class="hero-content">
         <v-row align="center" justify="center">
@@ -75,6 +75,16 @@
         </v-row>
       </v-container>
     </section>
+
+    <!-- 2. Tampilan Maps Besar (di bawah Hero, di atas Landmark Ikonik) -->
+    <LargeDestinationMapSection
+      :destinations="activeMapPins"
+      :map-center="mapCenter"
+      :selected-activation-name="selectedActivationName"
+    />
+
+    <!-- 3. Fitur Landmark Ikonik Pejalan Kaki (di bawah Maps Besar) -->
+    <FeaturedLandmarksSection @select-landmark="handleSelectLandmark" />
 
     <!-- Main Content Container -->
     <v-container class="py-6 py-md-10">
@@ -425,6 +435,8 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
+import LargeDestinationMapSection from '~/components/destinations/LargeDestinationMapSection.vue'
+import FeaturedLandmarksSection from '~/components/destinations/FeaturedLandmarksSection.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 import { useRuntimeConfig, useRoute, useRouter, useSeoMeta } from '#app'
@@ -460,13 +472,15 @@ const setViewMode = (mode: 'grid' | 'map') => {
   })
 }
 
-// Default fallback destinations for offline / network resilience
+// Default fallback destinations with coordinates for offline / network resilience
 const defaultDestinations = [
   {
     id: 1,
     name: 'Pantai Losari',
     description: 'Ikon kota Makassar yang terkenal dengan sunset dan kuliner pinggir pantai. Tempat favorit pejalan kaki untuk menikmati senja.',
     city: 'Makassar',
+    latitude: -5.1448,
+    longitude: 119.4072,
     category: { id: 1, name: 'Wisata Alam & Pesisir', icon: 'mdi-beach' },
     photos: [{ photo_path: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80' }],
     likes_count: 42,
@@ -477,6 +491,8 @@ const defaultDestinations = [
     name: 'Fort Rotterdam & Kota Tua',
     description: 'Benteng peninggalan Kerajaan Gowa-Tallo abad ke-17. Kawasan cagar budaya dengan arsitektur kolonial dan taman yang asri.',
     city: 'Makassar',
+    latitude: -5.1336,
+    longitude: 119.4061,
     category: { id: 2, name: 'Cagar Budaya & Sejarah', icon: 'mdi-castle' },
     photos: [{ photo_path: 'https://images.unsplash.com/photo-1599833975787-5c143f373c30?w=800&auto=format&fit=crop&q=80' }],
     likes_count: 38,
@@ -487,6 +503,8 @@ const defaultDestinations = [
     name: 'Kawasan Kuliner Pecinan Makassar',
     description: 'Menelusuri jalanan legendaris Jl. Sulawesi dan sekitarnya dengan ragam kuliner peranakan dan nusantara yang kaya rasa.',
     city: 'Makassar',
+    latitude: -5.1278,
+    longitude: 119.4088,
     category: { id: 3, name: 'Wisata Kuliner', icon: 'mdi-silverware-fork-knife' },
     photos: [{ photo_path: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80' }],
     likes_count: 56,
@@ -497,6 +515,8 @@ const defaultDestinations = [
     name: 'Taman Macan & Koridor Hijau',
     description: 'Ruang publik hijau di tengah kota Makassar, sering dijadikan titik kumpul aktivasi literasi dan diskusi buku santai.',
     city: 'Makassar',
+    latitude: -5.1436,
+    longitude: 119.4128,
     category: { id: 4, name: 'Ruang Terbuka Hijau', icon: 'mdi-tree' },
     photos: [{ photo_path: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?w=800&auto=format&fit=crop&q=80' }],
     likes_count: 29,
@@ -507,6 +527,8 @@ const defaultDestinations = [
     name: 'Pelabuhan Paotere',
     description: 'Pelabuhan perahu tradisional Pinisi tertua di Makassar dengan suasana maritim otentik dan pemandangan perahu layar megah.',
     city: 'Makassar',
+    latitude: -5.1147,
+    longitude: 119.4190,
     category: { id: 2, name: 'Cagar Budaya & Sejarah', icon: 'mdi-sail-boat' },
     photos: [{ photo_path: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80' }],
     likes_count: 35,
@@ -517,6 +539,8 @@ const defaultDestinations = [
     name: 'Benteng Somba Opu Gowa',
     description: 'Pusat pertahanan maritim kembar Kerajaan Gowa-Tallo dengan museum budaya dan rumah adat seluruh suku Sulawesi Selatan.',
     city: 'Gowa',
+    latitude: -5.1878,
+    longitude: 119.3986,
     category: { id: 2, name: 'Cagar Budaya & Sejarah', icon: 'mdi-pillar' },
     photos: [{ photo_path: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&auto=format&fit=crop&q=80' }],
     likes_count: 24,
@@ -583,6 +607,23 @@ const filteredMapDestinations = computed(() => {
       const matchName = dest.name?.toLowerCase().includes(q)
       const matchAddress = dest.address?.toLowerCase().includes(q)
       return matchName || matchAddress
+    }
+    return true
+  })
+})
+
+// Active Map Pins for the Grand Map section (with fallback support)
+const activeMapPins = computed(() => {
+  if (mapDestinations.value && mapDestinations.value.length > 0) {
+    return filteredMapDestinations.value
+  }
+  return defaultDestinations.filter((dest: any) => {
+    if (selectedCategory.value && dest.category?.id !== selectedCategory.value) {
+      return false
+    }
+    if (search.value && search.value.trim()) {
+      const q = search.value.toLowerCase().trim()
+      return dest.name?.toLowerCase().includes(q) || dest.city?.toLowerCase().includes(q)
     }
     return true
   })
@@ -683,6 +724,21 @@ const fetchActivations = async () => {
     activations.value = response.data || []
   } catch (error) {
     console.error('Error fetching activations:', error)
+  }
+}
+
+
+// Handle Landmark selection from Featured Landmark Showcase
+const handleSelectLandmark = (landmarkName: string) => {
+  const simpleKeyword = landmarkName.split('&')[0].split('(')[0].trim()
+  search.value = simpleKeyword
+  pagination.value.current_page = 1
+  fetchDestinations()
+  if (typeof window !== 'undefined') {
+    const el = document.querySelector('.search-filter-bar')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
 }
 

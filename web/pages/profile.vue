@@ -53,6 +53,10 @@
                 <v-icon start size="small">mdi-account</v-icon>
                 Profil
               </v-tab>
+              <v-tab value="points" class="custom-tab">
+                <v-icon start size="small" color="#DC2626">mdi-wallet-bifold-outline</v-icon>
+                Poin Kontributor
+              </v-tab>
               <v-tab value="destinations" class="custom-tab">
                 <v-icon start size="small">mdi-map-marker-multiple</v-icon>
                 Destinasi
@@ -161,6 +165,13 @@
                       </v-col>
                     </v-row>
                   </v-card>
+                </div>
+              </v-window-item>
+
+              <!-- Points & Contributor Wallet Tab -->
+              <v-window-item value="points">
+                <div class="tab-content pt-2">
+                  <ContributorPointsWallet />
                 </div>
               </v-window-item>
 
@@ -462,6 +473,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import ContributorPointsWallet from '~/components/profile/ContributorPointsWallet.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 import { useImageCompressor } from '~/composables/useImageCompressor'

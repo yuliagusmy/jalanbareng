@@ -14,7 +14,7 @@
             <!-- Main Headline -->
             <h1 class="hero-title font-weight-black text-grey-darken-4 mb-4">
               Melangkah Bersama Para
-              <span class="text-primary-red">Mitra &amp; Kolaborator</span>
+              <div><span class="text-primary-red">Mitra &amp; Kolaborator</span></div>
             </h1>
 
             <!-- Subtitle -->

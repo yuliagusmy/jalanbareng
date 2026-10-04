@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Story;
+use App\Models\PointTransaction;
+use App\Services\PointService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -189,10 +191,29 @@ class StoryController extends Controller
             $validated['published_at'] = now();
         }
 
+        $oldStatus = $story->status;
         $story->update($validated);
 
+        // Berikan poin kontributor jika disetujui untuk pertama kali
+        if ($validated['status'] === 'approved' && $oldStatus !== 'approved' && $story->user_id) {
+            $alreadyAwarded = PointTransaction::where('user_id', $story->user_id)
+                ->where('source', 'story_approved')
+                ->where('reference_id', $story->id)
+                ->exists();
+
+            if (!$alreadyAwarded && $story->user) {
+                PointService::addPoints(
+                    $story->user,
+                    100,
+                    'story_approved',
+                    $story->id,
+                    "Poin kontributor: Tulisan '{$story->title}' disetujui kurator"
+                );
+            }
+        }
+
         $statusLabels = [
-            'approved' => 'disetujui dan dipublikasikan',
+            'approved' => 'disetujui dan dipublikasikan (Poin kontributor telah diberikan)',
             'rejected' => 'ditolak',
             'pending' => 'dikembalikan ke status pending',
         ];

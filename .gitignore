@@ -60,6 +60,7 @@ storage/*.key
 # 7. LOGS, CACHE & SYSTEM/IDE ARTIFACTS
 # ==============================================================================
 *.log
+*.bak
 .DS_Store
 Thumbs.db
 Desktop.ini
