@@ -463,8 +463,42 @@ class ActivationSeeder extends Seeder
             ['file' => 'activations/media/media_space_2.jpg', 'desc' => 'Pameran mini dan instalasi kreasi komunitas'],
         ]);
 
+        // 13. Olahraga Bareng (Thematic: Olahraga Komunal - Bultang, Padel, Golf, dll)
+        $olahraga = Activation::create([
+            'name' => 'Olahraga Bareng',
+            'slug' => 'olahraga-bareng',
+            'category' => 'theme',
+            'city' => 'Makassar',
+            'short_title' => 'Olahraga Bareng',
+            'tagline' => 'Keringat bareng, seru-seruan bareng di aneka cabang olahraga',
+            'hero_title' => 'OLAHRAGA BARENG',
+            'hero_subtitle' => 'Wadah kumpul seru untuk main bulutangkis, golf, padel, tenis, dan ragam olahraga komunal bersama kawan baru.',
+            'hero_image' => 'activations/heroes/hero_olahraga_bareng.jpg',
+            'color_theme' => '#16A34A',
+            'description' => 'Olahraga Bareng adalah ruang aktivasi tematik di bawah naungan Jalan Bareng untuk menyalurkan energi dan hobi berolahraga secara santai dan komunal. Dari sesi Tiba-Tiba Bultang (bulutangkis), padel, golf, hingga cabang olahraga lainnya. Terbuka bagi siapa saja tanpa memandang tingkat kemahiran, yang penting seru dan sehat bareng.',
+            'cta_primary_label' => 'Instagram @jalanbarengind',
+            'cta_primary_url' => 'https://instagram.com/jalanbarengind',
+            'cta_secondary_label' => 'Lihat Jadwal Olahraga',
+            'cta_secondary_url' => '#jadwal',
+            'contact_person' => 'Tim Olahraga Bareng',
+            'contact_phone' => '081234567813',
+            'social_instagram' => 'jalanbarengind',
+            'show_schedule' => true,
+            'show_gallery' => true,
+            'show_testimonials' => true,
+            'show_faq' => true,
+            'is_featured' => true,
+            'is_active' => true,
+            'sort_order' => 13,
+        ]);
+
+        $this->seedFaqs($olahraga->id, [
+            ['Q' => 'Apakah pemula yang belum pernah main atau tidak punya raket bisa ikut?', 'A' => 'Sangat bisa! Kegiatan ini santai dan inklusif. Di sesi Tiba-Tiba Bultang ada prinsip baku pinjam raket sesama kawan pejalan.'],
+            ['Q' => 'Bagaimana sistem biayanya?', 'A' => 'Untuk olahraga yang memerlukan sewa venue (seperti lapangan badminton, padel, atau golf), biaya patungan sewa lapangan diinformasikan secara transparan di detail event.'],
+        ]);
+
         $this->command->info('✅ Seluruh ekosistem Jalan Bareng berhasil di-seed:');
-        $this->command->info('   - 12 Aktivasi lengkap (Nasional, 5 Chapter Regional, 5 Aktivasi Tematik, 1 Creative Space)');
+        $this->command->info('   - 13 Aktivasi lengkap (Nasional, 5 Chapter Regional, 6 Aktivasi Tematik, 1 Creative Space)');
         $this->command->info('   - Foto asli, FAQ autentik, dan Testimoni terintegrasi.');
     }
 

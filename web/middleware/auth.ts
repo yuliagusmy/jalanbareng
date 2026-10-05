@@ -1,8 +1,17 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
+  const authStore = useAuthStore()
   const authToken = useCookie('auth_token')
 
-  // If not authenticated, redirect to login
   if (!authToken.value) {
     return navigateTo('/login')
+  }
+
+  // Jika cookie ada tapi user di store belum terisi, coba fetch dulu
+  if (authToken.value && !authStore.user) {
+    try {
+      await authStore.fetchUser()
+    } catch {
+      return navigateTo('/login')
+    }
   }
 })

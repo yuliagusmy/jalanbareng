@@ -88,20 +88,16 @@
 
           <!-- Isi Tulisan Lengkap -->
           <div class="mb-5">
-            <label class="text-subtitle-2 font-weight-bold mb-1 d-block text-grey-darken-3">
+            <label class="text-subtitle-2 font-weight-bold mb-2 d-block text-grey-darken-3">
               Isi Cerita / Tulisan Lengkap <span class="text-error">*</span>
             </label>
-            <v-textarea
+            <TiptapEditor
               v-model="form.content"
-              rows="6"
-              placeholder="Tuliskan seluruh ceritamu di sini. Boleh berupa pengalaman jalan santai, laporan riset mini rute jalan kaki, rekomendasi sudut singgah, atau catatan sosial perkotaan..."
-              variant="outlined"
-              density="comfortable"
-              rounded="lg"
-              :rules="[rules.required]"
-              hide-details="auto"
-            ></v-textarea>
-            <span class="text-caption text-grey">Format paragraf dapat menggunakan teks biasa atau HTML sederhana.</span>
+              min-height="300px"
+              show-word-count
+            />
+            <div v-if="contentError" class="text-error text-caption mt-1">{{ contentError }}</div>
+            <span class="text-caption text-grey d-block mt-1">Gunakan toolbar untuk memformat tulisan: heading, tebal, miring, kutipan, gambar, dan lainnya.</span>
           </div>
 
           <!-- Pilihan Warna & Gaya Kartu -->
@@ -253,7 +249,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, nextTick } from 'vue'
+import TiptapEditor from '~/components/common/TiptapEditor.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 
@@ -277,6 +274,7 @@ const { api } = useApi()
 const formRef = ref<any>(null)
 const submitting = ref(false)
 const submittedSuccess = ref(false)
+const contentError = ref('')
 const errorMessage = ref('')
 const coverFile = ref<any>(null)
 const coverPreview = ref<string | null>(null)
@@ -334,6 +332,7 @@ const resetAndClose = () => {
   coverFile.value = null
   coverPreview.value = null
   errorMessage.value = ''
+  contentError.value = ''
   dialog.value = false
   emit('submitted')
 }
@@ -341,6 +340,15 @@ const resetAndClose = () => {
 const submitStory = async () => {
   if (!formRef.value) return
   const { valid } = await formRef.value.validate()
+
+  // Validate rich content manually (TiptapEditor is not inside v-form)
+  contentError.value = ''
+  const plainText = form.content.replace(/<[^>]*>/g, '').trim()
+  if (!plainText) {
+    contentError.value = 'Isi tulisan wajib diisi'
+    return
+  }
+
   if (!valid) return
 
   submitting.value = true

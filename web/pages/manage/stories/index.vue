@@ -1,6 +1,6 @@
 <template>
-  <div class="admin-stories-page">
-    <v-container class="py-8">
+  <div>
+    <v-container class="py-8" fluid>
       <!-- Page Header -->
       <v-card elevation="0" rounded="xl" class="mb-6 border">
         <v-card-title class="d-flex flex-wrap align-center justify-space-between px-6 py-4 ga-3">

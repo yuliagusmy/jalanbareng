@@ -157,11 +157,13 @@
                   <span class="cta-quota-badge">{{ isCuratedTikum ? 'Sistem Kurasi' : 'Terbuka untuk Umum' }}</span>
                 </div>
 
-                <h3 class="cta-title">Siap Jalan Bareng?</h3>
+                <h3 class="cta-title">Siap Ikut Kegiatan?</h3>
                 <p class="cta-desc">
                   {{ isCuratedTikum 
                     ? 'Kegiatan ini menerapkan kurasi peserta demi kenyamanan rute bersama. Daftarkan diri, admin akan menghubungi peserta yang lolos.' 
-                    : 'Amankan slot jalan santaimu. Pendaftaran gratis dan kuota terbatas untuk kenyamanan bersama.' 
+                    : (event.price && event.price > 0 
+                        ? `Biaya kegiatan Rp ${event.price.toLocaleString('id-ID')}${event.price_description ? ` (${event.price_description})` : ''}. Amankan slot kegiatanmu sekarang.` 
+                        : 'Amankan slot kegiatanmu. Pendaftaran gratis dan kuota terbatas untuk kenyamanan bersama.')
                   }}
                 </p>
 
@@ -263,7 +265,7 @@
                 </div>
                 <div class="spec-text">
                   <div class="spec-label">Waktu Kumpul</div>
-                  <div class="spec-value">{{ event.time ? `${event.time} WITA` : '06.00 WITA - Selesai' }}</div>
+                  <div class="spec-value">{{ formatEventTime(event) }}</div>
                 </div>
               </div>
 
@@ -309,7 +311,16 @@
                 </div>
                 <div class="spec-text">
                   <div class="spec-label">Biaya &amp; Sistem</div>
-                  <div class="spec-value">{{ isCuratedTikum ? 'Gratis • Sistem Kurasi' : 'Gratis • Terbuka untuk Umum' }}</div>
+                  <div class="spec-value">
+                    <template v-if="event.price && event.price > 0">
+                      <span class="font-weight-bold" style="color: #DC2626;">Rp {{ event.price.toLocaleString('id-ID') }}</span>
+                      <span v-if="event.price_description" class="text-caption text-grey-darken-1 font-weight-regular"> ({{ event.price_description }})</span>
+                      <span class="text-caption text-grey-darken-2 font-weight-regular"> • {{ isCuratedTikum ? 'Sistem Kurasi' : 'Pendaftaran Terbuka' }}</span>
+                    </template>
+                    <template v-else>
+                      {{ isCuratedTikum ? 'Gratis • Sistem Kurasi' : 'Gratis • Terbuka untuk Umum' }}
+                    </template>
+                  </div>
                 </div>
               </div>
             </div>
@@ -386,7 +397,7 @@
 
               <div class="d-flex align-center justify-space-between px-1">
                 <span class="text-caption text-grey-darken-2 font-weight-medium">
-                  {{ isCuratedTikum ? '🔒 Seleksi Peserta via Form' : '🎟️ Pendaftaran Terbuka' }}
+                  {{ isCuratedTikum ? '🔒 Seleksi Peserta via Form' : (event.price && event.price > 0 ? `🎟️ HTM Rp ${event.price.toLocaleString('id-ID')}` : '🎟️ Gratis • Terbuka') }}
                 </span>
                 <div class="d-flex align-center ga-1.5">
                   <button
@@ -717,16 +728,30 @@ const isUpcoming = computed(() => {
 
 const isCuratedTikum = computed(() => {
   if (!event.value) return false
+
+  // If explicitly flagged in event
+  if (event.value.is_curated_tikum === true || event.value.is_curated_tikum === 1) {
+    return true
+  }
+  // If meeting point is explicitly set and curated flag is false, NOT curated
+  if (event.value.meeting_point && event.value.is_curated_tikum === false) {
+    return false
+  }
+  // If meeting point is set, prioritize it over default chapter curated rule
+  if (event.value.meeting_point) {
+    return false
+  }
+
   const activationSlug = event.value.activation?.slug || ''
   const activationName = (event.value.activation?.name || event.value.activation?.title || '').toLowerCase()
   const eventName = (event.value.name || '').toLowerCase()
   const desc = (event.value.description || '').toLowerCase()
 
-  // Jalan Bareng Makassar is specifically curated with secret tikum
-  if (activationSlug === 'jalan-bareng-makassar' || activationName.includes('jalan bareng makassar') || event.value.activation_id === 2) {
+  // Jalan Bareng Makassar walking events are specifically curated with secret tikum
+  if ((activationSlug === 'jalan-bareng-makassar' || activationName.includes('jalan bareng makassar') || event.value.activation_id === 2) && event.value.type === 'walking') {
     return true
   }
-  if (eventName.includes('jalan bareng makassar') || (eventName.includes('makassar') && event.value.type === 'walking')) {
+  if (eventName.includes('jalan bareng makassar') && event.value.type === 'walking') {
     return true
   }
   if (desc.includes('kurasi') || desc.includes('tikum rahasia') || desc.includes('titik kumpul rahasia')) {
@@ -753,12 +778,40 @@ const { getImageUrl } = useImageUrl()
 
 const formatDate = (date: string) => {
   if (!date) return '-'
+  const dateStr = typeof date === 'string' ? date.split('T')[0].split(' ')[0] : ''
+  if (dateStr && dateStr.includes('-')) {
+    const parts = dateStr.split('-').map(Number)
+    if (parts.length === 3 && parts[0] && parts[1] && parts[2]) {
+      const localDate = new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0)
+      return localDate.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    }
+  }
   return new Date(date).toLocaleDateString('id-ID', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   })
+}
+
+const formatEventTime = (ev: any) => {
+  if (!ev) return '06.00 WITA - Selesai'
+  if (ev.time) {
+    const clean = String(ev.time).replace(':', '.')
+    return clean.toLowerCase().includes('wita') ? clean : `${clean} WITA`
+  }
+  if (ev.date && typeof ev.date === 'string') {
+    const timePart = ev.date.includes('T') ? ev.date.split('T')[1]?.substring(0, 5) : (ev.date.includes(' ') ? ev.date.split(' ')[1]?.substring(0, 5) : '')
+    if (timePart && timePart !== '00:00' && timePart !== '00.00') {
+      return `${timePart.replace(':', '.')} WITA`
+    }
+  }
+  return '06.00 WITA - Selesai'
 }
 
 const getEventLocation = (ev: any) => {

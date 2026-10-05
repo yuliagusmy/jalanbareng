@@ -100,7 +100,8 @@
 
           <!-- Date Column -->
           <template v-slot:item.date="{ item }">
-            <div class="text-caption">{{ formatDate(item.date) }}</div>
+            <div class="text-caption font-weight-medium">{{ formatDate(item.date) }}</div>
+            <div class="text-caption text-grey">{{ item.time ? `${String(item.time).replace(':', '.')} WITA` : '06.00 WITA' }}</div>
           </template>
 
           <!-- Status Column -->

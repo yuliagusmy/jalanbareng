@@ -71,13 +71,17 @@ class EventController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'date' => 'required|date_format:Y-m-d',
-            'time' => 'required|date_format:H:i',
+            'time' => 'required|string|max:10',
             'poster' => 'required|image|max:2048',
             'youtube_link' => 'nullable|url',
             'registration_link' => 'required|url',
             'type' => 'required|in:walking,regular',
             'is_featured' => 'sometimes|boolean',
             'activation_id' => 'nullable|exists:activations,id',
+            'meeting_point' => 'nullable|string|max:255',
+            'is_curated_tikum' => 'sometimes|boolean',
+            'price' => 'nullable|integer|min:0',
+            'price_description' => 'nullable|string|max:255',
         ];
 
         // Add walking event specific validation
@@ -109,6 +113,10 @@ class EventController extends Controller
                 'description' => $request->description,
                 'date' => $eventDateTime,
                 'time' => $request->time,
+                'meeting_point' => $request->meeting_point,
+                'is_curated_tikum' => $request->boolean('is_curated_tikum'),
+                'price' => $request->filled('price') ? (int) $request->price : 0,
+                'price_description' => $request->price_description,
                 'youtube_link' => $request->youtube_link,
                 'registration_link' => $request->registration_link,
                 'is_featured' => $request->user()->isAdmin() ? ($request->is_featured ?? false) : false,
@@ -239,13 +247,17 @@ class EventController extends Controller
             'name' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'date' => 'sometimes|date_format:Y-m-d',
-            'time' => 'sometimes|date_format:H:i',
+            'time' => 'sometimes|string|max:10',
             'poster' => 'nullable|image|max:2048',
             'youtube_link' => 'nullable|url',
             'registration_link' => 'sometimes|url',
             'type' => 'sometimes|in:walking,regular',
             'is_featured' => 'sometimes|boolean',
             'activation_id' => 'nullable|exists:activations,id',
+            'meeting_point' => 'sometimes|nullable|string|max:255',
+            'is_curated_tikum' => 'sometimes|boolean',
+            'price' => 'sometimes|nullable|integer|min:0',
+            'price_description' => 'sometimes|nullable|string|max:255',
         ];
 
         if ($request->input('type', $event->type) === 'walking') {
@@ -287,6 +299,19 @@ class EventController extends Controller
             // Combine date and time
             if (isset($validatedData['date']) && isset($validatedData['time'])) {
                 $validatedData['date'] = $validatedData['date'] . ' ' . $validatedData['time'];
+            } elseif (isset($validatedData['date'])) {
+                $timePart = $event->time ?: '06:00';
+                $validatedData['date'] = $validatedData['date'] . ' ' . $timePart;
+            } elseif (isset($validatedData['time'])) {
+                $datePart = $event->date ? (is_string($event->date) ? substr($event->date, 0, 10) : $event->date->format('Y-m-d')) : date('Y-m-d');
+                $validatedData['date'] = $datePart . ' ' . $validatedData['time'];
+            }
+
+            if ($request->has('is_curated_tikum')) {
+                $validatedData['is_curated_tikum'] = $request->boolean('is_curated_tikum');
+            }
+            if ($request->has('price')) {
+                $validatedData['price'] = $request->filled('price') ? (int) $request->price : 0;
             }
             
             // Map duration to estimated_duration

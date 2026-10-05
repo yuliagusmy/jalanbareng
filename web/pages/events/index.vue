@@ -150,11 +150,15 @@
                     <div class="compact-meta">
                       <div class="compact-meta-row">
                         <v-icon size="13" color="#DC2626">mdi-calendar-clock</v-icon>
-                        <span>{{ formatScheduleShort(event.date) || formatDate(event.date) }}</span>
+                        <span>{{ formatScheduleShort(event.date, event.time) || formatDate(event.date) }}</span>
                       </div>
                       <div class="compact-meta-row">
                         <v-icon size="13" color="#0284C7">mdi-map-marker-radius</v-icon>
                         <span>{{ getEventLocation(event) }}</span>
+                      </div>
+                      <div v-if="event.price && event.price > 0" class="compact-meta-row font-weight-bold" style="color: #DC2626;">
+                        <v-icon size="13" color="#DC2626">mdi-ticket-outline</v-icon>
+                        <span>Rp {{ event.price.toLocaleString('id-ID') }}</span>
                       </div>
                     </div>
 
@@ -382,7 +386,7 @@
                 </div>
                 <div class="spec-text">
                   <span class="spec-label">Waktu</span>
-                  <span class="spec-val">{{ formatDate(selected.date) }}</span>
+                  <span class="spec-val">{{ formatDate(selected.date) }} • {{ selected.time ? `${String(selected.time).replace(':', '.')} WITA` : '06.00 WITA' }}</span>
                 </div>
               </div>
 
@@ -414,7 +418,9 @@
                 </div>
                 <div class="spec-text">
                   <span class="spec-label deadline-label">Biaya / HTM</span>
-                  <span class="spec-val deadline-val">Gratis • Terbuka untuk umum</span>
+                  <span class="spec-val deadline-val">
+                    {{ selected.price && selected.price > 0 ? `Rp ${selected.price.toLocaleString('id-ID')}${selected.price_description ? ` (${selected.price_description})` : ''}` : (isCuratedEvent(selected) ? 'Gratis • Sistem Kurasi' : 'Gratis • Terbuka untuk umum') }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -676,6 +682,19 @@ onMounted(() => {
 
 const formatDate = (date: string) => {
   if (!date) return ''
+  const dateStr = typeof date === 'string' ? date.split('T')[0].split(' ')[0] : ''
+  if (dateStr && dateStr.includes('-')) {
+    const parts = dateStr.split('-').map(Number)
+    if (parts.length === 3 && parts[0] && parts[1] && parts[2]) {
+      const localDate = new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0)
+      return localDate.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    }
+  }
   return new Date(date).toLocaleDateString('id-ID', {
     weekday: 'long',
     year: 'numeric',
@@ -708,15 +727,19 @@ const handleDaftarClick = (event: any) => {
 
 const isCuratedEvent = (ev: any) => {
   if (!ev) return false
+  if (ev.is_curated_tikum === true || ev.is_curated_tikum === 1) return true
+  if (ev.meeting_point && ev.is_curated_tikum === false) return false
+  if (ev.meeting_point) return false
+
   const actSlug = ev.activation?.slug || ''
   const actName = (ev.activation?.name || ev.activation?.title || '').toLowerCase()
   const evName = (ev.name || '').toLowerCase()
   const desc = (ev.description || '').toLowerCase()
 
-  if (actSlug === 'jalan-bareng-makassar' || actName.includes('jalan bareng makassar') || ev.activation_id === 2) {
+  if ((actSlug === 'jalan-bareng-makassar' || actName.includes('jalan bareng makassar') || ev.activation_id === 2) && ev.type === 'walking') {
     return true
   }
-  if (evName.includes('jalan bareng makassar') || (evName.includes('makassar') && ev.type === 'walking')) {
+  if (evName.includes('jalan bareng makassar') && ev.type === 'walking') {
     return true
   }
   if (desc.includes('kurasi') || desc.includes('tikum rahasia') || desc.includes('titik kumpul rahasia')) {
@@ -749,16 +772,23 @@ const getEventLocation = (event: any) => {
   return 'Lihat titik di detail'
 }
 
-const formatScheduleShort = (dateStr: string) => {
+const formatScheduleShort = (dateStr: string, timeStr?: string) => {
   if (!dateStr) return ''
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('id-ID', {
+  let d: Date
+  const datePart = typeof dateStr === 'string' ? dateStr.split('T')[0].split(' ')[0] : ''
+  if (datePart && datePart.includes('-')) {
+    const parts = datePart.split('-').map(Number)
+    d = new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0)
+  } else {
+    d = new Date(dateStr)
+  }
+  const dateFormatted = d.toLocaleDateString('id-ID', {
     weekday: 'short',
     day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit'
-  }) + ' WITA'
+    month: 'short'
+  })
+  const timeFormatted = timeStr ? `${String(timeStr).replace(':', '.')}` : (dateStr.includes('T') ? dateStr.split('T')[1]?.substring(0, 5).replace(':', '.') : '06.00')
+  return `${dateFormatted} • ${timeFormatted} WITA`
 }
 
 const getEventCategory = (event: any) => {

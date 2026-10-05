@@ -58,6 +58,53 @@
                   <v-col cols="12" sm="6"><v-text-field v-model="formData.date" label="Tanggal Event" type="date" variant="outlined" :rules="[rules.required]"></v-text-field></v-col>
                   <v-col cols="12" sm="6"><v-text-field v-model="formData.time" label="Waktu Mulai" type="time" variant="outlined" :rules="[rules.required]"></v-text-field></v-col>
                 </v-row>
+
+                <!-- Titik Kumpul (TIKUM) -->
+                <v-text-field
+                  v-model="formData.meeting_point"
+                  label="Titik Kumpul (Tikum)"
+                  placeholder="Contoh: Diamond Badminton Hall Mall Panakkukang Makassar"
+                  variant="outlined"
+                  hint="Lokasi kumpul kegiatan (bisa diisi spesifik atau biarkan kosong jika dirahasiakan)"
+                  persistent-hint
+                  class="mb-2"
+                ></v-text-field>
+
+                <v-switch
+                  v-model="formData.is_curated_tikum"
+                  color="primary"
+                  label="Tikum Rahasia (Sistem Kurasi: hanya dikirim via WhatsApp/DM setelah kurasi)"
+                  density="comfortable"
+                  hide-details
+                  class="mb-4"
+                ></v-switch>
+
+                <!-- Biaya / HTM -->
+                <v-row class="mb-2">
+                  <v-col cols="12" sm="6">
+                    <v-text-field
+                      v-model.number="formData.price"
+                      label="Biaya Pendaftaran / HTM (Rp)"
+                      type="number"
+                      min="0"
+                      prefix="Rp"
+                      variant="outlined"
+                      hint="Isi 0 jika Gratis, atau masukkan nominal (misal: 25000)"
+                      persistent-hint
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field
+                      v-model="formData.price_description"
+                      label="Keterangan Biaya (Opsional)"
+                      placeholder="Contoh: per orang, sewa lapangan & shuttlecock"
+                      variant="outlined"
+                      hint="Keterangan tambahan biaya (opsional)"
+                      persistent-hint
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+
                 <v-text-field v-model="formData.registration_link" label="Link Pendaftaran" variant="outlined" :rules="[rules.required, rules.url]"></v-text-field>
               </v-card-text>
             </v-card>
@@ -128,6 +175,10 @@ const formData = ref({
   name: '',
   date: '',
   time: '',
+  meeting_point: '',
+  is_curated_tikum: false,
+  price: 0,
+  price_description: '',
   registration_link: '',
   description: '',
   youtube_link: '',
@@ -180,12 +231,35 @@ const fetchEvent = async () => {
     const response = await api.get(`/events/${props.eventId}`)
     const event = response.data.event
 
-    // Parse date and time from the datetime string
-    const eventDate = new Date(event.date)
-    const date = eventDate.toISOString().split('T')[0]
-    const time = eventDate.toTimeString().split(' ')[0].substring(0, 5)
+    // Parse date and time cleanly without UTC timezone shifting
+    let date = ''
+    let time = event.time || ''
+    if (event.date) {
+      if (typeof event.date === 'string') {
+        date = event.date.substring(0, 10)
+        if (!time && event.date.includes('T')) {
+          time = event.date.split('T')[1].substring(0, 5)
+        } else if (!time && event.date.includes(' ')) {
+          time = event.date.split(' ')[1].substring(0, 5)
+        }
+      } else {
+        const d = new Date(event.date)
+        date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      }
+    }
 
-    formData.value = { ...formData.value, ...event, date, time, _method: 'PUT', poster: null }
+    formData.value = {
+      ...formData.value,
+      ...event,
+      date,
+      time: time || '06:00',
+      meeting_point: event.meeting_point || '',
+      is_curated_tikum: Boolean(event.is_curated_tikum),
+      price: event.price ?? 0,
+      price_description: event.price_description || '',
+      _method: 'PUT',
+      poster: null
+    }
 
     if (event.poster) {
       posterPreview.value = getImageUrl(event.poster)
@@ -212,6 +286,12 @@ const submit = async () => {
   }
   payload.append('date', data.date || '')
   payload.append('time', data.time || '')
+  payload.append('meeting_point', data.meeting_point || '')
+  payload.append('is_curated_tikum', data.is_curated_tikum ? '1' : '0')
+  payload.append('price', String(data.price || 0))
+  if (data.price_description) {
+    payload.append('price_description', data.price_description)
+  }
   payload.append('registration_link', data.registration_link || '')
   payload.append('description', data.description || '')
   if (data.youtube_link) {

@@ -1,0 +1,22 @@
+[
+  {
+    "chapter": 1,
+    "title": "Jalan Bareng Perdana #01",
+    "location": "Makassar",
+    "date": "2023-01-15",
+    "start_point": "Anjungan Losari",
+    "end_point": "Fort Rotterdam",
+    "description": "Edisi perdana jalan santai bersama warga Makassar menikmati pagi hari.",
+    "poster_url": ""
+  },
+  {
+    "chapter": 2,
+    "title": "Jalan Bareng #02",
+    "location": "Gowa",
+    "date": "2023-02-12",
+    "start_point": "Balla Lompoa",
+    "end_point": "Hutan Pinus Malino",
+    "description": "Menelusuri sejarah dan udara sejuk di Gowa.",
+    "poster_url": ""
+  }
+]
