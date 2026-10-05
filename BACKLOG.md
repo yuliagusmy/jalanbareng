@@ -149,35 +149,29 @@ Persiapan komprehensif untuk memigrasikan backend Jalan Bareng dari Railway (fre
 - [ ] **Integrasi Halaman Publik (`/mitra`)**:
   - Mengambil data dinamis via `useApi('/partners')` dengan fallback ke data statis awal jika API sedang offline.
 
-### 9. Scraping & Digitalisasi Arsip Aktivasi Historis (Instagram to Database)
-- [ ] **Ekstraksi Data Historis Instagram Resmi**:
-  - Script pengumpul data & parser feed/arsip Instagram resmi (@jalanbareng.id & akun chapter) dari Edisi #01 hingga edisi terkini.
-  - Ekstraksi informasi esensial:
-    - Nomor edisi, nama chapter kota (Makassar, Palopo, Gowa, Bone, Jakarta Selatan, dll.), dan nama inisiatif tematik (Makan Bareng, dll.).
-    - Tanggal & waktu aktivasi.
-    - Lokasi titik temu (meeting point), rute jalan, dan tempat finis.
-    - Poster/flyer resmi asli beresolusi optimal.
-    - Deskripsi singkat cerita & tema jalan pada edisi tersebut.
-- [ ] **Ingestion Pipeline & Media Storage**:
-  - Skrip migration/seeder otomatis untuk mengimpor seluruh edisi lampau ke tabel `activations`, `activation_media`, dan `categories`.
-  - Penyimpanan file poster ke direktori media lokal/cloud storage dengan penamaan terstruktur (`poster-edisi-{id}.webp`).
-- [ ] **Arsip & Timeline Perjalanan Publik**:
-  - Halaman arsip / direktori edisi lengkap agar anggota komunitas dapat bernostalgia dan menelusuri jejak langkah aktivasi dari awal berdirinya gerakan Jalan Bareng.
+### 9. Scraping & Pengarsipan Data Historis Chapter & Aktivasi (Edisi Awal s/d Sekarang)
+- [ ] **Instagram Data Extraction Pipeline**:
+  - Ekstraksi / pengarsipan data riwayat aktivasi dari akun Instagram resmi Jalan Bareng dari edisi perdana (Chapter #01) hingga edisi terbaru yang sedang berjalan.
+  - Ekstraksi data kunci: Nomor Edisi/Chapter, Nama Wilayah/Kota (Makassar, Gowa, Bone, Palopo, Jaksel, dll.), Tanggal & Waktu Pelaksanaan, Titik Kumpul (Start/Finish), Deskripsi Rute/Tema, dan Poster Kegiatan (resolusi tinggi).
+- [ ] **Penyimpanan Aset & Database Seeder**:
+  - Skrip pengunduh dan optimasi poster (WebP) ke direktori penyimpanan media (`storage/app/public/activations/posters/` atau Cloudflare R2 / S3).
+  - Database seeder komprehensif untuk menyuntikkan seluruh histori perjalanan Jalan Bareng ke tabel `activations` dan `events`, sehingga arsip komunitas lengkap dan dapat ditelusuri warga.
 
-### 10. Modernisasi & Redesain UI/UX Panel Admin (Ergonomis & Nyaman)
-- [ ] **Dashboard Overview & Analitik Visual**:
-  - Layout dashboard yang bersih, lega, dan modern dengan ringkasan metrik real-time (total pejalan terdaftar, aktivasi aktif, permohonan mitra baru, laporan).
-  - Quick action bar: Aksi pintas 1-klik untuk buat aktivasi baru, broadcast pengumuman, atau moderasi konten.
-- [ ] **Ergonomi Data Table & Manajemen Data**:
-  - Tabel data berbasis Vuetify 3 yang cepat dan responsif: Quick filter, search instan tanpa reload, status badges yang informatif, dan bulk action (hapus/verifikasi massal).
-  - Pagination dinamis dan kustomisasi kolom tampilan.
-- [ ] **Form Input yang Rapi & Ramah Pengguna**:
-  - Form modular / multi-step wizard untuk pembuatan aktivasi panjang agar admin tidak kewalahan (info dasar, jadwal, rute, FAQ, dan media).
-  - File upload drag-and-drop dengan instant visual preview, cropping/aspect-ratio guide, dan kompresi otomatis WebP sebelum upload.
-  - Feedback validasi inline yang ramah dan jelas.
-- [ ] **Pengalaman Mobile Admin (Responsif 390px)**:
-  - Bottom sheet dialog untuk aksi cepat saat admin membuka panel lewat HP di lapangan saat hari-H aktivasi.
-  - Ukuran target sentuh tombol minimal 44x44px sesuai prinsip aksesibilitas `antislop-human` & `antislop-layoutmobile`.
+### 10. Redesain Komprehensif UI/UX Panel Admin (Mobile 390px Priority & Desktop Comfort)
+- [ ] **Mobile-First Experience (Prioritas Utama Layar ~390px)**:
+  - Redesain menyeluruh pengalaman admin di layar smartphone modern (~390px - 414px) agar pengelolaan terasa cepat dan nyaman.
+  - Penggantian tabel horizontal lebar dengan kartu modular (card view / stacked list) yang mudah discroll secara vertikal dengan satu tangan.
+  - Bottom-sheet dialog untuk form input cepat, filter, dan konfirmasi aksi agar tidak terpotong oleh keyboard virtual mobile.
+  - Tap target ramah jempol (minimal 44x44px) dan floating action buttons yang tidak menutupi informasi penting.
+- [ ] **Desktop Comfort & Ergonomics**:
+  - Layout dashboard lapang dengan visual hierarchy yang jelas, indikator status real-time, panel multi-kolom yang efisien, dan breadcrumbs navigasi cepat.
+  - Desain antarmuka profesional yang bersih, modern, dan tidak melelahkan mata untuk pemakaian jangka panjang oleh admin dan super admin.
+
+### 11. Audit Responsivitas Universal Lintas Berbagai Model Perangkat (Cross-Device Responsiveness)
+- [ ] **Adaptasi Berbagai Skala Layar HP**:
+  - Pengujian & penyesuaian khusus pada layar HP kecil (320px - 360px, misal seri Galaxy A, iPhone SE) agar tidak ada kartu terjepit, padding terlalu sempit, atau teks terpotong.
+  - Pengujian pada viewport standar (375px, 390px, 412px, 428px) serta tablet & perangkat layar lipat (600px - 1024px).
+  - Eliminasi bug horizontal scroll tak disengaja (`overflow-x`), perataan margin/padding yang konsisten di semua breakpoint Vuetify, serta penyesuaian font scaling agar nyaman dibaca di model HP apapun.
 
 
 
