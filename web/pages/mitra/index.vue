@@ -351,19 +351,11 @@
           <p class="text-body-2 text-grey-darken-1 mb-0">Coba ubah kata kunci pencarian Anda</p>
         </div>
 
-        <!-- Partner Detail Dialog -->
-        <v-dialog v-model="isDetailOpen" max-width="420" rounded="xl">
-          <v-card v-if="selectedPartner" class="pa-6 text-center" rounded="24">
-            <div class="partner-logo-box-large mx-auto mb-4">
-              <img v-if="selectedPartner.logo" :src="selectedPartner.logo" :alt="selectedPartner.name" class="partner-logo-img" />
-              <div v-else class="partner-emblem-large">{{ selectedPartner.initial }}</div>
-            </div>
-            <h2 class="text-h6 font-weight-bold mb-1">{{ selectedPartner.name }}</h2>
-            <p class="text-caption text-primary-red font-weight-bold mb-3">{{ getCategoryLabel(selectedPartner.category) }}</p>
-            <p class="text-body-2 text-grey-darken-2 mb-4">{{ selectedPartner.role }}</p>
-            <v-btn block color="primary" rounded="pill" variant="flat" class="font-weight-bold" @click="isDetailOpen = false">Tutup</v-btn>
-          </v-card>
-        </v-dialog>
+        <!-- Partner Detail Dialog (Enhanced UI & Chapter Collaboration Connector) -->
+        <PartnerDetailDialog
+          v-model="isDetailOpen"
+          :partner="selectedPartner"
+        />
       </section>
 
       <!-- 3. Partnership Opportunities / Cara Berkolaborasi -->
