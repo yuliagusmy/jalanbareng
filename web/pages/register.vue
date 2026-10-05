@@ -14,7 +14,7 @@
           </NuxtLink>
           <div class="hero-badge-pill">
             <v-icon size="14" color="#DC2626" class="mr-1">mdi-foot-print</v-icon>
-            <span>#MENELUSURIKOTA</span>
+            <span>#menelusurikotalebihlambat</span>
           </div>
         </div>
 
