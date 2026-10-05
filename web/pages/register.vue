@@ -740,10 +740,18 @@ const handleGoogleRegister = async () => {
 }
 
 :deep(.clean-field input) {
-  font-size: 0.92rem !important;
+  font-size: 16px !important;
   min-height: 42px !important;
   padding-top: 6px !important;
   padding-bottom: 6px !important;
+}
+
+@media screen and (max-width: 768px) {
+  :deep(input),
+  :deep(.v-field input),
+  :deep(.clean-field input) {
+    font-size: 16px !important;
+  }
 }
 
 :deep(.clean-field .v-icon) {

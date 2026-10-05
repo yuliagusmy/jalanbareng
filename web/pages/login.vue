@@ -648,10 +648,18 @@ const handleGoogleLogin = async () => {
 }
 
 :deep(.clean-field input) {
-  font-size: 0.95rem !important;
+  font-size: 16px !important;
   min-height: 46px !important;
   padding-top: 8px !important;
   padding-bottom: 8px !important;
+}
+
+@media screen and (max-width: 768px) {
+  :deep(input),
+  :deep(.v-field input),
+  :deep(.clean-field input) {
+    font-size: 16px !important;
+  }
 }
 
 :deep(.clean-field .v-icon) {

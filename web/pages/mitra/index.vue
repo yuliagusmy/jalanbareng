@@ -132,7 +132,7 @@
         </div>
 
         <!-- Controls: Category Filters & View Mode Switcher -->
-        <div class="d-flex flex-column flex-md-row align-start align-md-center justify-space-between ga-4 mb-8">
+        <div class="controls-row d-flex flex-column flex-md-row align-start align-md-center justify-space-between ga-4 mb-8">
           <!-- Filter Chips -->
           <div class="category-filters-wrapper ga-2">
             <button
@@ -431,7 +431,7 @@
             <h4 class="text-subtitle-1 font-weight-bold text-grey-darken-4 mb-3">
               Tertarik Berkolaborasi dengan Komunitas Jalan Bareng?
             </h4>
-            <div class="d-flex align-center justify-center flex-wrap ga-3 mb-8">
+            <div class="collab-actions d-flex align-center justify-center flex-wrap ga-3 mb-8">
               <a
                 href="https://wa.me/6281234567890?text=Halo%20Tim%20Jalan%20Bareng,%20kami%20tertarik%20untuk%20mengajukan%20kolaborasi/kemitraan."
                 target="_blank"
@@ -1083,6 +1083,19 @@ const smallPartners = computed(() => filteredPartners.value.filter(p => getPartn
   color: #111827;
 }
 
+.partners-page {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.controls-row {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
 /* Hero Section - Editorial Light */
 .partners-hero {
   background: #FAFAFA;
@@ -1391,16 +1404,71 @@ const smallPartners = computed(() => filteredPartners.value.filter(p => getPartn
 
 /* Mobile Responsiveness */
 @media (max-width: 600px) {
+  .partners-page {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   .partners-hero {
-    padding: 32px 0 32px;
+    padding: 28px 0 24px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   .hero-title {
-    font-size: 1.95rem;
+    font-size: 1.85rem;
+    line-height: 1.2;
+    word-break: break-word;
   }
 
   .hero-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .stat-pill {
+    min-width: calc(50% - 8px) !important;
+    flex: 1 1 calc(50% - 8px) !important;
+    padding: 8px 10px !important;
+  }
+
+  .spotlight-card {
+    padding: 16px !important;
+    border-radius: 18px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .spotlight-card h2 {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+    word-break: break-word;
+  }
+
+  .spotlight-logo-box {
+    padding: 20px 12px !important;
+  }
+
+  .brand-duo-badge {
+    gap: 6px;
+  }
+
+  .brand-name-infinix {
+    font-size: 1.15rem;
+  }
+
+  .brand-name-jb {
+    font-size: 1rem;
+  }
+
+  .controls-row {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
   }
 
   .category-filters-wrapper {
@@ -1408,12 +1476,16 @@ const smallPartners = computed(() => filteredPartners.value.filter(p => getPartn
     flex-wrap: nowrap;
     overflow-x: auto;
     gap: 6px;
-    padding: 4px 16px 8px 16px;
-    margin-left: -16px;
-    margin-right: -16px;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 4px 0 8px 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    box-sizing: border-box;
   }
 
   .category-filters-wrapper::-webkit-scrollbar {
@@ -1424,28 +1496,66 @@ const smallPartners = computed(() => filteredPartners.value.filter(p => getPartn
     white-space: nowrap !important;
     flex-shrink: 0 !important;
     font-size: 0.74rem !important;
-    min-height: 28px !important;
-    height: 28px !important;
+    min-height: 32px !important;
+    height: 32px !important;
     padding: 0 12px !important;
     gap: 4px;
   }
 
   .filter-btn :deep(.v-icon) {
-    font-size: 13px !important;
+    font-size: 14px !important;
+  }
+
+  .view-mode-pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mode-toggle-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
   }
 
   .partner-logo-wrapper {
-    height: 70px !important;
+    height: 64px !important;
   }
 
   .partner-logo-img {
-    max-height: 52px !important;
+    max-height: 48px !important;
     max-width: 90% !important;
   }
 
   .partner-emblem {
-    width: 52px !important;
-    height: 52px !important;
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .kolaborasi-card {
+    padding: 16px !important;
+    border-radius: 18px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .kolaborasi-card h2 {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .collab-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-primary-pill,
+  .btn-outline-pill {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 18px !important;
+    font-size: 0.88rem !important;
   }
 }
 </style>

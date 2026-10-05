@@ -253,6 +253,18 @@ const api = useApi()
 .default-layout .v-main {
   padding-top: 74px !important;
 }
+
+/* Prevent iOS Safari auto-zoom on inputs */
+@media screen and (max-width: 768px) {
+  input,
+  select,
+  textarea,
+  .v-field input,
+  .v-field textarea,
+  .v-field__input {
+    font-size: 16px !important;
+  }
+}
 </style>
 
 <style scoped>
