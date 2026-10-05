@@ -6,7 +6,7 @@
     transition="dialog-bottom-transition"
     @update:model-value="$emit('update:modelValue', $event)"
   >
-    <v-card v-if="partner" class="partner-modal-card pa-5 pa-sm-6" rounded="24" elevation="10">
+    <v-card v-if="partner" class="partner-modal-card" rounded="24" elevation="10">
       <!-- Top Action Bar: Category Pill & Close Icon -->
       <div class="d-flex align-center justify-space-between mb-4">
         <div class="partner-category-chip d-inline-flex align-center ga-1-5 px-3 py-1 rounded-pill" :class="partner.category">
@@ -54,13 +54,13 @@
         <div class="partner-collab-type-tag mb-2 d-inline-block px-2.5 py-0.5 rounded-pill text-caption font-weight-bold">
           {{ partner.collabType || 'Mitra Kolaborasi' }}
         </div>
-        <p class="text-body-2 text-grey-darken-2 mb-0 px-2 line-height-relaxed">
+        <p class="partner-role-desc mb-0">
           {{ partner.role }}
         </p>
       </div>
 
       <!-- Collaboration Highlight Box (Connects to chapter & edition) -->
-      <div v-if="collabInfo" class="collab-connection-card pa-3-5 mb-5">
+      <div v-if="collabInfo" class="collab-connection-card mb-5">
         <div class="d-flex align-center justify-space-between mb-2">
           <div class="collab-eyebrow d-flex align-center ga-1-5">
             <v-icon size="14" color="#DC2626">mdi-handshake</v-icon>
@@ -71,10 +71,10 @@
           <span class="collab-edition-pill">{{ collabInfo.edition }}</span>
         </div>
 
-        <div class="collab-chapter-title mb-1 font-weight-bold text-grey-darken-4">
+        <div class="collab-chapter-title font-weight-bold text-grey-darken-4">
           {{ collabInfo.chapterName }}
         </div>
-        <div class="collab-activity-desc text-caption text-grey-darken-2 mb-3">
+        <div class="collab-activity-desc text-caption mb-3">
           {{ collabInfo.title }}
         </div>
 
@@ -268,6 +268,14 @@ const collabInfo = computed<CollabInfo | null>(() => {
   background: #FFFFFF !important;
   border: 1px solid #F1F5F9;
   box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.18), 0 8px 16px rgba(0, 0, 0, 0.06) !important;
+  padding: 24px 22px !important;
+  box-sizing: border-box;
+}
+
+@media (min-width: 600px) {
+  .partner-modal-card {
+    padding: 28px 28px !important;
+  }
 }
 
 /* Category Badge Chips */
@@ -381,8 +389,11 @@ const collabInfo = computed<CollabInfo | null>(() => {
   letter-spacing: 0.02em;
 }
 
-.line-height-relaxed {
+.partner-role-desc {
+  font-size: 0.88rem;
   line-height: 1.6;
+  color: #4B5563;
+  padding: 0 12px;
 }
 
 /* Collab Connection Box */
@@ -391,12 +402,14 @@ const collabInfo = computed<CollabInfo | null>(() => {
   border: 1px solid #E7E5E4;
   border-radius: 18px;
   text-align: left;
+  padding: 16px 18px !important;
+  box-sizing: border-box;
 }
 
 .collab-edition-pill {
   font-size: 0.7rem;
   font-weight: 800;
-  padding: 2px 10px;
+  padding: 3px 10px;
   border-radius: 9999px;
   background: #FEF2F2;
   color: #DC2626;
@@ -404,12 +417,17 @@ const collabInfo = computed<CollabInfo | null>(() => {
 }
 
 .collab-chapter-title {
-  font-size: 0.95rem;
-  line-height: 1.3;
+  font-size: 1rem;
+  line-height: 1.35;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .collab-activity-desc {
-  line-height: 1.5;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #57534E !important;
+  margin-bottom: 14px !important;
 }
 
 .collab-explore-btn {
