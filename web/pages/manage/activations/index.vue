@@ -107,7 +107,88 @@
       </v-card>
 
       <!-- Activations Table -->
-      <v-card elevation="0" rounded="lg" style="overflow-x: auto;">
+      <!-- Activations List / Table (Responsive) -->
+      <!-- Mobile Card View (< 600px / 390px phones) -->
+      <div v-if="$vuetify.display.xs" class="mobile-activations-container">
+        <div v-if="loading" class="py-2">
+          <v-skeleton-loader v-for="i in 3" :key="i" type="card" height="120" rounded="xl" class="mb-3" />
+        </div>
+        <div v-else-if="filteredActivations.length === 0" class="text-center py-8">
+          <v-icon size="48" color="grey-lighten-1">mdi-star-off</v-icon>
+          <p class="text-body-2 text-grey mt-2">Belum ada aktivasi ditemukan</p>
+        </div>
+        <div v-else>
+          <v-card
+            v-for="item in filteredActivations"
+            :key="item.id"
+            elevation="0"
+            rounded="xl"
+            class="pa-4 mb-3 border-subtle mobile-activation-card"
+          >
+            <div class="d-flex align-start justify-space-between mb-2">
+              <div class="flex-grow-1 min-w-0 pr-2">
+                <div class="d-flex align-center ga-1-5 mb-0.5">
+                  <h3 class="text-subtitle-1 font-weight-bold text-truncate">{{ item.name }}</h3>
+                  <v-icon v-if="item.is_featured" size="16" color="#D97706">mdi-star</v-icon>
+                </div>
+                <div class="text-caption text-grey-darken-1">{{ item.city || 'Semua Kota' }}</div>
+              </div>
+              <v-chip
+                :color="item.is_active ? 'success' : 'grey'"
+                size="x-small"
+                variant="flat"
+                rounded="pill"
+                class="font-weight-bold flex-shrink-0"
+              >
+                {{ item.is_active ? 'Aktif' : 'Non-aktif' }}
+              </v-chip>
+            </div>
+
+            <div class="d-flex align-center justify-space-between pt-2 border-t-subtle">
+              <v-chip size="x-small" :color="getCategoryColor(item.category)" variant="tonal" rounded="pill">
+                {{ getCategoryLabel(item.category) }}
+              </v-chip>
+
+              <div class="d-flex align-center ga-1">
+                <v-btn
+                  icon
+                  size="small"
+                  variant="text"
+                  color="primary"
+                  :to="`/aktivasi/${item.slug}`"
+                  target="_blank"
+                  aria-label="Lihat Aktivasi"
+                >
+                  <v-icon size="18">mdi-open-in-new</v-icon>
+                </v-btn>
+                <v-btn
+                  icon
+                  size="small"
+                  variant="text"
+                  color="warning"
+                  :to="`/manage/activations/edit/${item.id}`"
+                  aria-label="Edit Aktivasi"
+                >
+                  <v-icon size="18">mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn
+                  icon
+                  size="small"
+                  variant="text"
+                  color="error"
+                  aria-label="Hapus Aktivasi"
+                  @click="confirmDelete(item)"
+                >
+                  <v-icon size="18">mdi-delete</v-icon>
+                </v-btn>
+              </div>
+            </div>
+          </v-card>
+        </div>
+      </div>
+
+      <!-- Desktop Table (smAndUp) -->
+      <v-card v-else elevation="0" rounded="lg" class="border-subtle" style="overflow-x: auto;">
         <v-data-table
           :headers="headers"
           :items="filteredActivations"
@@ -416,5 +497,19 @@ onMounted(() => {
 .admin-activations-page {
   background: #fafafa;
   min-height: 100vh;
+}
+
+.border-subtle {
+  border: 1px solid #F1F5F9 !important;
+}
+
+.border-t-subtle {
+  border-top: 1px solid #F1F5F9;
+}
+
+.mobile-activation-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
 }
 </style>
