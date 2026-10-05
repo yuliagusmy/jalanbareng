@@ -83,41 +83,56 @@
 
 ---
 
-## 🚀 Rencana Masa Depan: Migrasi ke Hosting Berbayar & Infrastruktur Production
+## 🚀 Future Features & Roadmap: Migrasi ke Hosting Berbayar (Production-Ready Architecture)
 
-Daftar persiapan lengkap untuk migrasi backend Laravel dari Railway (free tier / ephemeral) ke VPS / Hosting Berbayar (misal: Niagahoster VPS, Biznet Gio, IDCloudHost, DigitalOcean, Hetzner, AWS Lightsail):
+Persiapan komprehensif untuk memigrasikan backend Jalan Bareng dari Railway (free tier / ephemeral SQLite) ke infrastruktur hosting berbayar (VPS Niagahoster, Biznet GIO, IDCloudHost, DigitalOcean, Hetzner, atau AWS Lightsail) guna menjamin performa tinggi, database persisten, dan stabilitas jangka panjang:
 
-### 1. Database Production (MySQL / PostgreSQL Mandiri)
-- [ ] **Migrasi dari SQLite ke MySQL 8 / PostgreSQL 16**:
-  - SQLite di Railway container bersifat non-persistent / ephemeral saat redeploy.
-  - Setup instance database dedicated dengan connection pooling & persistent volume.
-  - Ekspor data SQLite eksisting (`sqlite3 database.sqlite .dump`) dan impor ke database production.
-  - Setup auto-backup harian (mysqldump / pg_dump ke S3 / Cloud Storage).
+### 1. Database Production (Dedicated MySQL 8 / PostgreSQL 16)
+- [ ] **Pemisahan Database dari Container App**:
+  - Ganti koneksi SQLite dengan MySQL 8 / MariaDB 10.11 / PostgreSQL 16 dengan storage NVMe persisten.
+  - Setup auto-tuning MySQL (`innodb_buffer_pool_size`, `max_connections`, connection pooling).
+  - Skrip migrasi data dari SQLite lokal/Railway ke MySQL menggunakan data dumper & database seeder.
+  - Setup Automated Daily Backup (Cron snapshot + kompresi gzip + upload otomatis ke Cloud Storage S3 / R2 offsite).
 
-### 2. File Storage Persisten (S3 / R2 / MinIO)
-- [ ] **Migrasi Upload Gambar ke Cloud Object Storage**:
-  - Saat ini upload foto tersimpan di disk lokal container (`storage/app/public/destinations`).
-  - Ganti filesystem driver ke `s3` (Cloudflare R2, AWS S3, atau Wasabi) menggunakan `league/flysystem-aws-s3-v3`.
-  - Keuntungan: Gambar destinasi, avatar profil, dan bukti cashout tidak hilang saat server di-restart atau di-scale.
+### 2. Object Storage Persisten (Cloudflare R2 / AWS S3 / Wasabi)
+- [ ] **Penyimpanan Media & Upload Tanpa Batas**:
+  - Pasang driver `league/flysystem-aws-s3-v3` di backend Laravel.
+  - Konfigurasi Cloudflare R2 (gratis 10GB storage, 0 egress / bandwidth fee) atau AWS S3 / Wasabi untuk penyimpanan:
+    - Foto Destinasi (`destinations/`)
+    - Foto Aktivasi & Dokumentasi (`activations/`)
+    - Avatar User & Profil (`avatars/`)
+    - Bukti Pembayaran / Struk Cashout (`cashouts/`)
+  - Integrasi CDN Cloudflare untuk image delivery berkecepatan tinggi dengan caching otomatis WebP/AVIF.
 
-### 3. Server Web & Runtime (Nginx + PHP 8.2+ FPM + Supervisor)
-- [ ] **Konfigurasi Server VPS / PaaS Berbayar**:
-  - Web Server: Nginx dengan reverse proxy, HTTP/2, Gzip/Brotli compression, dan SSL otomatis (Let's Encrypt / Certbot).
-  - Process Manager: Supervisor untuk menjalankan antrean Laravel Queue worker (`php artisan queue:work`) dan Task Scheduler (`php artisan schedule:run`).
-  - PHP OPcache & JIT diaktifkan untuk performa maksimal.
-  - Setup CI/CD deployment via GitHub Actions (auto-deploy via SSH ke VPS atau via webhook).
+### 3. Konfigurasi Server Web & Runtime (Nginx + PHP 8.2-FPM + OPcache)
+- [ ] **Setup Dedicated Linux VPS (Ubuntu 24.04 LTS)**:
+  - Nginx web server dengan HTTP/2, Gzip/Brotli compression, dan SSL otomatis Let's Encrypt (Certbot autorenew).
+  - PHP 8.2-FPM dengan OPcache diaktifkan (`opcache.enable=1`, `opcache.jit=tracing`, `opcache.memory_consumption=256`).
+  - Redis Server untuk Cache, Session persisten, dan antrean job berkecepatan tinggi.
 
-### 4. Domain & DNS Management
-- [ ] **DNS Record Subdomain API**:
-  - Konfigurasi DNS di IDwebhost / Cloudflare: buat A record atau CNAME `api.jalanbareng.web.id` mengarah ke IP VPS / hosting berbayar.
-  - Update `GOOGLE_REDIRECT_URI` ke `https://api.jalanbareng.web.id/api/auth/google/callback`.
-  - Update `NUXT_PUBLIC_API_BASE` di Vercel ke `https://api.jalanbareng.web.id`.
+### 4. Background Workers & Task Scheduler (Supervisor + Cron)
+- [ ] **Antrean Asinkron & Penjadwalan Tugas Otomatis**:
+  - Supervisor daemon untuk menjalankan `php artisan queue:work --tries=3 --timeout=90`.
+  - Cronjob sistem untuk Laravel Scheduler (`* * * * * cd /var/www/jalanbareng/backend && php artisan schedule:run >> /dev/null 2>&1`).
+  - Otomatisasi pengiriman notifikasi email, pembuatan ringkasan mingguan, dan pembersihan token kedaluwarsa.
 
-### 5. Keamanan & Monitoring Server
-- [ ] **Server Hardening**:
-  - Firewall (UFW) hanya membuka port 80, 443, dan custom SSH port.
-  - Fail2ban untuk mencegah brute-force SSH.
-  - Integrasi error tracking & monitoring (Sentry / GlitchTip) dan uptime monitor (Uptime Kuma / Better Stack).
+### 5. Domain & Jaringan DNS Resmi (`api.jalanbareng.web.id`)
+- [ ] **Konfigurasi Subdomain API Mandiri**:
+  - Konfigurasi DNS di IDwebhost / Cloudflare DNS: Buat `A record` untuk `api.jalanbareng.web.id` mengarah ke IP Publik VPS.
+  - Pasang SSL Certbot untuk `api.jalanbareng.web.id`.
+  - Update `GOOGLE_REDIRECT_URI` ke `https://api.jalanbareng.web.id/api/auth/google/callback` di Google Cloud Console.
+  - Update `NUXT_PUBLIC_API_BASE` dan `NUXT_PUBLIC_API_URL` di Vercel Dashboard mengarah ke `https://api.jalanbareng.web.id`.
+
+### 6. Pipeline CI/CD Deployment Otomatis (GitHub Actions)
+- [ ] **Zero-Downtime Deployment via Git**:
+  - Workflow GitHub Actions: Setiap push ke branch `main`, otomatis test lint/syntax, SSH ke VPS, jalankan `git pull`, `composer install --no-dev --optimize-autoloader`, `php artisan migrate --force`, dan `php artisan optimize`.
+
+### 7. Keamanan & Monitoring Server (Hardening)
+- [ ] **Proteksi Server Kelas Enterprise**:
+  - UFW Firewall: Hanya izinkan port 80 (HTTP), 443 (HTTPS), dan custom SSH port terproteksi SSH Key (Non-Password login).
+  - Fail2ban: Blokir otomatis upaya brute-force pada port SSH dan endpoint API.
+  - Sentry / GlitchTip untuk error tracking real-time di backend dan frontend.
+  - Uptime monitor gratis (Better Stack / Uptime Kuma) dengan alert notifikasi Telegram/WhatsApp jika server down.
 
 ---
 
