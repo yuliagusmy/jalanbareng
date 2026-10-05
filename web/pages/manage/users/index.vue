@@ -128,8 +128,70 @@
         </v-row>
       </v-card>
 
-      <!-- Users Table -->
-      <v-card elevation="0" rounded="lg" style="overflow-x: auto;">
+      <!-- Users List / Table (Responsive) -->
+      <!-- Mobile Card View (< 600px / 390px phones) -->
+      <div v-if="$vuetify.display.xs" class="mobile-users-container">
+        <div v-if="loading" class="py-2">
+          <v-skeleton-loader v-for="i in 3" :key="i" type="card" height="120" rounded="xl" class="mb-3" />
+        </div>
+        <div v-else-if="users.length === 0" class="text-center py-8">
+          <v-icon size="48" color="grey-lighten-1">mdi-account-off</v-icon>
+          <p class="text-body-2 text-grey mt-2">Tidak ada user ditemukan</p>
+        </div>
+        <div v-else>
+          <v-card
+            v-for="item in users"
+            :key="item.id"
+            elevation="0"
+            rounded="xl"
+            class="pa-4 mb-3 border-subtle mobile-user-card"
+          >
+            <div class="d-flex align-center ga-3 mb-2">
+              <v-avatar size="44" :color="getRoleColor(item.role)">
+                <v-img v-if="item.photo" :src="getImageUrl(item.photo)" :alt="item.name" />
+                <span v-else class="text-subtitle-2 font-weight-black text-white">
+                  {{ item.name.charAt(0).toUpperCase() }}
+                </span>
+              </v-avatar>
+              <div class="flex-grow-1 min-w-0 pr-1">
+                <div class="font-weight-bold text-truncate text-grey-darken-4">{{ item.name }}</div>
+                <div class="text-caption text-grey text-truncate">{{ item.email }}</div>
+              </div>
+              <v-chip :color="getRoleColor(item.role)" size="x-small" variant="flat" rounded="pill" class="font-weight-bold flex-shrink-0 text-white">
+                {{ getRoleLabel(item.role) }}
+              </v-chip>
+            </div>
+
+            <div class="d-flex align-center justify-space-between pt-2 border-t-subtle">
+              <div class="text-caption text-grey">
+                <span>{{ item.destinations_count || 0 }} destinasi</span> · <span>{{ item.comments_count || 0 }} komentar</span>
+              </div>
+              <div class="d-flex align-center ga-1">
+                <v-btn icon size="small" variant="text" color="primary" @click="viewUser(item)" aria-label="Lihat Detail">
+                  <v-icon size="18">mdi-eye</v-icon>
+                </v-btn>
+                <v-btn icon size="small" variant="text" color="warning" @click="editUser(item)" aria-label="Edit Role">
+                  <v-icon size="18">mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn
+                  icon
+                  size="small"
+                  variant="text"
+                  color="error"
+                  @click="confirmDelete(item)"
+                  :disabled="item.id === authStore.user?.id"
+                  aria-label="Hapus User"
+                >
+                  <v-icon size="18">mdi-delete</v-icon>
+                </v-btn>
+              </div>
+            </div>
+          </v-card>
+        </div>
+      </div>
+
+      <!-- Desktop Table (smAndUp) -->
+      <v-card v-else elevation="0" rounded="lg" class="border-subtle" style="overflow-x: auto;">
         <v-data-table
           :headers="headers"
           :items="users"
@@ -212,31 +274,6 @@
                 <v-icon size="small">mdi-pencil</v-icon>
                 <v-tooltip activator="parent" location="top">Edit Role</v-tooltip>
               </v-btn>
-              <!--
-              <v-btn
-                v-if="!item.ban_status"
-                icon
-                size="small"
-                variant="text"
-                color="orange"
-                @click="openBanDialog(item)"
-                :disabled="item.id === authStore.user?.id"
-              >
-                <v-icon size="small">mdi-gavel</v-icon>
-                <v-tooltip activator="parent" location="top">Ban User</v-tooltip>
-              </v-btn>
-              <v-btn
-                v-else
-                icon
-                size="small"
-                variant="text"
-                color="success"
-                @click="unbanUser(item)"
-              >
-                <v-icon size="small">mdi-check-circle</v-icon>
-                <v-tooltip activator="parent" location="top">Unban User</v-tooltip>
-              </v-btn>
-              -->
               <v-btn
                 icon
                 size="small"
@@ -710,7 +747,18 @@ const pagination = ref({
   total: 0
 })
 
+const serverStats = ref<{ total: number; admins: number; community_admins: number; members: number } | null>(null)
+
 const stats = computed(() => {
+  if (serverStats.value) {
+    return {
+      total: serverStats.value.total,
+      admins: serverStats.value.admins,
+      communityAdmins: serverStats.value.community_admins,
+      members: serverStats.value.members
+    }
+  }
+
   const admins = users.value.filter(u => u.role === 'admin').length
   const communityAdmins = users.value.filter(u => u.role === 'community_admin').length
   const members = users.value.filter(u => u.role === 'member').length
@@ -869,6 +917,10 @@ const fetchUsers = async () => {
       current_page: response.data.current_page || 1,
       per_page: response.data.per_page || 10,
       total: response.data.total || users.value.length
+    }
+
+    if (response.data.stats) {
+      serverStats.value = response.data.stats
     }
   } catch (error) {
     console.error('Error fetching users:', error)

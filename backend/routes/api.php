@@ -60,7 +60,6 @@ Route::get('/events/{event}', [EventController::class, 'show']);
 Route::get('/events/featured/list', [EventController::class, 'featured']);
 
 Route::get('/profile/{user}', [ProfileController::class, 'show']);
-Route::get('/users', [UserController::class, 'index']);
 
 // Activations
 Route::get('/activations/media/all', [ActivationController::class, 'allMedia']);
@@ -152,6 +151,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/admin/stories/{id}/status', [StoryController::class, 'adminUpdateStatus']);
         Route::post('/admin/stories/{id}', [StoryController::class, 'adminUpdate']);
         Route::delete('/admin/stories/{id}', [StoryController::class, 'adminDestroy']);
+
+        // Users Management (Admin & Community Admin view)
+        Route::get('/users', [UserController::class, 'index']);
     });
 
     // =========================================================================

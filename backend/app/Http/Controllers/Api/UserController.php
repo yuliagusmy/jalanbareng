@@ -12,32 +12,27 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+        $currentUser = $request->user() ?? auth('sanctum')->user();
+
         // Check if this is an admin request (for user management)
         if ($request->has('admin_view')) {
-            $currentUser = $request->user();
-            if (!$currentUser || !$currentUser->isAdmin()) {
+            if (!$currentUser || (!$currentUser->isAdmin() && !$currentUser->isCommunityAdmin())) {
                 return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
             }
             return $this->adminIndex($request);
         }
 
-        // Original functionality for homepage slider
-        $limit = $request->get('limit', 20);
+        // Return users list for dropdowns and selectors
+        $limit = $request->get('limit', 100);
 
-        $users = User::whereNotNull('photo')
-                     ->latest()
+        $users = User::latest()
                      ->limit($limit)
                      ->get(['id', 'name', 'photo']);
 
-        if ($users->count() < $limit) {
-            $fallbackUsers = User::whereNull('photo')
-                               ->inRandomOrder()
-                               ->limit($limit - $users->count())
-                               ->get(['id', 'name', 'photo']);
-            $users = $users->merge($fallbackUsers);
-        }
-
-        return response()->json($users);
+        return response()->json([
+            'users' => $users,
+            'data' => $users
+        ]);
     }
 
     private function adminIndex(Request $request)
@@ -91,7 +86,15 @@ class UserController extends Controller
             return $userData;
         });
 
-        return response()->json($users);
+        $result = $users->toArray();
+        $result['stats'] = [
+            'total' => User::count(),
+            'admins' => User::whereHas('role', fn($q) => $q->where('name', 'admin'))->count(),
+            'community_admins' => User::whereHas('role', fn($q) => $q->where('name', 'community_admin'))->count(),
+            'members' => User::whereHas('role', fn($q) => $q->where('name', 'member'))->count(),
+        ];
+
+        return response()->json($result);
     }
 
     public function store(Request $request)
