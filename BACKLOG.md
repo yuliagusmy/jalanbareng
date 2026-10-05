@@ -149,6 +149,37 @@ Persiapan komprehensif untuk memigrasikan backend Jalan Bareng dari Railway (fre
 - [ ] **Integrasi Halaman Publik (`/mitra`)**:
   - Mengambil data dinamis via `useApi('/partners')` dengan fallback ke data statis awal jika API sedang offline.
 
+### 9. Scraping & Digitalisasi Arsip Aktivasi Historis (Instagram to Database)
+- [ ] **Ekstraksi Data Historis Instagram Resmi**:
+  - Script pengumpul data & parser feed/arsip Instagram resmi (@jalanbareng.id & akun chapter) dari Edisi #01 hingga edisi terkini.
+  - Ekstraksi informasi esensial:
+    - Nomor edisi, nama chapter kota (Makassar, Palopo, Gowa, Bone, Jakarta Selatan, dll.), dan nama inisiatif tematik (Makan Bareng, dll.).
+    - Tanggal & waktu aktivasi.
+    - Lokasi titik temu (meeting point), rute jalan, dan tempat finis.
+    - Poster/flyer resmi asli beresolusi optimal.
+    - Deskripsi singkat cerita & tema jalan pada edisi tersebut.
+- [ ] **Ingestion Pipeline & Media Storage**:
+  - Skrip migration/seeder otomatis untuk mengimpor seluruh edisi lampau ke tabel `activations`, `activation_media`, dan `categories`.
+  - Penyimpanan file poster ke direktori media lokal/cloud storage dengan penamaan terstruktur (`poster-edisi-{id}.webp`).
+- [ ] **Arsip & Timeline Perjalanan Publik**:
+  - Halaman arsip / direktori edisi lengkap agar anggota komunitas dapat bernostalgia dan menelusuri jejak langkah aktivasi dari awal berdirinya gerakan Jalan Bareng.
+
+### 10. Modernisasi & Redesain UI/UX Panel Admin (Ergonomis & Nyaman)
+- [ ] **Dashboard Overview & Analitik Visual**:
+  - Layout dashboard yang bersih, lega, dan modern dengan ringkasan metrik real-time (total pejalan terdaftar, aktivasi aktif, permohonan mitra baru, laporan).
+  - Quick action bar: Aksi pintas 1-klik untuk buat aktivasi baru, broadcast pengumuman, atau moderasi konten.
+- [ ] **Ergonomi Data Table & Manajemen Data**:
+  - Tabel data berbasis Vuetify 3 yang cepat dan responsif: Quick filter, search instan tanpa reload, status badges yang informatif, dan bulk action (hapus/verifikasi massal).
+  - Pagination dinamis dan kustomisasi kolom tampilan.
+- [ ] **Form Input yang Rapi & Ramah Pengguna**:
+  - Form modular / multi-step wizard untuk pembuatan aktivasi panjang agar admin tidak kewalahan (info dasar, jadwal, rute, FAQ, dan media).
+  - File upload drag-and-drop dengan instant visual preview, cropping/aspect-ratio guide, dan kompresi otomatis WebP sebelum upload.
+  - Feedback validasi inline yang ramah dan jelas.
+- [ ] **Pengalaman Mobile Admin (Responsif 390px)**:
+  - Bottom sheet dialog untuk aksi cepat saat admin membuka panel lewat HP di lapangan saat hari-H aktivasi.
+  - Ukuran target sentuh tombol minimal 44x44px sesuai prinsip aksesibilitas `antislop-human` & `antislop-layoutmobile`.
+
+
 
 ---
 
