@@ -1,86 +1,156 @@
 <template>
-  <div>
-    <div
-      ref="mapContainer"
-      style="height: 500px; width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
-    ></div>
+  <div class="route-map-editor">
+    <div class="editor-frame-wrapper">
+      <div ref="mapContainer" class="editor-canvas"></div>
 
-    <div class="mt-6">
-      <v-alert
-        type="info"
-        variant="tonal"
-        density="compact"
-        class="mb-4"
-      >
-        <v-icon start>mdi-information</v-icon>
-        <strong>Cara Menggunakan:</strong> Klik pada peta untuk menambahkan titik rute. Titik-titik akan terhubung secara otomatis.
-      </v-alert>
+      <!-- Instructions Pill -->
+      <div class="editor-tip-pill" v-if="mapReady">
+        <v-icon size="16" color="#DC2626">mdi-cursor-default-click</v-icon>
+        <span>Klik pada peta untuk menambah titik / belokan rute</span>
+      </div>
 
-      <v-row align="center" class="mt-4">
-        <v-col cols="12" sm="6">
-          <div class="d-flex ga-2">
+      <!-- Floating Controls -->
+      <div class="editor-floating-controls" v-if="mapReady">
+        <button
+          type="button"
+          class="map-ctrl-btn"
+          @click="toggleMapStyle"
+          :title="`Ganti gaya peta (${currentStyleName})`"
+          aria-label="Ganti Gaya Peta"
+        >
+          <v-icon size="16">{{ currentStyleIcon }}</v-icon>
+          <span class="ctrl-label">{{ currentStyleKey === 'positron' ? 'Minimal' : 'Detail' }}</span>
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div v-if="loading" class="map-loading-overlay">
+        <v-progress-circular indeterminate color="#DC2626" size="36" width="3" />
+        <span class="text-caption font-weight-bold text-grey-darken-2 mt-2">
+          Menyiapkan kanvas peta...
+        </span>
+      </div>
+    </div>
+
+    <!-- Actions & Stats Bar -->
+    <div class="mt-4">
+      <v-row align="center" justify="space-between">
+        <v-col cols="12" sm="7">
+          <div class="d-flex flex-wrap ga-2">
             <v-btn
-              @click="undo"
-              color="warning"
-              variant="outlined"
-              prepend-icon="mdi-undo"
-              :disabled="routePoints.length === 0"
+              @click="showGpsModal = true"
+              color="#DC2626"
+              variant="flat"
+              size="small"
+              rounded="pill"
+              class="font-weight-bold text-white elevation-1"
             >
-              Undo Terakhir
+              <v-icon start size="16">mdi-cellphone-marker</v-icon>
+              Rekam GPS HP (Live)
             </v-btn>
             <v-btn
-              @click="clear"
-              color="error"
+              @click="undoLastPoint"
+              color="grey-darken-3"
               variant="outlined"
-              prepend-icon="mdi-delete"
+              size="small"
+              rounded="pill"
+              class="font-weight-bold"
               :disabled="routePoints.length === 0"
             >
-              Hapus Semua
+              <v-icon start size="16">mdi-undo</v-icon>
+              Undo
+            </v-btn>
+            <v-btn
+              @click="clearAllPoints"
+              color="grey-darken-1"
+              variant="outlined"
+              size="small"
+              rounded="pill"
+              :disabled="routePoints.length === 0"
+            >
+              <v-icon start size="16">mdi-delete-sweep-outline</v-icon>
+              Reset
             </v-btn>
           </div>
         </v-col>
-        <v-col cols="12" sm="6" class="text-sm-right">
-          <v-chip
-            color="primary"
-            size="large"
-            prepend-icon="mdi-map-marker-distance"
-            class="font-weight-bold"
-          >
-            <span class="text-h6">{{ distance.toFixed(2) }} km</span>
-          </v-chip>
+
+        <v-col cols="12" sm="5" class="text-sm-right">
+          <div class="d-inline-flex align-center ga-3 bg-white px-4 py-2 rounded-pill border">
+            <div class="text-left">
+              <div class="text-caption text-grey">Estimasi Jarak</div>
+              <div class="text-subtitle-2 font-weight-black text-primary-red">
+                {{ calculatedDistance.toFixed(2) }} km
+              </div>
+            </div>
+            <v-divider vertical class="my-1" />
+            <div class="text-left">
+              <div class="text-caption text-grey">Jumlah Titik</div>
+              <div class="text-subtitle-2 font-weight-black text-grey-darken-4">
+                {{ routePoints.length }}
+              </div>
+            </div>
+          </div>
         </v-col>
       </v-row>
 
-      <v-card v-if="routePoints.length > 0" class="mt-4" elevation="0" variant="outlined">
-        <v-card-text>
-          <div class="d-flex align-center mb-2">
-            <v-icon color="primary" class="mr-2">mdi-map-marker-multiple</v-icon>
-            <span class="font-weight-bold">Titik Rute ({{ routePoints.length }})</span>
-          </div>
-          <div class="route-points-list">
-            <v-chip
-              v-for="(point, i) in routePoints"
-              :key="i"
-              size="small"
-              class="ma-1"
-              :color="i === 0 ? 'success' : (i === routePoints.length - 1 ? 'error' : 'primary')"
-            >
-              {{ i === 0 ? 'Start' : (i === routePoints.length - 1 ? 'Finish' : `Point ${i}`) }}:
-              {{ point.lat.toFixed(6) }}, {{ point.lng.toFixed(6) }}
-            </v-chip>
-          </div>
-        </v-card-text>
+      <!-- Waypoints List Preview -->
+      <v-card v-if="routePoints.length > 0" class="mt-4 pa-4" elevation="0" rounded="xl" border>
+        <div class="d-flex align-center justify-space-between mb-2">
+          <span class="text-caption font-weight-bold text-grey-darken-3">
+            Titik-Titik Checkpoint Terdata:
+          </span>
+          <span class="text-caption text-grey">
+            Start (Hijau) ➔ Finish (Merah)
+          </span>
+        </div>
+        <div class="points-chips-container">
+          <v-chip
+            v-for="(p, i) in routePoints"
+            :key="i"
+            size="small"
+            rounded="pill"
+            :color="i === 0 ? 'success' : (i === routePoints.length - 1 ? '#DC2626' : 'grey-darken-3')"
+            :variant="i === 0 || i === routePoints.length - 1 ? 'flat' : 'outlined'"
+            class="font-weight-bold"
+          >
+            {{ i === 0 ? '🚩 Start' : (i === routePoints.length - 1 ? '🏁 Finish' : `Titik ${i + 1}`) }}:
+            {{ p.lat.toFixed(4) }}, {{ p.lng.toFixed(4) }}
+          </v-chip>
+        </div>
       </v-card>
     </div>
+
+    <!-- Live GPS Route Tracker Modal (Strava Style) -->
+    <LiveGpsRouteTrackerModal
+      v-model="showGpsModal"
+      @saved="handleGpsRouteSaved"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { useMapLibre, MAP_STYLES, type MapStyleKey } from '~/composables/useMapLibre'
+import LiveGpsRouteTrackerModal from '~/components/events/LiveGpsRouteTrackerModal.vue'
+
+interface Point {
+  lat: number
+  lng: number
+  name?: string
+}
+
+const showGpsModal = ref(false)
+
+const handleGpsRouteSaved = (payload: { route: Point[]; distance: number; duration: number }) => {
+  routePoints.value = payload.route
+  redrawRoute()
+  emit('update:modelValue', routePoints.value)
+  emit('update:distance', payload.distance)
+}
 
 const props = defineProps({
   modelValue: {
-    type: Array as () => Array<{ lat: number, lng: number }>,
+    type: Array as () => Point[],
     default: () => []
   },
   isVisible: {
@@ -91,307 +161,324 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'update:distance'])
 
-const config = useRuntimeConfig()
+const { loadMapLibre } = useMapLibre()
+
 const mapContainer = ref<HTMLElement | null>(null)
+const mapReady = ref(false)
+const loading = ref(true)
 
-let map: any = null
+let maplibregl: any = null
+let mapInstance: any = null
 let markers: any[] = []
-let polyline: any = null
-let google: any = null
 
-const routePoints = ref<Array<{ lat: number, lng: number }>>(
-  props.modelValue ? [...props.modelValue] : []
+const currentStyleKey = ref<MapStyleKey>('positron')
+const currentStyleName = computed(() => MAP_STYLES[currentStyleKey.value].name)
+const currentStyleIcon = computed(() => MAP_STYLES[currentStyleKey.value].icon)
+
+const routePoints = ref<Point[]>(
+  props.modelValue && Array.isArray(props.modelValue)
+    ? props.modelValue.map(p => ({
+        lat: typeof p.lat === 'number' ? p.lat : parseFloat(p.lat as any),
+        lng: typeof p.lng === 'number' ? p.lng : parseFloat(p.lng as any),
+        name: p.name
+      }))
+    : []
 )
 
-// Calculate distance using Haversine formula
-const distance = computed(() => {
+// Hitung jarak via formula Haversine
+const calculatedDistance = computed(() => {
   if (routePoints.value.length < 2) return 0
   let total = 0
-
   for (let i = 0; i < routePoints.value.length - 1; i++) {
-    const from = routePoints.value[i]
-    const to = routePoints.value[i + 1]
-
-    // Haversine formula
-    const R = 6371 // Earth's radius in km
-    const dLat = toRad(to.lat - from.lat)
-    const dLng = toRad(to.lng - from.lng)
-
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(from.lat)) * Math.cos(toRad(to.lat)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2)
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    const distance = R * c
-
-    total += distance
+    total += haversineKm(routePoints.value[i], routePoints.value[i + 1])
   }
-
   return total
 })
 
-const toRad = (degrees: number) => {
-  return degrees * (Math.PI / 180)
+function haversineKm(p1: Point, p2: Point): number {
+  const R = 6371
+  const dLat = ((p2.lat - p1.lat) * Math.PI) / 180
+  const dLng = ((p2.lng - p1.lng) * Math.PI) / 180
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((p1.lat * Math.PI) / 180) *
+      Math.cos((p2.lat * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2)
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-// Watch distance changes and emit
-watch(distance, (newDistance) => {
-  emit('update:distance', newDistance)
+watch(calculatedDistance, (newDist) => {
+  emit('update:distance', newDist)
 })
-
-// Watch for external modelValue changes (from edit mode)
-watch(() => props.modelValue, (newRoute) => {
-  if (newRoute && newRoute.length > 0) {
-    routePoints.value = [...newRoute]
-    updateMapRoute()
-  }
-}, { deep: true })
-
-// Watch visibility to resize map
-watch(() => props.isVisible, (newValue) => {
-  if (newValue && map) {
-    setTimeout(() => {
-      google?.maps?.event?.trigger(map, 'resize')
-      if (routePoints.value.length > 0) {
-        fitBounds()
-      }
-    }, 100)
-  }
-})
-
-const waitForGoogleMaps = () => {
-  return new Promise<void>((resolve) => {
-    if (typeof window !== 'undefined' && (window as any).google?.maps) {
-      resolve()
-      return
-    }
-
-    const checkInterval = setInterval(() => {
-      if ((window as any).google?.maps) {
-        clearInterval(checkInterval)
-        resolve()
-      }
-    }, 100)
-
-    setTimeout(() => {
-      clearInterval(checkInterval)
-      resolve()
-    }, 10000)
-  })
-}
 
 const initMap = async () => {
+  if (!mapContainer.value) return
+  loading.value = true
+
   try {
-    await waitForGoogleMaps()
+    maplibregl = await loadMapLibre()
     await nextTick()
 
-    if (!mapContainer.value) {
-      console.error('Map container not found')
-      return
-    }
+    // Default ke Makassar atau point pertama
+    const defaultCenter = routePoints.value.length > 0
+      ? [routePoints.value[0].lng, routePoints.value[0].lat]
+      : [119.4327, -5.1477]
 
-    google = (window as any).google
-
-    // Center map on Makassar
-    const center = { lat: -5.1477, lng: 119.4327 }
-
-    map = new google.maps.Map(mapContainer.value, {
-      center: center,
-      zoom: 13,
-      mapId: config.public.googleMapsMapId,
-      mapTypeControl: true,
-      mapTypeControlOptions: {
-        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-        mapTypeIds: ['roadmap', 'satellite', 'hybrid']
-      },
-      streetViewControl: true,
-      fullscreenControl: true,
-      zoomControl: true,
-      styles: [
-        {
-          featureType: 'poi',
-          elementType: 'labels',
-          stylers: [{ visibility: 'on' }]
-        }
-      ]
+    mapInstance = new maplibregl.Map({
+      container: mapContainer.value,
+      style: MAP_STYLES[currentStyleKey.value].url,
+      center: defaultCenter,
+      zoom: 14,
+      attributionControl: false
     })
 
-    // Add click listener to add route points
-    map.addListener('click', (event: any) => {
-      addRoutePoint({
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng()
-      })
+    mapInstance.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right')
+
+    mapInstance.on('load', () => {
+      mapReady.value = true
+      loading.value = false
+      redrawRoute()
     })
 
-    // If there are existing route points, display them
-    if (routePoints.value.length > 0) {
-      updateMapRoute()
-      fitBounds()
-    }
-
-    console.log('Google Maps initialized for route editor')
-  } catch (error) {
-    console.error('Error initializing Google Maps:', error)
+    // Tangkap klik pada peta untuk menambah titik rute
+    mapInstance.on('click', (e: any) => {
+      addPoint(e.lngLat.lat, e.lngLat.lng)
+    })
+  } catch (err) {
+    console.error('Failed to init MapLibre route editor:', err)
+    loading.value = false
   }
 }
 
-const addRoutePoint = (point: { lat: number, lng: number }) => {
-  routePoints.value.push(point)
-  updateMapRoute()
+const addPoint = (lat: number, lng: number) => {
+  routePoints.value.push({ lat, lng })
+  redrawRoute()
   emit('update:modelValue', routePoints.value)
 }
 
-const updateMapRoute = () => {
-  if (!map || !google) return
+const undoLastPoint = () => {
+  if (routePoints.value.length === 0) return
+  routePoints.value.pop()
+  redrawRoute()
+  emit('update:modelValue', routePoints.value)
+}
 
-  // Clear existing markers
-  markers.forEach(marker => marker.map = null)
+const clearAllPoints = () => {
+  routePoints.value = []
+  redrawRoute()
+  emit('update:modelValue', routePoints.value)
+}
+
+const redrawRoute = () => {
+  if (!mapInstance || !maplibregl) return
+
+  // Bersihkan marker lama
+  markers.forEach(m => m.remove())
   markers = []
 
-  // Clear existing polyline
-  if (polyline) {
-    polyline.setMap(null)
+  const pts = routePoints.value
+  const coords = pts.map(p => [p.lng, p.lat])
+
+  const geojson = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: coords
+    }
   }
 
-  // Add markers for each point
-  routePoints.value.forEach((point, index) => {
-    const isStart = index === 0
-    const isEnd = index === routePoints.value.length - 1
-
-    let glyphText = `${index + 1}`
-    let bgColor = '#2196F3' // Blue
-    let borderColor = '#1E88E5' // Darker Blue
-
-    if (isStart) {
-      glyphText = 'S'
-      bgColor = '#4CAF50' // Green
-      borderColor = '#388E3C'
-    } else if (isEnd) {
-      glyphText = 'F'
-      bgColor = '#F44336' // Red
-      borderColor = '#D32F2F'
-    }
-
-    const pinElement = new google.maps.marker.PinElement({
-        glyph: glyphText,
-        glyphColor: 'white',
-        background: bgColor,
-        borderColor: borderColor,
-    });
-
-    const marker = new google.maps.marker.AdvancedMarkerElement({
-      position: point,
-      map: map,
-      content: pinElement.element,
-      title: isStart ? 'Start' : (isEnd ? `Finish` : `Point ${index + 1}`)
+  // Update or create source
+  if (mapInstance.getSource('editor-route')) {
+    mapInstance.getSource('editor-route').setData(geojson)
+  } else {
+    mapInstance.addSource('editor-route', {
+      type: 'geojson',
+      data: geojson
     })
 
-    // Add info window
-    const infoWindow = new google.maps.InfoWindow({
-      content: `
-        <div style="padding: 4px;">
-          <strong>${isStart ? 'Start' : (isEnd ? 'Finish' : `Point ${index + 1}`)}</strong><br>
-          <small>${point.lat.toFixed(6)}, ${point.lng.toFixed(6)}</small>
-        </div>
-      `
+    mapInstance.addLayer({
+      id: 'editor-route-halo',
+      type: 'line',
+      source: 'editor-route',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: { 'line-color': '#FFFFFF', 'line-width': 7, 'line-opacity': 0.8 }
     })
 
-    marker.addListener('click', () => {
-      infoWindow.open({
-          anchor: marker,
-          map,
-      });
+    mapInstance.addLayer({
+      id: 'editor-route-line',
+      type: 'line',
+      source: 'editor-route',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: { 'line-color': '#DC2626', 'line-width': 4 }
     })
+  }
+
+  // Tambahkan visual marker untuk setiap titik
+  pts.forEach((p, idx) => {
+    const isStart = idx === 0
+    const isFinish = idx === pts.length - 1 && pts.length > 1
+
+    const el = document.createElement('div')
+    el.className = `editor-point-marker ${isStart ? 'is-start' : isFinish ? 'is-finish' : ''}`
+    el.innerHTML = `<span>${isStart ? 'S' : isFinish ? 'F' : idx + 1}</span>`
+
+    const marker = new maplibregl.Marker({ element: el })
+      .setLngLat([p.lng, p.lat])
+      .addTo(mapInstance)
 
     markers.push(marker)
   })
 
-  // Draw polyline if there are multiple points
-  if (routePoints.value.length > 1) {
-    polyline = new google.maps.Polyline({
-      path: routePoints.value,
-      geodesic: true,
-      strokeColor: '#2196F3',
-      strokeOpacity: 0.8,
-      strokeWeight: 4,
-      map: map
-    })
+  // Fit bounds jika ada lebih dari 1 titik
+  if (pts.length > 1) {
+    const bounds = new maplibregl.LngLatBounds()
+    pts.forEach(p => bounds.extend([p.lng, p.lat]))
+    mapInstance.fitBounds(bounds, { padding: 40, maxZoom: 16 })
   }
 }
 
-const fitBounds = () => {
-  if (!map || !google || routePoints.value.length === 0) return
-
-  const bounds = new google.maps.LatLngBounds()
-  routePoints.value.forEach(point => {
-    bounds.extend(point)
-  })
-  map.fitBounds(bounds)
-
-  // Adjust zoom if only one point
-  if (routePoints.value.length === 1) {
-    map.setZoom(15)
-  }
+const toggleMapStyle = () => {
+  if (!mapInstance) return
+  currentStyleKey.value = currentStyleKey.value === 'positron' ? 'liberty' : 'positron'
+  mapInstance.setStyle(MAP_STYLES[currentStyleKey.value].url)
+  mapInstance.once('style.load', () => redrawRoute())
 }
 
-const undo = () => {
-  if (routePoints.value.length > 0) {
-    routePoints.value.pop()
-    updateMapRoute()
-    emit('update:modelValue', routePoints.value)
-
-    if (routePoints.value.length > 0) {
-      fitBounds()
-    }
-  }
-}
-
-const clear = () => {
-  routePoints.value = []
-  updateMapRoute()
-  emit('update:modelValue', [])
-
-  // Reset map to Makassar center
-  if (map && google) {
-    map.setCenter({ lat: -5.1477, lng: 119.4327 })
-    map.setZoom(13)
-  }
-}
-
-onMounted(() => {
-  // Load Google Maps script if not already loaded
-  if (typeof window !== 'undefined') {
-    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]')
-
-    if (!existingScript) {
-      const script = document.createElement('script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${config.public.googleMapsApiKey}&libraries=marker`
-      script.async = true
-      script.defer = true
-      script.onload = () => {
-        initMap()
-      }
-      document.head.appendChild(script)
-    } else {
-      initMap()
-    }
+watch(() => props.isVisible, (val) => {
+  if (val && mapInstance) {
+    setTimeout(() => {
+      mapInstance.resize()
+      if (routePoints.value.length > 0) redrawRoute()
+    }, 150)
   }
 })
 
+watch(() => props.modelValue, (newVal) => {
+  if (newVal && Array.isArray(newVal)) {
+    routePoints.value = newVal.map(p => ({
+      lat: typeof p.lat === 'number' ? p.lat : parseFloat(p.lat as any),
+      lng: typeof p.lng === 'number' ? p.lng : parseFloat(p.lng as any),
+      name: p.name
+    }))
+    if (mapReady.value) redrawRoute()
+  }
+}, { deep: true })
+
+onMounted(() => {
+  initMap()
+})
+
 onUnmounted(() => {
-  // Clean up markers
-  markers.forEach(marker => marker.map = null)
-  if (polyline) {
-    polyline.setMap(null)
+  markers.forEach(m => m.remove())
+  if (mapInstance) {
+    mapInstance.remove()
+    mapInstance = null
   }
 })
 </script>
 
 <style scoped>
-.route-points-list {
-  max-height: 200px;
+.route-map-editor {
+  width: 100%;
+}
+
+.editor-frame-wrapper {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.editor-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.editor-tip-pill {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #1F2937;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 5;
+}
+
+.editor-floating-controls {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+}
+
+.map-ctrl-btn {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 9999px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #374151;
+  cursor: pointer;
+}
+
+.map-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.text-primary-red {
+  color: #DC2626;
+}
+
+.points-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 120px;
   overflow-y: auto;
 }
+
+:deep(.editor-point-marker) {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #3B82F6;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 900;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+:deep(.editor-point-marker.is-start) { background: #16A34A; }
+:deep(.editor-point-marker.is-finish) { background: #DC2626; }
 </style>

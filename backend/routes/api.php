@@ -24,8 +24,8 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Public routes
-Route::prefix('auth')->group(function () {
+// Public routes with brute-force rate limit protection
+Route::prefix('auth')->middleware('throttle:10,1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
@@ -111,73 +111,84 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 
-    // Users (Admin only)
-    Route::post('/users', [UserController::class, 'store']);
-    Route::put('/users/{user}', [UserController::class, 'update']);
-    Route::delete('/users/{user}', [UserController::class, 'destroy']);
-    Route::post('/users/{user}/ban', [UserController::class, 'ban']);
-    Route::post('/users/{user}/unban', [UserController::class, 'unban']);
-
-    // Categories (Admin only)
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::post('/categories/{category}', [CategoryController::class, 'update']); // Using POST because of file upload
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
-
-    // Activations (Admin only)
-    Route::post('/activations', [ActivationController::class, 'store']);
-    Route::post('/activations/{id}', [ActivationController::class, 'update']); // Using POST because of file upload
-    Route::delete('/activations/{id}', [ActivationController::class, 'destroy']);
-    
-    // Activation Media
-    Route::post('/activations/{id}/media', [ActivationController::class, 'uploadMedia']);
-    Route::delete('/activations/{id}/media/{mediaId}', [ActivationController::class, 'deleteMedia']);
-    
-    // Activation FAQs
-    Route::post('/activations/{id}/faqs', [ActivationController::class, 'storeFaq']);
-    Route::put('/activations/{id}/faqs/{faqId}', [ActivationController::class, 'updateFaq']);
-    Route::delete('/activations/{id}/faqs/{faqId}', [ActivationController::class, 'deleteFaq']);
-    
-    // Activation Testimonials
-    Route::post('/activations/{id}/testimonials', [ActivationController::class, 'storeTestimonial']);
-    Route::post('/activations/{id}/testimonials/{testimonialId}', [ActivationController::class, 'updateTestimonial']); // Using POST because of file upload
-    Route::delete('/activations/{id}/testimonials/{testimonialId}', [ActivationController::class, 'deleteTestimonial']);
-    
-    // Pages (Admin only)
-    Route::get('/admin/pages', [PageController::class, 'index']);
-    Route::post('/admin/pages', [PageController::class, 'store']);
-    Route::put('/admin/pages/{id}', [PageController::class, 'update']);
-    Route::delete('/admin/pages/{id}', [PageController::class, 'destroy']);
-    
-    // Settings (Admin only)
-    Route::get('/admin/settings', [SettingController::class, 'index']);
-    Route::put('/admin/settings', [SettingController::class, 'update']);
-    
-    // Admin Reports
-    Route::get('/admin/reports/members', [AdminReportController::class, 'exportMembers']);
-    Route::get('/admin/reports/participants', [AdminReportController::class, 'exportParticipants']);
-    
-    // Admin Dashboard Stats
-    Route::get('/admin/stats', [AdminStatsController::class, 'overview']);
-
-    // Stories (Admin curation)
-    Route::get('/admin/stories', [StoryController::class, 'adminIndex']);
-    Route::put('/admin/stories/{id}/status', [StoryController::class, 'adminUpdateStatus']);
-    Route::post('/admin/stories/{id}', [StoryController::class, 'adminUpdate']);
-    Route::delete('/admin/stories/{id}', [StoryController::class, 'adminDestroy']);
-
-    // Points & Contributor Wallet
+    // Points & Contributor Wallet (All authenticated users)
     Route::get('/points/me', [PointController::class, 'myPoints']);
-    Route::post('/points/cashout', [PointController::class, 'requestCashout']);
+    Route::post('/points/cashout', [PointController::class, 'requestCashout'])->middleware('throttle:5,1');
 
-    // Admin Points & Cashouts
-    Route::get('/admin/cashouts', [PointController::class, 'adminCashoutIndex']);
-    Route::post('/admin/cashouts/{id}/status', [PointController::class, 'adminUpdateCashoutStatus']); // POST for file upload (struk)
+    // =========================================================================
+    // Management Routes (Admin & Community Admin)
+    // =========================================================================
+    Route::middleware('role:admin,community_admin')->group(function () {
+        // Activations Management
+        Route::post('/activations', [ActivationController::class, 'store']);
+        Route::post('/activations/{id}', [ActivationController::class, 'update']);
+        Route::delete('/activations/{id}', [ActivationController::class, 'destroy']);
+        
+        // Activation Media
+        Route::post('/activations/{id}/media', [ActivationController::class, 'uploadMedia']);
+        Route::delete('/activations/{id}/media/{mediaId}', [ActivationController::class, 'deleteMedia']);
+        
+        // Activation FAQs
+        Route::post('/activations/{id}/faqs', [ActivationController::class, 'storeFaq']);
+        Route::put('/activations/{id}/faqs/{faqId}', [ActivationController::class, 'updateFaq']);
+        Route::delete('/activations/{id}/faqs/{faqId}', [ActivationController::class, 'deleteFaq']);
+        
+        // Activation Testimonials
+        Route::post('/activations/{id}/testimonials', [ActivationController::class, 'storeTestimonial']);
+        Route::post('/activations/{id}/testimonials/{testimonialId}', [ActivationController::class, 'updateTestimonial']);
+        Route::delete('/activations/{id}/testimonials/{testimonialId}', [ActivationController::class, 'deleteTestimonial']);
+
+        // Admin Reports
+        Route::get('/admin/reports/engagement', [AdminReportController::class, 'engagement']);
+        Route::get('/admin/reports/members', [AdminReportController::class, 'exportMembers']);
+        Route::get('/admin/reports/participants', [AdminReportController::class, 'exportParticipants']);
+
+        // Admin Dashboard Stats
+        Route::get('/admin/stats', [AdminStatsController::class, 'overview']);
+
+        // Stories (Admin Curation)
+        Route::get('/admin/stories', [StoryController::class, 'adminIndex']);
+        Route::put('/admin/stories/{id}/status', [StoryController::class, 'adminUpdateStatus']);
+        Route::post('/admin/stories/{id}', [StoryController::class, 'adminUpdate']);
+        Route::delete('/admin/stories/{id}', [StoryController::class, 'adminDestroy']);
+    });
+
+    // =========================================================================
+    // Super-Admin Only Routes (Admin only)
+    // =========================================================================
+    Route::middleware('role:admin')->group(function () {
+        // Users Management
+        Route::post('/users', [UserController::class, 'store']);
+        Route::put('/users/{user}', [UserController::class, 'update']);
+        Route::delete('/users/{user}', [UserController::class, 'destroy']);
+        Route::post('/users/{user}/ban', [UserController::class, 'ban']);
+        Route::post('/users/{user}/unban', [UserController::class, 'unban']);
+
+        // Categories Management
+        Route::post('/categories', [CategoryController::class, 'store']);
+        Route::post('/categories/{category}', [CategoryController::class, 'update']);
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+
+        // Pages Management
+        Route::get('/admin/pages', [PageController::class, 'index']);
+        Route::post('/admin/pages', [PageController::class, 'store']);
+        Route::put('/admin/pages/{id}', [PageController::class, 'update']);
+        Route::delete('/admin/pages/{id}', [PageController::class, 'destroy']);
+
+        // Settings Management
+        Route::get('/admin/settings', [SettingController::class, 'index']);
+        Route::put('/admin/settings', [SettingController::class, 'update']);
+
+        // Cashouts Management (Financial Approval)
+        Route::get('/admin/cashouts', [PointController::class, 'adminCashoutIndex']);
+        Route::post('/admin/cashouts/{id}/status', [PointController::class, 'adminUpdateCashoutStatus']);
+    });
 });
 
-// One-click secure database seed trigger for production setup
+// Secure database seed trigger (ONLY allowed in local/development environment)
 Route::get('/system/seed-database', function (\Illuminate\Http\Request $request) {
-    if ($request->query('key') !== 'jalanbareng2026') {
-        return response()->json(['error' => 'Unauthorized'], 403);
+    if (!app()->isLocal() || $request->query('key') !== env('DB_SEED_KEY', 'jalanbareng2026')) {
+        return response()->json(['error' => 'Endpoint tidak tersedia di environment ini'], 403);
     }
     
     try {

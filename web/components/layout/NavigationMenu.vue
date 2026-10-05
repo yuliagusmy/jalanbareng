@@ -305,6 +305,14 @@
             <v-list-item-subtitle class="text-caption">Moderasi cerita Jalan Bareng</v-list-item-subtitle>
           </v-list-item>
 
+          <v-list-item to="/manage/reports" rounded="lg" class="mx-2 mb-1 dropdown-rich-item">
+            <template v-slot:prepend>
+              <v-icon color="#DC2626" class="mr-2">mdi-file-chart-outline</v-icon>
+            </template>
+            <v-list-item-title class="font-weight-bold">Laporan &amp; Ekspor</v-list-item-title>
+            <v-list-item-subtitle class="text-caption">Analitik &amp; unduh data</v-list-item-subtitle>
+          </v-list-item>
+
           <v-divider class="my-2"></v-divider>
 
           <v-list-item to="/manage/settings" rounded="lg" class="mx-2 dropdown-rich-item">

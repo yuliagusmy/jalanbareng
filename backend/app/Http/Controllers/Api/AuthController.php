@@ -58,6 +58,12 @@ class AuthController extends Controller
             ]);
         }
 
+        if ($user->isBanned()) {
+            throw ValidationException::withMessages([
+                'email' => ['Akun Anda sedang dinonaktifkan atau dibatasi: ' . ($user->ban_reason ?? 'Silakan hubungi pengelola Jalan Bareng.')],
+            ]);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([

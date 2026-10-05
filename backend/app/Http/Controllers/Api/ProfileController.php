@@ -21,6 +21,11 @@ class ProfileController extends Controller
                 ->latest('date');
         }]);
 
+        $stories = \App\Models\Story::where('user_id', $user->id)
+            ->where('status', 'approved')
+            ->latest('published_at')
+            ->get(['id', 'title', 'slug', 'excerpt', 'cover_image', 'card_style', 'published_at', 'views_count']);
+
         return response()->json([
             'user' => [
                 'id' => $user->id,
@@ -36,8 +41,19 @@ class ProfileController extends Controller
                 'twitter' => $user->twitter,
                 'destinations' => $user->destinations,
                 'participated_events' => $user->participatedEvents,
+                'stories' => $stories->map(fn ($s) => [
+                    'id' => $s->id,
+                    'title' => $s->title,
+                    'slug' => $s->slug,
+                    'excerpt' => $s->excerpt,
+                    'cover_image_url' => $s->cover_image_url,
+                    'card_style' => $s->card_style,
+                    'published_at' => $s->published_at?->toISOString(),
+                    'views_count' => $s->views_count,
+                ]),
                 'destinations_count' => $user->destinations ? $user->destinations->count() : 0,
                 'events_count' => $user->participatedEvents ? $user->participatedEvents->count() : 0,
+                'stories_count' => $stories->count(),
             ],
         ]);
     }

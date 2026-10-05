@@ -379,6 +379,9 @@
             <v-btn to="/manage/categories" color="#15803D" variant="tonal" rounded="pill" size="small" class="font-weight-bold">
               <v-icon start size="16">mdi-tag-multiple</v-icon> Kelola Kategori
             </v-btn>
+            <v-btn to="/manage/reports" color="#DC2626" variant="tonal" rounded="pill" size="small" class="font-weight-bold">
+              <v-icon start size="16">mdi-file-chart-outline</v-icon> Laporan &amp; Ekspor
+            </v-btn>
             <v-btn to="/manage/settings" color="#6B21A8" variant="tonal" rounded="pill" size="small" class="font-weight-bold">
               <v-icon start size="16">mdi-cog-outline</v-icon> Pengaturan
             </v-btn>

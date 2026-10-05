@@ -123,20 +123,48 @@ class GoogleAuthController extends Controller
         ]);
 
         try {
-            // Decode JWT token from Google One Tap
-            $parts = explode('.', $request->credential);
-            if (count($parts) !== 3) {
-                throw new \Exception('Invalid token format');
+            // Cryptographically verify ID token against Google's public tokeninfo endpoint
+            $verifyResponse = \Illuminate\Support\Facades\Http::timeout(10)->get('https://oauth2.googleapis.com/tokeninfo', [
+                'id_token' => $request->credential,
+            ]);
+
+            if (!$verifyResponse->successful()) {
+                \Log::warning('Google One-Tap token verification failed: ' . $verifyResponse->body());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token Google tidak valid atau sudah kedaluwarsa.',
+                ], 401);
             }
 
-            $payload = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], $parts[1])), true);
+            $payload = $verifyResponse->json();
 
-            if (!isset($payload['email'])) {
-                throw new \Exception('Email not found in token');
+            // Validate audience if GOOGLE_CLIENT_ID is configured
+            $clientId = config('services.google.client_id') ?: env('GOOGLE_CLIENT_ID');
+            if ($clientId && isset($payload['aud']) && $payload['aud'] !== $clientId) {
+                \Log::warning('Google One-Tap audience mismatch: expected ' . $clientId . ', got ' . $payload['aud']);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token audiens Google tidak sesuai.',
+                ], 401);
+            }
+
+            if (empty($payload['email'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email tidak ditemukan dari data akun Google.',
+                ], 422);
             }
 
             // Find or create user
             $user = User::where('email', $payload['email'])->first();
+
+            // Reject banned users
+            if ($user && method_exists($user, 'isBanned') && $user->isBanned()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun Anda sedang dinonaktifkan atau dibatasi: ' . ($user->ban_reason ?? 'Silakan hubungi admin.'),
+                ], 403);
+            }
 
             if (!$user) {
                 $memberRole = Role::where('name', 'member')->first();
@@ -167,10 +195,11 @@ class GoogleAuthController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Google One-Tap authentication error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to authenticate with Google',
-                'error' => $e->getMessage(),
+                'message' => 'Gagal memproses autentikasi Google',
+                'error' => config('app.debug') ? $e->getMessage() : null,
             ], 500);
         }
     }

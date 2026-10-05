@@ -13,7 +13,11 @@ class UserController extends Controller
     public function index(Request $request)
     {
         // Check if this is an admin request (for user management)
-        if ($request->has('admin_view') || $request->user()?->role === 'admin') {
+        if ($request->has('admin_view')) {
+            $currentUser = $request->user();
+            if (!$currentUser || !$currentUser->isAdmin()) {
+                return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+            }
             return $this->adminIndex($request);
         }
 

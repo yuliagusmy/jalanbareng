@@ -3,43 +3,55 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\ReportService;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class AdminReportController extends Controller
 {
-    public function exportMembers()
+    /**
+     * Data ringkasan dan tren engagement bulanan
+     */
+    public function engagement(Request $request)
     {
-        $members = User::select('id', 'name', 'email', 'created_at')->get();
-        $csvData = "ID,Nama,Email,Bergabung\n";
-        
-        foreach ($members as $member) {
-            $csvData .= "{$member->id},\"{$member->name}\",{$member->email},{$member->created_at}\n";
-        }
+        $months = (int) $request->input('months', 6);
+        $summary = ReportService::getEngagementSummary();
+        $trends = ReportService::getMonthlyTrends($months);
 
-        return response($csvData, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="members_export.csv"',
+        return response()->json([
+            'data' => [
+                'summary' => $summary,
+                'trends' => $trends,
+            ],
+            'message' => 'Data laporan engagement berhasil dimuat',
         ]);
     }
 
-    public function exportParticipants()
+    /**
+     * Ekspor CSV / Excel data member
+     */
+    public function exportMembers(Request $request)
     {
-        $participants = DB::table('event_participants')
-            ->join('events', 'event_participants.event_id', '=', 'events.id')
-            ->select('event_participants.id', 'events.name as event_name', 'event_participants.name', 'event_participants.email', 'event_participants.phone', 'event_participants.created_at')
-            ->get();
+        $csv = ReportService::generateMembersCsv();
+        $filename = 'members_' . date('Ymd_His') . '.csv';
 
-        $csvData = "ID,Event,Nama,Email,Telepon,Tanggal Daftar\n";
-        
-        foreach ($participants as $p) {
-            $csvData .= "{$p->id},\"{$p->event_name}\",\"{$p->name}\",{$p->email},{$p->phone},{$p->created_at}\n";
-        }
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
+    }
 
-        return response($csvData, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="participants_export.csv"',
+    /**
+     * Ekspor CSV / Excel pendaftar aktivasi / event
+     */
+    public function exportParticipants(Request $request)
+    {
+        $eventId = $request->input('event_id') ? (int) $request->input('event_id') : null;
+        $csv = ReportService::generateParticipantsCsv($eventId);
+        $filename = 'participants_' . ($eventId ? "event_{$eventId}_" : '') . date('Ymd_His') . '.csv';
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
     }
 }

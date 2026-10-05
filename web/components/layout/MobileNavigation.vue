@@ -107,6 +107,13 @@
             <v-list-item-title>Kurasi Tulisan</v-list-item-title>
           </v-list-item>
 
+          <v-list-item to="/manage/reports" rounded="lg" class="mb-1" color="secondary">
+            <template v-slot:prepend>
+              <v-icon color="primary">mdi-file-chart-outline</v-icon>
+            </template>
+            <v-list-item-title>Laporan &amp; Ekspor</v-list-item-title>
+          </v-list-item>
+
           <v-list-item to="/manage/settings" rounded="lg" class="mb-1" color="secondary">
             <template v-slot:prepend>
               <v-icon color="grey-darken-1">mdi-cog</v-icon>

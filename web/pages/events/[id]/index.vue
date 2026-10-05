@@ -195,6 +195,24 @@
                   <span>Kegiatan Telah Selesai</span>
                 </v-btn>
 
+                <!-- Tandai Ikut (Tracking Internal) -->
+                <v-btn
+                  v-if="isUpcoming && authStore.isLoggedIn"
+                  :loading="joiningEvent"
+                  :disabled="hasJoined"
+                  :color="hasJoined ? '#16A34A' : 'grey-darken-1'"
+                  size="small"
+                  block
+                  rounded="pill"
+                  variant="outlined"
+                  class="font-weight-medium mb-3"
+                  @click="tandaiIkut"
+                  :aria-label="hasJoined ? 'Sudah tandai ikut' : 'Tandai keikutsertaan'"
+                >
+                  <v-icon start size="16">{{ hasJoined ? 'mdi-check-circle' : 'mdi-checkbox-marked-circle-outline' }}</v-icon>
+                  <span>{{ hasJoined ? 'Sudah Ditandai Ikut ✓' : 'Tandai Ikut (Tracking Internal)' }}</span>
+                </v-btn>
+
                 <!-- Share Buttons -->
                 <div class="share-box pt-3 border-top">
                   <span class="share-label mb-2 d-block">Bagikan ke Teman / Grup:</span>
@@ -341,11 +359,29 @@
                 size="large"
                 block
                 rounded="pill"
-                class="text-white font-weight-bold mobile-primary-btn elevation-3 mb-2.5"
+                class="text-white font-weight-bold mobile-primary-btn elevation-3 mb-2"
               >
                 <v-icon start size="18">mdi-clipboard-edit-outline</v-icon>
                 <span>Daftar Kegiatan</span>
                 <v-icon end size="16">mdi-arrow-right</v-icon>
+              </v-btn>
+
+              <!-- Tandai Ikut (Tracking Internal, mobile) -->
+              <v-btn
+                v-if="isUpcoming && authStore.isLoggedIn"
+                :loading="joiningEvent"
+                :disabled="hasJoined"
+                :color="hasJoined ? '#16A34A' : 'grey-darken-1'"
+                size="small"
+                block
+                rounded="pill"
+                variant="outlined"
+                class="font-weight-medium mb-2"
+                @click="tandaiIkut"
+                :aria-label="hasJoined ? 'Sudah tandai ikut' : 'Tandai keikutsertaan'"
+              >
+                <v-icon start size="15">{{ hasJoined ? 'mdi-check-circle' : 'mdi-checkbox-marked-circle-outline' }}</v-icon>
+                <span>{{ hasJoined ? 'Sudah Ditandai Ikut ✓' : 'Tandai Ikut' }}</span>
               </v-btn>
 
               <div class="d-flex align-center justify-space-between px-1">
@@ -391,9 +427,23 @@
                   <v-icon size="22" color="#16A34A">mdi-map-legend</v-icon>
                   <h2 class="panel-title mb-0">Rute &amp; Peta Penjelajahan</h2>
                 </div>
-                <span class="route-length-badge" v-if="event.distance">
-                  {{ event.distance }} km Jalur Pejalan
-                </span>
+                <div class="d-flex align-center ga-2 flex-wrap">
+                  <v-btn
+                    v-if="canEdit"
+                    size="small"
+                    rounded="pill"
+                    color="#DC2626"
+                    variant="tonal"
+                    class="font-weight-bold"
+                    @click="showGpsTracker = true"
+                  >
+                    <v-icon start size="16">mdi-cellphone-marker</v-icon>
+                    Rekam Live GPS
+                  </v-btn>
+                  <span class="route-length-badge" v-if="event.distance">
+                    {{ event.distance }} km Jalur Pejalan
+                  </span>
+                </div>
               </div>
 
               <!-- Start / Finish Indicator Cards -->
@@ -419,10 +469,17 @@
                 </div>
               </div>
 
-              <!-- Google Maps Viewer -->
+              <!-- Walking Route MapLibre Viewer -->
               <div class="map-wrapper-card">
                 <ClientOnly>
-                  <GoogleMapRouteViewer :route="event.route" />
+                  <WalkingRouteMapViewer
+                    :route="event.route"
+                    :start-point="event.start_point"
+                    :finish-point="event.finish_point"
+                    :title="event.name"
+                    :distance="event.distance"
+                    :duration="event.estimated_duration"
+                  />
                 </ClientOnly>
               </div>
             </section>
@@ -568,6 +625,13 @@
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" location="top" rounded="pill">
       {{ snackbarText }}
     </v-snackbar>
+
+    <!-- Modal Live GPS Route Tracker (Strava Style) -->
+    <LiveGpsRouteTrackerModal
+      v-model="showGpsTracker"
+      :initial-title="event?.name"
+      @saved="handleLiveGpsSaved"
+    />
   </div>
 </template>
 
@@ -576,8 +640,30 @@ import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { defineAsyncComponent } from 'vue'
 import { useHead } from '#app'
 
+const WalkingRouteMapViewer = defineAsyncComponent(() => import('~/components/events/WalkingRouteMapViewer.vue'))
+const LiveGpsRouteTrackerModal = defineAsyncComponent(() => import('~/components/events/LiveGpsRouteTrackerModal.vue'))
 const RouteMapViewer = defineAsyncComponent(() => import('~/components/events/RouteMapViewer.vue'))
 const GoogleMapRouteViewer = defineAsyncComponent(() => import('~/components/events/GoogleMapRouteViewer.vue'))
+
+const showGpsTracker = ref(false)
+
+const handleLiveGpsSaved = async (payload: { route: any[]; distance: number; duration: number }) => {
+  if (!event.value) return
+  try {
+    await api.put(`/events/${event.value.id}`, {
+      route: JSON.stringify(payload.route),
+      distance: payload.distance,
+      duration: payload.duration
+    })
+    event.value.route = payload.route
+    event.value.distance = payload.distance
+    event.value.estimated_duration = payload.duration
+    showSnackbar('Rute walking tour berhasil diperbarui dari rekaman GPS!', 'success')
+  } catch (err: any) {
+    console.error('Gagal memperbarui rute via GPS', err)
+    showSnackbar('Gagal menyimpan hasil rekaman rute GPS.', 'error')
+  }
+}
 
 definePageMeta({
   layout: 'default'
@@ -597,6 +683,8 @@ const lightboxDialog = ref(false)
 const showMobileStickyBar = ref(false)
 const isAboveHeroCta = ref(true)
 const heroCtaRef = ref<HTMLElement | null>(null)
+const joiningEvent = ref(false)
+const hasJoined = ref(false)
 
 const stripHtml = (html: string) => {
   if (!html) return ''
@@ -724,6 +812,26 @@ const showSnackbar = (text: string, color: string = 'success') => {
   snackbarText.value = text
   snackbarColor.value = color
   snackbar.value = true
+}
+
+const tandaiIkut = async () => {
+  if (!authStore.isLoggedIn || joiningEvent.value || hasJoined.value) return
+  joiningEvent.value = true
+  try {
+    await api.post(`/events/${route.params.id}/join`)
+    hasJoined.value = true
+    showSnackbar('Keikutsertaanmu sudah dicatat! Sampai ketemu di sana 👋', 'success')
+  } catch (error: any) {
+    const msg = error?.data?.message || ''
+    if (msg.toLowerCase().includes('already') || msg.toLowerCase().includes('sudah')) {
+      hasJoined.value = true
+      showSnackbar('Kamu sudah tercatat di event ini sebelumnya.', 'info')
+    } else {
+      showSnackbar(msg || 'Gagal mencatat keikutsertaan. Coba lagi.', 'error')
+    }
+  } finally {
+    joiningEvent.value = false
+  }
 }
 
 const fetchEvent = async () => {

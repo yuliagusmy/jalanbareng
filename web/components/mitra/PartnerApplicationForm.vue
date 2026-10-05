@@ -131,12 +131,12 @@
             color="#DC2626"
             size="large"
             rounded="pill"
-            class="submit-btn px-8"
+            class="submit-btn px-6 px-sm-8"
             elevation="0"
             :loading="isSubmitting"
           >
-            <v-icon start size="20">mdi-send-check-outline</v-icon>
-            Ajukan Checkpoint Kemitraan
+            <v-icon start size="20" class="me-1">mdi-send-check-outline</v-icon>
+            <span class="btn-text">Ajukan Checkpoint Kemitraan</span>
           </v-btn>
           <div class="secure-note mt-3">
             <v-icon size="14" color="grey">mdi-shield-check-outline</v-icon>
@@ -364,7 +364,32 @@ function openWhatsApp() {
 .submit-btn {
   font-weight: 700;
   letter-spacing: 0.02em;
+  max-width: 100%;
+  height: auto !important;
+  min-height: 48px;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.submit-btn :deep(.v-btn__content) {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.35;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+@media (max-width: 600px) {
+  .submit-btn {
+    width: 100%;
+    font-size: 0.875rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
 }
 
 .submit-btn:hover {

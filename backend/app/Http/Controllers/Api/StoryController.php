@@ -128,6 +128,9 @@ class StoryController extends Controller
         $validated['status'] = 'pending';
         $validated['views_count'] = 0;
 
+        // Sanitize rich-text content to prevent Stored XSS attacks
+        $validated['content'] = self::sanitizeHtml($validated['content']);
+
         $story = Story::create($validated);
 
         return response()->json([
@@ -252,6 +255,10 @@ class StoryController extends Controller
             $validated['cover_image'] = $path;
         }
 
+        if (isset($validated['content'])) {
+            $validated['content'] = self::sanitizeHtml($validated['content']);
+        }
+
         $story->update($validated);
 
         return response()->json([
@@ -276,5 +283,26 @@ class StoryController extends Controller
         return response()->json([
             'message' => 'Tulisan berhasil dihapus',
         ]);
+    }
+
+    /**
+     * Sanitize rich-text HTML input to prevent Stored XSS
+     */
+    public static function sanitizeHtml(?string $content): string
+    {
+        if (empty($content)) {
+            return '';
+        }
+
+        // Whitelist standard formatting and editorial tags
+        $allowedTags = '<p><br><b><strong><i><em><u><s><strike><h1><h2><h3><h4><h5><h6><ul><ol><li><blockquote><a><img><span><div><figure><figcaption>';
+        $clean = strip_tags($content, $allowedTags);
+
+        // Strip inline JavaScript handlers and javascript: URI schemes
+        $clean = preg_replace('/\s+on[a-zA-Z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $clean);
+        $clean = preg_replace('/href\s*=\s*("\s*javascript:[^"]*"|\'\s*javascript:[^\']*\'|javascript:[^\s>]+)/i', 'href="#"', $clean);
+        $clean = preg_replace('/src\s*=\s*("\s*javascript:[^"]*"|\'\s*javascript:[^\']*\'|javascript:[^\s>]+)/i', 'src=""', $clean);
+
+        return $clean;
     }
 }

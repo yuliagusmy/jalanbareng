@@ -199,6 +199,27 @@ class EventController extends Controller
                     'lng' => $geoData->finish_lng,
                 ];
                 $event->route = Geo::parseLineString($geoData->route_text ?? null);
+            } else {
+                $event->start_point = is_array($event->start_point) ? $event->start_point : Geo::parsePoint($event->start_point);
+                $event->finish_point = is_array($event->finish_point) ? $event->finish_point : Geo::parsePoint($event->finish_point);
+                if (is_string($event->route)) {
+                    if (str_starts_with(trim($event->route), 'LINESTRING')) {
+                        $event->route = Geo::parseLineString($event->route);
+                    } else {
+                        $decoded = json_decode($event->route, true);
+                        $event->route = is_array($decoded) ? $decoded : Geo::parseLineString($event->route);
+                    }
+                }
+            }
+
+            // Jika start/finish belum terisi tapi rute ada, ambil titik awal & akhir dari rute
+            if (is_array($event->route) && count($event->route) > 0) {
+                if (!$event->start_point) {
+                    $event->start_point = $event->route[0];
+                }
+                if (!$event->finish_point) {
+                    $event->finish_point = $event->route[count($event->route) - 1];
+                }
             }
         }
 

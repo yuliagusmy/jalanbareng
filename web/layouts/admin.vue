@@ -236,6 +236,18 @@
             </template>
             <v-list-item-title>Pencairan Poin</v-list-item-title>
           </v-list-item>
+
+          <v-list-item
+            to="/manage/reports"
+            rounded="lg"
+            class="mb-2"
+            color="primary"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-file-chart-outline</v-icon>
+            </template>
+            <v-list-item-title>Laporan &amp; Ekspor</v-list-item-title>
+          </v-list-item>
         </template>
       </v-list>
 
