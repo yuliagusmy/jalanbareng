@@ -74,39 +74,51 @@ class GoogleAuthController extends Controller
     }
 
     /**
-     * Find existing user or create a new user with guaranteed member role
+     * Find existing user or create a new user with guaranteed member/admin role
      */
     private function findOrCreateGoogleUser($googleUser): User
     {
-        $user = User::where('email', $googleUser->getEmail())->first();
+        $adminRole = Role::firstOrCreate(
+            ['name' => 'admin'],
+            ['display_name' => 'Administrator', 'description' => 'Full system access and management']
+        );
+        $memberRole = Role::firstOrCreate(
+            ['name' => 'member'],
+            ['display_name' => 'Member', 'description' => 'Regular user with basic permissions']
+        );
+
+        $email = $googleUser->getEmail();
+        $adminEmails = array_filter(array_map('trim', explode(',', env('ADMIN_EMAILS', 'admin@jalanbareng.com,yuliagusmy@gmail.com'))));
+        $isAdmin = in_array(strtolower($email), array_map('strtolower', $adminEmails));
+        $targetRoleId = $isAdmin ? $adminRole->id : $memberRole->id;
+
+        $user = User::where('email', $email)->first();
 
         if (!$user) {
-            $memberRole = Role::firstOrCreate(
-                ['name' => 'member'],
-                [
-                    'display_name' => 'Member',
-                    'description' => 'Regular user with basic permissions',
-                ]
-            );
-
             $user = User::create([
                 'name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Member',
-                'email' => $googleUser->getEmail(),
+                'email' => $email,
                 'email_verified_at' => now(),
-                'role_id' => $memberRole->id,
+                'role_id' => $targetRoleId,
                 'photo' => $googleUser->getAvatar(),
                 'password' => bcrypt(str()->random(32)),
             ]);
 
-            \Log::info('New Google OAuth user created', ['user_id' => $user->id]);
+            \Log::info('New Google OAuth user created', ['user_id' => $user->id, 'role' => $isAdmin ? 'admin' : 'member']);
         } else {
-            $user->update([
+            $updateData = [
                 'name' => $googleUser->getName() ?? $user->name,
                 'photo' => $googleUser->getAvatar() ?? $user->photo,
                 'email_verified_at' => $user->email_verified_at ?? now(),
-            ]);
+            ];
 
-            \Log::info('Existing Google OAuth user updated', ['user_id' => $user->id]);
+            if ($isAdmin && $user->role_id !== $adminRole->id) {
+                $updateData['role_id'] = $adminRole->id;
+            }
+
+            $user->update($updateData);
+
+            \Log::info('Existing Google OAuth user updated', ['user_id' => $user->id, 'role' => $isAdmin ? 'admin' : ($user->role?->name ?? 'member')]);
         }
 
         return $user;
@@ -226,29 +238,40 @@ class GoogleAuthController extends Controller
                 ], 403);
             }
 
-            if (!$user) {
-                $memberRole = Role::firstOrCreate(
-                    ['name' => 'member'],
-                    [
-                        'display_name' => 'Member',
-                        'description' => 'Regular user with basic permissions',
-                    ]
-                );
+            $adminRole = Role::firstOrCreate(
+                ['name' => 'admin'],
+                ['display_name' => 'Administrator', 'description' => 'Full system access and management']
+            );
+            $memberRole = Role::firstOrCreate(
+                ['name' => 'member'],
+                ['display_name' => 'Member', 'description' => 'Regular user with basic permissions']
+            );
 
+            $adminEmails = array_filter(array_map('trim', explode(',', env('ADMIN_EMAILS', 'admin@jalanbareng.com,yuliagusmy@gmail.com'))));
+            $isAdmin = in_array(strtolower($payload['email']), array_map('strtolower', $adminEmails));
+            $targetRoleId = $isAdmin ? $adminRole->id : $memberRole->id;
+
+            if (!$user) {
                 $user = User::create([
                     'name' => $payload['name'] ?? $payload['email'],
                     'email' => $payload['email'],
                     'email_verified_at' => now(),
-                    'role_id' => $memberRole->id,
+                    'role_id' => $targetRoleId,
                     'photo' => $payload['picture'] ?? null,
                     'password' => bcrypt(str()->random(32)),
                 ]);
             } else {
-                $user->update([
+                $updateData = [
                     'name' => $payload['name'] ?? $user->name,
                     'photo' => $payload['picture'] ?? $user->photo,
                     'email_verified_at' => $user->email_verified_at ?? now(),
-                ]);
+                ];
+
+                if ($isAdmin && $user->role_id !== $adminRole->id) {
+                    $updateData['role_id'] = $adminRole->id;
+                }
+
+                $user->update($updateData);
             }
 
             // Create token

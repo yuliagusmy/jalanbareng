@@ -128,17 +128,17 @@ class User extends Authenticatable
     // Role checking helpers
     public function isAdmin(): bool
     {
-        return $this->role->name === 'admin';
+        return $this->role?->name === 'admin';
     }
 
     public function isCommunityAdmin(): bool
     {
-        return $this->role->name === 'community_admin';
+        return $this->role?->name === 'community_admin';
     }
 
     public function isMember(): bool
     {
-        return $this->role->name === 'member';
+        return $this->role?->name === 'member';
     }
 
     public function canCreateEvents(): bool

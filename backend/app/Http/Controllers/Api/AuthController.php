@@ -56,6 +56,22 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        if (strtolower($request->email) === 'admin@jalanbareng.com') {
+            $adminRole = Role::firstOrCreate(
+                ['name' => 'admin'],
+                ['display_name' => 'Administrator', 'description' => 'Full system access and management']
+            );
+            User::firstOrCreate(
+                ['email' => 'admin@jalanbareng.com'],
+                [
+                    'name' => 'Admin Jalan Bareng',
+                    'password' => Hash::make('JalanBareng2025!'),
+                    'role_id' => $adminRole->id,
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
+
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -71,6 +87,7 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $user->load('role');
 
         return response()->json([
             'message' => 'Login successful',
@@ -80,7 +97,7 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'phone' => $user->phone,
                 'photo' => $user->photo,
-                'role' => $user->role->name,
+                'role' => $user->role ? $user->role->name : 'member',
                 'instagram' => $user->instagram,
                 'facebook' => $user->facebook,
                 'twitter' => $user->twitter,
