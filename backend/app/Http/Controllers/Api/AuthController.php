@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -19,8 +20,13 @@ class AuthController extends Controller
             'phone' => 'nullable|string|max:20',
         ]);
 
+        $memberRole = Role::firstOrCreate(
+            ['name' => 'member'],
+            ['display_name' => 'Member', 'description' => 'Regular user with basic permissions']
+        );
+
         $user = User::create([
-            'role_id' => 3, // Default to member role
+            'role_id' => $memberRole->id,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="register-page">
     <div class="register-split-layout">
       <!-- Left Side - Editorial Community Collage (Tablet & Desktop, White/Light Theme) -->
@@ -417,7 +417,8 @@ const handleGoogleRegister = async () => {
   errorMessage.value = ''
 
   try {
-    const response = await api.get('/auth/google/url')
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    const response = await api.get('/auth/google/url', { params: { origin } })
     if (response.data?.url) {
       window.location.href = response.data.url
     } else {

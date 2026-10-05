@@ -40,6 +40,8 @@ class GoogleAuthController extends Controller
      */
     public function handleGoogleCallback(Request $request)
     {
+        $frontendUrl = $this->resolveFrontendRedirectUrl($request);
+
         try {
             $caPath = base_path('../php82/extras/ssl/cacert.pem');
             $verify = file_exists($caPath) ? $caPath : false;
@@ -51,79 +53,119 @@ class GoogleAuthController extends Controller
             }
             $driver->setHttpClient($client);
 
-            // Get user from Google using the code
             $googleUser = $driver->user();
+            $user = $this->findOrCreateGoogleUser($googleUser);
 
-            \Log::info('Google user retrieved', [
-                'email' => $googleUser->getEmail(),
-                'name' => $googleUser->getName()
-            ]);
-
-            // Find or create user
-            $user = User::where('email', $googleUser->getEmail())->first();
-
-            if (!$user) {
-                // Create new user with member role
-                $memberRole = Role::where('name', 'member')->first();
-
-                $user = User::create([
-                    'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'email_verified_at' => now(),
-                    'role_id' => $memberRole ? $memberRole->id : 3, // Default to member
-                    'photo' => $googleUser->getAvatar(),
-                    'password' => bcrypt(str()->random(32)), // Random password since we use OAuth
-                ]);
-
-                \Log::info('New user created', ['user_id' => $user->id]);
-            } else {
-                // Update user info from Google
-                $user->update([
-                    'name' => $googleUser->getName(),
-                    'photo' => $googleUser->getAvatar(),
-                    'email_verified_at' => $user->email_verified_at ?? now(),
-                ]);
-
-                \Log::info('Existing user updated', ['user_id' => $user->id]);
+            if (method_exists($user, 'isBanned') && $user->isBanned()) {
+                $msg = 'Akun Anda sedang dinonaktifkan: ' . ($user->ban_reason ?? 'Hubungi admin.');
+                return redirect($frontendUrl . '/auth/google/callback?error=' . urlencode($msg));
             }
 
-            // Create token
             $token = $user->createToken('google-auth')->plainTextToken;
+            return redirect($frontendUrl . '/auth/google/callback?token=' . urlencode($token));
 
-            \Log::info('Token created', [
-                'user_id' => $user->id,
-                'token_length' => strlen($token)
-            ]);
-
-            // Redirect to frontend with token
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
-            $redirectUrl = $frontendUrl . '/auth/google/callback?token=' . urlencode($token);
-
-            return redirect($redirectUrl);
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('Google OAuth callback error', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
             ]);
 
-            // Redirect to frontend with error
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
-            $redirectUrl = $frontendUrl . '/auth/google/callback?error=' . urlencode($e->getMessage());
-
-            return redirect($redirectUrl);
+            return redirect($frontendUrl . '/auth/google/callback?error=' . urlencode($e->getMessage()));
         }
+    }
+
+    /**
+     * Find existing user or create a new user with guaranteed member role
+     */
+    private function findOrCreateGoogleUser($googleUser): User
+    {
+        $user = User::where('email', $googleUser->getEmail())->first();
+
+        if (!$user) {
+            $memberRole = Role::firstOrCreate(
+                ['name' => 'member'],
+                [
+                    'display_name' => 'Member',
+                    'description' => 'Regular user with basic permissions',
+                ]
+            );
+
+            $user = User::create([
+                'name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Member',
+                'email' => $googleUser->getEmail(),
+                'email_verified_at' => now(),
+                'role_id' => $memberRole->id,
+                'photo' => $googleUser->getAvatar(),
+                'password' => bcrypt(str()->random(32)),
+            ]);
+
+            \Log::info('New Google OAuth user created', ['user_id' => $user->id]);
+        } else {
+            $user->update([
+                'name' => $googleUser->getName() ?? $user->name,
+                'photo' => $googleUser->getAvatar() ?? $user->photo,
+                'email_verified_at' => $user->email_verified_at ?? now(),
+            ]);
+
+            \Log::info('Existing Google OAuth user updated', ['user_id' => $user->id]);
+        }
+
+        return $user;
+    }
+
+    /**
+     * Resolve frontend redirect URL based on state parameter or env
+     */
+    private function resolveFrontendRedirectUrl(Request $request): string
+    {
+        $frontendUrl = env('FRONTEND_URL', 'https://jalanbareng.web.id');
+
+        if ($request->filled('state')) {
+            try {
+                $stateData = json_decode(base64_decode($request->state), true);
+                if (!empty($stateData['frontend_url'])) {
+                    $allowedHosts = [
+                        'jalanbareng.web.id',
+                        'jalanbareng.id',
+                        'jalanbareng-gilt.vercel.app',
+                        'localhost',
+                        '127.0.0.1',
+                    ];
+                    $host = parse_url($stateData['frontend_url'], PHP_URL_HOST);
+                    foreach ($allowedHosts as $allowed) {
+                        if ($host === $allowed || ($host && str_ends_with($host, '.' . $allowed))) {
+                            $frontendUrl = rtrim($stateData['frontend_url'], '/');
+                            break;
+                        }
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Fallback to configured FRONTEND_URL
+            }
+        }
+
+        return $frontendUrl;
     }
 
     /**
      * Get Google Auth URL for frontend
      */
-    public function getAuthUrl()
+    public function getAuthUrl(Request $request)
     {
         $driver = Socialite::driver('google')->stateless();
         if ($redirect = $this->getCleanRedirectUrl()) {
             $driver->redirectUrl($redirect);
         }
+
+        $origin = $request->input('origin') ?: $request->headers->get('referer');
+        if ($origin) {
+            $parsed = parse_url($origin);
+            if (!empty($parsed['host'])) {
+                $scheme = $parsed['scheme'] ?? 'https';
+                $originUrl = $scheme . '://' . $parsed['host'] . (!empty($parsed['port']) ? ':' . $parsed['port'] : '');
+                $driver->with(['state' => base64_encode(json_encode(['frontend_url' => $originUrl]))]);
+            }
+        }
+
         $url = $driver->redirect()->getTargetUrl();
 
         return response()->json([
@@ -185,13 +227,19 @@ class GoogleAuthController extends Controller
             }
 
             if (!$user) {
-                $memberRole = Role::where('name', 'member')->first();
+                $memberRole = Role::firstOrCreate(
+                    ['name' => 'member'],
+                    [
+                        'display_name' => 'Member',
+                        'description' => 'Regular user with basic permissions',
+                    ]
+                );
 
                 $user = User::create([
                     'name' => $payload['name'] ?? $payload['email'],
                     'email' => $payload['email'],
                     'email_verified_at' => now(),
-                    'role_id' => $memberRole ? $memberRole->id : 3,
+                    'role_id' => $memberRole->id,
                     'photo' => $payload['picture'] ?? null,
                     'password' => bcrypt(str()->random(32)),
                 ]);

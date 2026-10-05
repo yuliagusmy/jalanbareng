@@ -330,7 +330,8 @@ const handleGoogleLogin = async () => {
 
   try {
     // Get Google Auth URL from backend
-    const response = await api.get('/auth/google/url')
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    const response = await api.get('/auth/google/url', { params: { origin } })
 
     // Redirect to Google OAuth
     window.location.href = response.data.url
