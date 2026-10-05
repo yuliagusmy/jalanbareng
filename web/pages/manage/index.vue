@@ -480,8 +480,9 @@ async function fetchStats() {
   loading.value = true
   error.value = ''
   try {
-    const data = await useApi('/admin/stats')
-    stats.value = data as Stats
+    const api = useApi()
+    const res = await api.get('/admin/stats')
+    stats.value = res.data as Stats
   } catch (err: any) {
     error.value = err?.message ?? 'Terjadi kesalahan saat memuat data.'
   } finally {
