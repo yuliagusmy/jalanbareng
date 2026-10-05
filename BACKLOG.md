@@ -134,6 +134,22 @@ Persiapan komprehensif untuk memigrasikan backend Jalan Bareng dari Railway (fre
   - Sentry / GlitchTip untuk error tracking real-time di backend dan frontend.
   - Uptime monitor gratis (Better Stack / Uptime Kuma) dengan alert notifikasi Telegram/WhatsApp jika server down.
 
+### 8. Sistem Kelola Mitra & Kolaborator (Admin CRUD & Dynamic Directory)
+- [ ] **Database & Backend API (`partners`)**:
+  - Migration tabel `partners` (`id`, `name`, `category` [brand, government, bumn, community], `role`, `collab_type`, `initial`, `logo_url`, `bg_color`, `text_color`, `website_url`, `sort_order`, `is_active`, timestamps).
+  - Model `Partner.php` dan seeder dari direktori 80+ mitra yang sudah ada agar data historis tetap aman.
+  - Controller `Api/PartnerController.php`:
+    - `GET /api/partners` (Publik: daftar mitra aktif untuk halaman `/mitra`).
+    - `POST /api/admin/partners` (Admin/Sanctum: tambah mitra baru beserta upload logo).
+    - `PUT /api/admin/partners/{id}` (Admin/Sanctum: edit informasi & peran mitra).
+    - `DELETE /api/admin/partners/{id}` (Admin/Sanctum: hapus mitra dengan soft/hard delete).
+- [ ] **Panel Admin (`/manage/partners`)**:
+  - Halaman `web/pages/manage/partners/index.vue` lengkap dengan tabel data Vuetify 3, filter kategori, search bar, preview logo, form modal dialog tambah/edit, dan dialog konfirmasi hapus.
+  - Integrasi shortcut navigasi di `AdminNavDropdown.vue` dan dashboard `manage/index.vue`.
+- [ ] **Integrasi Halaman Publik (`/mitra`)**:
+  - Mengambil data dinamis via `useApi('/partners')` dengan fallback ke data statis awal jika API sedang offline.
+
+
 ---
 
 ## ✅ Kerjakan PALING AKHIR — Sebelum Go-Live
