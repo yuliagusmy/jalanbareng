@@ -313,6 +313,15 @@ class EventController extends Controller
             if ($request->has('price')) {
                 $validatedData['price'] = $request->filled('price') ? (int) $request->price : 0;
             }
+            if ($request->has('meeting_point')) {
+                $validatedData['meeting_point'] = $request->input('meeting_point');
+            }
+            if ($request->has('price_description')) {
+                $validatedData['price_description'] = $request->input('price_description');
+            }
+            if ($request->has('time')) {
+                $validatedData['time'] = $request->input('time');
+            }
             
             // Map duration to estimated_duration
             if (isset($validatedData['duration'])) {
@@ -355,7 +364,7 @@ class EventController extends Controller
             }
             DB::commit();
 
-            $event->load(['user', 'photos']);
+            $event->load(['user', 'activation', 'photos']);
 
             return response()->json([
                 'message' => 'Event updated successfully',

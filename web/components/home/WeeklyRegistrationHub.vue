@@ -427,12 +427,18 @@ const getCountByFilter = (filterVal: string) => {
 
 const isCuratedEvent = (ev: any) => {
   if (!ev) return false
+  if (ev.is_curated_tikum === true || ev.is_curated_tikum === 1 || ev.is_curated_tikum === '1') return true
+  if (ev.is_curated_tikum === false || ev.is_curated_tikum === 0 || ev.is_curated_tikum === '0') return false
+  if (ev.meeting_point && String(ev.meeting_point).trim() !== '') return false
+
+  if (ev.type !== 'walking') return false
+
   const actSlug = ev.activation?.slug || ''
   const actName = (ev.activation?.name || ev.activation?.title || '').toLowerCase()
   const evName = (ev.name || '').toLowerCase()
   const desc = (ev.description || '').toLowerCase()
 
-  if (actSlug === 'jalan-bareng-makassar' || actName.includes('jalan bareng makassar') || ev.activation_id === 2) {
+  if ((actSlug === 'jalan-bareng-makassar' || actName.includes('jalan bareng makassar') || ev.activation_id === 1 || ev.activation_id === 2) && ev.type === 'walking') {
     return true
   }
   if (evName.includes('jalan bareng makassar') || (evName.includes('makassar') && ev.type === 'walking')) {
@@ -447,7 +453,7 @@ const isCuratedEvent = (ev: any) => {
 const getEventLocation = (event: any) => {
   if (!event) return 'Makassar & Sekitarnya'
   if (isCuratedEvent(event)) return '🔒 Tikum Rahasia'
-  if (event.meeting_point) return event.meeting_point
+  if (event.meeting_point && String(event.meeting_point).trim() !== '') return event.meeting_point
   if (event.description) {
     const match = event.description.match(/Titik Kumpul:?\s*<\/strong>\s*([^<]+)/i) ||
                   event.description.match(/Titik Kumpul:?\s*([^<\n]+)/i)
@@ -510,7 +516,9 @@ onMounted(async () => {
           scheduleShort: formatScheduleShort(ev.date),
           meetingPoint: isCurated ? '🔒 Rahasia • Dikirim via WhatsApp/DM bagi peserta yang lolos kurasi' : getEventLocation(ev),
           locationShort: isCurated ? '🔒 Tikum Rahasia' : getEventLocation(ev),
-          feeAndQuota: isCurated ? 'Gratis • Sistem Kurasi Peserta' : 'Gratis • Terbuka untuk umum',
+          feeAndQuota: ev.price && Number(ev.price) > 0 
+            ? `Rp ${Number(ev.price).toLocaleString('id-ID')}${ev.price_description ? ` (${ev.price_description})` : ''}` 
+            : (isCurated ? 'Gratis • Sistem Kurasi Peserta' : 'Gratis • Terbuka untuk umum'),
           deadline: 'Sebelum kegiatan dimulai',
           statusText: isCurated ? 'Kurasi Dibuka' : 'Open Registration',
           isCurated: isCurated,

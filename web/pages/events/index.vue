@@ -727,16 +727,18 @@ const handleDaftarClick = (event: any) => {
 
 const isCuratedEvent = (ev: any) => {
   if (!ev) return false
-  if (ev.is_curated_tikum === true || ev.is_curated_tikum === 1) return true
-  if (ev.meeting_point && ev.is_curated_tikum === false) return false
-  if (ev.meeting_point) return false
+  if (ev.is_curated_tikum === true || ev.is_curated_tikum === 1 || ev.is_curated_tikum === '1') return true
+  if (ev.is_curated_tikum === false || ev.is_curated_tikum === 0 || ev.is_curated_tikum === '0') return false
+  if (ev.meeting_point && String(ev.meeting_point).trim() !== '') return false
+
+  if (ev.type !== 'walking') return false
 
   const actSlug = ev.activation?.slug || ''
   const actName = (ev.activation?.name || ev.activation?.title || '').toLowerCase()
   const evName = (ev.name || '').toLowerCase()
   const desc = (ev.description || '').toLowerCase()
 
-  if ((actSlug === 'jalan-bareng-makassar' || actName.includes('jalan bareng makassar') || ev.activation_id === 2) && ev.type === 'walking') {
+  if ((actSlug === 'jalan-bareng-makassar' || actName.includes('jalan bareng makassar') || ev.activation_id === 1 || ev.activation_id === 2) && ev.type === 'walking') {
     return true
   }
   if (evName.includes('jalan bareng makassar') && ev.type === 'walking') {

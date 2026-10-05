@@ -729,16 +729,21 @@ const isUpcoming = computed(() => {
 const isCuratedTikum = computed(() => {
   if (!event.value) return false
 
-  // If explicitly flagged in event
-  if (event.value.is_curated_tikum === true || event.value.is_curated_tikum === 1) {
+  // If explicitly flagged as true
+  if (event.value.is_curated_tikum === true || event.value.is_curated_tikum === 1 || event.value.is_curated_tikum === '1') {
     return true
   }
-  // If meeting point is explicitly set and curated flag is false, NOT curated
-  if (event.value.meeting_point && event.value.is_curated_tikum === false) {
+  // If explicitly flagged as false
+  if (event.value.is_curated_tikum === false || event.value.is_curated_tikum === 0 || event.value.is_curated_tikum === '0') {
     return false
   }
-  // If meeting point is set, prioritize it over default chapter curated rule
-  if (event.value.meeting_point) {
+  // If meeting point is explicitly set, prioritize meeting point
+  if (event.value.meeting_point && String(event.value.meeting_point).trim() !== '') {
+    return false
+  }
+
+  // Only walking type events might default to secret curated tikum for Makassar
+  if (event.value.type !== 'walking') {
     return false
   }
 
@@ -748,7 +753,7 @@ const isCuratedTikum = computed(() => {
   const desc = (event.value.description || '').toLowerCase()
 
   // Jalan Bareng Makassar walking events are specifically curated with secret tikum
-  if ((activationSlug === 'jalan-bareng-makassar' || activationName.includes('jalan bareng makassar') || event.value.activation_id === 2) && event.value.type === 'walking') {
+  if ((activationSlug === 'jalan-bareng-makassar' || activationName.includes('jalan bareng makassar') || event.value.activation_id === 1 || event.value.activation_id === 2) && event.value.type === 'walking') {
     return true
   }
   if (eventName.includes('jalan bareng makassar') && event.value.type === 'walking') {

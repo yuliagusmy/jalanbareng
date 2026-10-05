@@ -209,3 +209,26 @@ Route::get('/system/seed-database', function (\Illuminate\Http\Request $request)
         ], 500);
     }
 });
+
+// Secure database migrate trigger (Protected by DB_SEED_KEY secret)
+Route::get('/system/migrate-database', function (\Illuminate\Http\Request $request) {
+    $secretKey = env('DB_SEED_KEY', 'jalanbareng2026');
+    if ($request->query('key') !== $secretKey) {
+        return response()->json(['error' => 'Unauthorized: Invalid seed key'], 403);
+    }
+    
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Database migration completed successfully!',
+            'output' => \Illuminate\Support\Facades\Artisan::output()
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+});
+
