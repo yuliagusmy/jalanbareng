@@ -83,6 +83,44 @@
 
 ---
 
+## 🚀 Rencana Masa Depan: Migrasi ke Hosting Berbayar & Infrastruktur Production
+
+Daftar persiapan lengkap untuk migrasi backend Laravel dari Railway (free tier / ephemeral) ke VPS / Hosting Berbayar (misal: Niagahoster VPS, Biznet Gio, IDCloudHost, DigitalOcean, Hetzner, AWS Lightsail):
+
+### 1. Database Production (MySQL / PostgreSQL Mandiri)
+- [ ] **Migrasi dari SQLite ke MySQL 8 / PostgreSQL 16**:
+  - SQLite di Railway container bersifat non-persistent / ephemeral saat redeploy.
+  - Setup instance database dedicated dengan connection pooling & persistent volume.
+  - Ekspor data SQLite eksisting (`sqlite3 database.sqlite .dump`) dan impor ke database production.
+  - Setup auto-backup harian (mysqldump / pg_dump ke S3 / Cloud Storage).
+
+### 2. File Storage Persisten (S3 / R2 / MinIO)
+- [ ] **Migrasi Upload Gambar ke Cloud Object Storage**:
+  - Saat ini upload foto tersimpan di disk lokal container (`storage/app/public/destinations`).
+  - Ganti filesystem driver ke `s3` (Cloudflare R2, AWS S3, atau Wasabi) menggunakan `league/flysystem-aws-s3-v3`.
+  - Keuntungan: Gambar destinasi, avatar profil, dan bukti cashout tidak hilang saat server di-restart atau di-scale.
+
+### 3. Server Web & Runtime (Nginx + PHP 8.2+ FPM + Supervisor)
+- [ ] **Konfigurasi Server VPS / PaaS Berbayar**:
+  - Web Server: Nginx dengan reverse proxy, HTTP/2, Gzip/Brotli compression, dan SSL otomatis (Let's Encrypt / Certbot).
+  - Process Manager: Supervisor untuk menjalankan antrean Laravel Queue worker (`php artisan queue:work`) dan Task Scheduler (`php artisan schedule:run`).
+  - PHP OPcache & JIT diaktifkan untuk performa maksimal.
+  - Setup CI/CD deployment via GitHub Actions (auto-deploy via SSH ke VPS atau via webhook).
+
+### 4. Domain & DNS Management
+- [ ] **DNS Record Subdomain API**:
+  - Konfigurasi DNS di IDwebhost / Cloudflare: buat A record atau CNAME `api.jalanbareng.web.id` mengarah ke IP VPS / hosting berbayar.
+  - Update `GOOGLE_REDIRECT_URI` ke `https://api.jalanbareng.web.id/api/auth/google/callback`.
+  - Update `NUXT_PUBLIC_API_BASE` di Vercel ke `https://api.jalanbareng.web.id`.
+
+### 5. Keamanan & Monitoring Server
+- [ ] **Server Hardening**:
+  - Firewall (UFW) hanya membuka port 80, 443, dan custom SSH port.
+  - Fail2ban untuk mencegah brute-force SSH.
+  - Integrasi error tracking & monitoring (Sentry / GlitchTip) dan uptime monitor (Uptime Kuma / Better Stack).
+
+---
+
 ## ✅ Kerjakan PALING AKHIR — Sebelum Go-Live
 
 ### 🔒 ~~Security Review: OWASP Top 10~~ — SELESAI & DIPERBAIKI (5 Oktober 2026)
