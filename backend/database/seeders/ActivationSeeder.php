@@ -15,6 +15,10 @@ class ActivationSeeder extends Seeder
      */
     public function run(): void
     {
+        ActivationTestimonial::query()->delete();
+        ActivationFaq::query()->delete();
+        ActivationMedia::query()->delete();
+        Activation::query()->delete();
 
         // 2. Jalan Bareng Makassar (City Chapter Utama)
         $makassar = Activation::create([

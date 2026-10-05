@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\StoryController;
 use App\Http\Controllers\Api\PointController;
 use App\Http\Controllers\Api\AdminStatsController;
+use App\Http\Controllers\Api\AdminReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
