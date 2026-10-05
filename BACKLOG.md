@@ -74,12 +74,12 @@
 ---
 
 ## Prioritas Rendah / Nice-to-Have
-
-### 🌐 Migrasi Google Cloud Console
-- Saat ini project `ruang-bahagia` masih milik developer lama
-- Perlu migrasi OAuth credentials ke akun Google Cloud milik admin Jalan Bareng
-- Lakukan **sebelum rilis production** agar Google Login tidak bergantung pihak ketiga
-- Langkah: buat project GCP baru → buat OAuth 2.0 client → update `.env` BE & FE
+ 
+### ✅ ~~Migrasi Google Cloud Console~~ — SELESAI (5 Oktober 2026)
+- Project resmi `jalan-bareng` telah dibuat di Google Cloud Console.
+- OAuth 2.0 Web Client ID & Client Secret resmi telah dibuat dan dikonfigurasi.
+- Origins & Redirect URIs mencakup `localhost`, `vercel.app`, `jalanbareng.id`, dan `jalanbareng.web.id`.
+- Kredensial telah diperbarui di backend `.env`.
 
 ---
 
