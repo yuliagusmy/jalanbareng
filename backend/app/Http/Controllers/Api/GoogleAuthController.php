@@ -12,13 +12,27 @@ use Laravel\Socialite\Facades\Socialite;
 class GoogleAuthController extends Controller
 {
     /**
+     * Get sanitized Google OAuth redirect URL
+     */
+    private function getCleanRedirectUrl(): ?string
+    {
+        $redirect = config('services.google.redirect') ?: env('GOOGLE_REDIRECT_URI');
+        if ($redirect) {
+            return trim(preg_replace('/[\r\n\t ]+/', '', $redirect));
+        }
+        return null;
+    }
+
+    /**
      * Redirect to Google OAuth
      */
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')
-            ->stateless()
-            ->redirect();
+        $driver = Socialite::driver('google')->stateless();
+        if ($redirect = $this->getCleanRedirectUrl()) {
+            $driver->redirectUrl($redirect);
+        }
+        return $driver->redirect();
     }
 
     /**
@@ -32,6 +46,9 @@ class GoogleAuthController extends Controller
             $client = new \GuzzleHttp\Client(['verify' => $verify]);
 
             $driver = Socialite::driver('google')->stateless();
+            if ($redirect = $this->getCleanRedirectUrl()) {
+                $driver->redirectUrl($redirect);
+            }
             $driver->setHttpClient($client);
 
             // Get user from Google using the code
@@ -103,10 +120,11 @@ class GoogleAuthController extends Controller
      */
     public function getAuthUrl()
     {
-        $url = Socialite::driver('google')
-            ->stateless()
-            ->redirect()
-            ->getTargetUrl();
+        $driver = Socialite::driver('google')->stateless();
+        if ($redirect = $this->getCleanRedirectUrl()) {
+            $driver->redirectUrl($redirect);
+        }
+        $url = $driver->redirect()->getTargetUrl();
 
         return response()->json([
             'url' => $url,
