@@ -1,9 +1,9 @@
 <template>
-  <v-row class="admin-stat-cards-row mb-4 mb-md-6" dense>
+  <v-row class="admin-stat-cards-row mb-3 mb-sm-5" dense>
     <!-- Total Member -->
-    <v-col cols="6" sm="6" md="3" class="pa-1-5 pa-sm-2">
+    <v-col cols="6" sm="6" md="3" class="pa-1 pa-sm-2">
       <div class="stat-card">
-        <div class="d-flex align-center justify-space-between mb-2 mb-sm-3">
+        <div class="d-flex align-center justify-space-between mb-2 mb-sm-2.5">
           <div class="stat-icon-box stat-icon-blue">
             <v-icon :size="iconSize" color="#1D4ED8">mdi-account-group</v-icon>
           </div>
@@ -12,16 +12,16 @@
         <div class="stat-number">{{ summary.total_users }}</div>
         <div class="stat-label">Total Anggota</div>
         <div class="stat-trend trend-up mt-1 text-truncate">
-          <v-icon size="12">mdi-trending-up</v-icon>
+          <v-icon size="11">mdi-trending-up</v-icon>
           <span>+{{ summary.new_users_week }} mgg ini</span>
         </div>
       </div>
     </v-col>
 
     <!-- Total Destinasi -->
-    <v-col cols="6" sm="6" md="3" class="pa-1-5 pa-sm-2">
+    <v-col cols="6" sm="6" md="3" class="pa-1 pa-sm-2">
       <div class="stat-card">
-        <div class="d-flex align-center justify-space-between mb-2 mb-sm-3">
+        <div class="d-flex align-center justify-space-between mb-2 mb-sm-2.5">
           <div class="stat-icon-box stat-icon-green">
             <v-icon :size="iconSize" color="#15803D">mdi-map-marker-multiple</v-icon>
           </div>
@@ -30,16 +30,16 @@
         <div class="stat-number">{{ summary.total_destinations }}</div>
         <div class="stat-label">Total Destinasi</div>
         <div class="stat-trend trend-up mt-1 text-truncate">
-          <v-icon size="12">mdi-trending-up</v-icon>
+          <v-icon size="11">mdi-trending-up</v-icon>
           <span>+{{ summary.new_destinations }} bln ini</span>
         </div>
       </div>
     </v-col>
 
     <!-- Aktivasi Aktif -->
-    <v-col cols="6" sm="6" md="3" class="pa-1-5 pa-sm-2">
+    <v-col cols="6" sm="6" md="3" class="pa-1 pa-sm-2">
       <div class="stat-card">
-        <div class="d-flex align-center justify-space-between mb-2 mb-sm-3">
+        <div class="d-flex align-center justify-space-between mb-2 mb-sm-2.5">
           <div class="stat-icon-box stat-icon-red">
             <v-icon :size="iconSize" color="#DC2626">mdi-compass-outline</v-icon>
           </div>
@@ -54,9 +54,9 @@
     </v-col>
 
     <!-- Total Cerita Komunitas -->
-    <v-col cols="6" sm="6" md="3" class="pa-1-5 pa-sm-2">
+    <v-col cols="6" sm="6" md="3" class="pa-1 pa-sm-2">
       <div class="stat-card" :class="{ 'stat-card-alert': summary.pending_stories > 0 }">
-        <div class="d-flex align-center justify-space-between mb-2 mb-sm-3">
+        <div class="d-flex align-center justify-space-between mb-2 mb-sm-2.5">
           <div class="stat-icon-box" :class="summary.pending_stories > 0 ? 'stat-icon-alert' : 'stat-icon-orange'">
             <v-icon :size="iconSize" :color="summary.pending_stories > 0 ? '#DC2626' : '#C2410C'">mdi-feather</v-icon>
           </div>
@@ -67,9 +67,9 @@
             variant="flat"
             rounded="pill"
             class="text-white font-weight-black px-1.5"
-            style="font-size: 0.65rem;"
+            style="font-size: 0.62rem; height: 18px;"
           >
-            {{ summary.pending_stories }} pending
+            {{ summary.pending_stories }} review
           </v-chip>
           <span v-else class="stat-tag-badge stat-tag-orange">Cerita</span>
         </div>
@@ -108,16 +108,16 @@ defineProps<{
 }>()
 
 const display = useDisplay()
-const iconSize = computed(() => (display.xs.value ? 20 : 24))
+const iconSize = computed(() => (display.xs.value ? 18 : 22))
 </script>
 
 <style scoped>
 .stat-card {
   background: #FFFFFF;
-  border-radius: 20px;
+  border-radius: 18px;
   border: 1px solid #F1F5F9;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
-  padding: 14px 14px;
+  padding: 12px 12px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -127,7 +127,8 @@ const iconSize = computed(() => (display.xs.value ? 20 : 24))
 
 @media (min-width: 600px) {
   .stat-card {
-    padding: 18px 20px;
+    padding: 16px 18px;
+    border-radius: 20px;
   }
 }
 
@@ -142,9 +143,9 @@ const iconSize = computed(() => (display.xs.value ? 20 : 24))
 }
 
 .stat-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -153,9 +154,9 @@ const iconSize = computed(() => (display.xs.value ? 20 : 24))
 
 @media (min-width: 600px) {
   .stat-icon-box {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
   }
 }
 
@@ -166,12 +167,13 @@ const iconSize = computed(() => (display.xs.value ? 20 : 24))
 .stat-icon-alert { background-color: #FEE2E2; }
 
 .stat-tag-badge {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 2px 7px;
   border-radius: 9999px;
+  flex-shrink: 0;
 }
 
 .stat-tag-blue { background: #EFF6FF; color: #1D4ED8; }
@@ -180,25 +182,25 @@ const iconSize = computed(() => (display.xs.value ? 20 : 24))
 .stat-tag-orange { background: #FFF7ED; color: #C2410C; }
 
 .stat-number {
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   font-weight: 900;
   color: #0F172A;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -0.03em;
   margin-top: 2px;
 }
 
 @media (min-width: 600px) {
   .stat-number {
-    font-size: 2rem;
+    font-size: 1.9rem;
   }
 }
 
 .stat-label {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: #64748B;
   font-weight: 600;
-  margin-top: 3px;
+  margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -206,16 +208,19 @@ const iconSize = computed(() => (display.xs.value ? 20 : 24))
 
 @media (min-width: 600px) {
   .stat-label {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
   }
 }
 
 .stat-trend {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .trend-up {
@@ -223,9 +228,12 @@ const iconSize = computed(() => (display.xs.value ? 20 : 24))
 }
 
 .stat-meta {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: #94A3B8;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .text-primary-red {

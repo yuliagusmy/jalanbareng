@@ -1,13 +1,13 @@
 <template>
   <div class="admin-dashboard-page">
-    <v-container class="py-4 py-sm-6 py-md-8 px-3 px-sm-6">
+    <v-container class="dashboard-container py-4 py-sm-6 py-md-8 px-3 px-sm-6">
 
       <!-- ── Page Header ── -->
-      <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-5 mb-sm-6">
+      <div class="d-flex align-center justify-space-between flex-wrap ga-2 ga-sm-3 mb-4 mb-sm-6">
         <div>
           <div class="d-flex align-center ga-2 mb-1">
             <div class="header-icon-box">
-              <v-icon color="#DC2626" size="22">mdi-view-dashboard-outline</v-icon>
+              <v-icon color="#DC2626" size="20">mdi-view-dashboard-outline</v-icon>
             </div>
             <h1 class="page-main-title text-grey-darken-4 mb-0">Dashboard Manajemen</h1>
           </div>
@@ -45,35 +45,35 @@
       <!-- ── Loading Skeleton ── -->
       <div v-if="loading">
         <v-row dense class="mb-4">
-          <v-col v-for="i in 4" :key="i" cols="6" sm="6" md="3">
-            <v-skeleton-loader type="card" height="110" rounded="xl" />
+          <v-col v-for="i in 4" :key="i" cols="6" sm="6" md="3" class="pa-1 pa-sm-2">
+            <v-skeleton-loader type="card" height="100" rounded="xl" />
           </v-col>
         </v-row>
-        <v-skeleton-loader type="card" height="180" rounded="xl" class="mb-4" />
+        <v-skeleton-loader type="card" height="160" rounded="xl" class="mb-4" />
         <v-row dense>
-          <v-col cols="12" md="8">
-            <v-skeleton-loader type="card" height="280" rounded="xl" />
+          <v-col cols="12" md="8" class="pa-1 pa-sm-2">
+            <v-skeleton-loader type="card" height="260" rounded="xl" />
           </v-col>
-          <v-col cols="12" md="4">
-            <v-skeleton-loader type="card" height="280" rounded="xl" />
+          <v-col cols="12" md="4" class="pa-1 pa-sm-2">
+            <v-skeleton-loader type="card" height="260" rounded="xl" />
           </v-col>
         </v-row>
       </div>
 
       <!-- ── Dashboard Content ── -->
       <template v-else-if="stats">
-        <!-- 1. Core Stat KPI Cards (Mobile 390px Optimized) -->
+        <!-- 1. Core Stat KPI Cards (Optimized for Mobile 390px & Desktop) -->
         <AdminStatCards :summary="stats.summary" />
 
         <!-- 2. Operational Quick Actions Hub (Grid for fast mobile admin) -->
         <AdminQuickActionsGrid :pending-stories-count="stats.summary.pending_stories" />
 
         <!-- 3. Community Growth Chart & Category Distribution -->
-        <v-row class="mb-5 mb-sm-6" dense>
+        <v-row class="mb-4 mb-sm-6" dense>
           <!-- User & Destination Growth Chart -->
-          <v-col cols="12" md="8" class="pa-1-5 pa-sm-2">
-            <div class="chart-card pa-4 pa-sm-5 pa-md-6 h-100">
-              <div class="d-flex align-center justify-space-between mb-4">
+          <v-col cols="12" md="7" lg="8" class="pa-1 pa-sm-2">
+            <div class="chart-card pa-4 pa-sm-5">
+              <div class="d-flex align-center justify-space-between mb-3 mb-sm-4">
                 <div>
                   <h3 class="chart-title">Pertumbuhan Komunitas</h3>
                   <p class="chart-subtitle">Member &amp; destinasi baru (7 hari terakhir)</p>
@@ -116,35 +116,39 @@
           </v-col>
 
           <!-- Destinations by Category -->
-          <v-col cols="12" md="4" class="pa-1-5 pa-sm-2">
-            <div class="chart-card pa-4 pa-sm-5 pa-md-6 h-100">
+          <v-col cols="12" md="5" lg="4" class="pa-1 pa-sm-2">
+            <div class="chart-card pa-4 pa-sm-5">
               <div class="d-flex align-center justify-space-between mb-1">
                 <h3 class="chart-title">Sebaran Destinasi</h3>
                 <span class="text-caption font-weight-bold text-grey-darken-2">
                   {{ stats.summary.total_destinations }} Total
                 </span>
               </div>
-              <p class="chart-subtitle mb-4">Distribusi titik kumpul &amp; spot jalan</p>
+              <p class="chart-subtitle mb-3 mb-sm-4">Distribusi titik kumpul &amp; spot jalan</p>
 
-              <div
-                v-for="(cat, i) in stats.destinations_by_category.slice(0, 5)"
-                :key="i"
-                class="category-bar-row mb-3"
-              >
-                <div class="d-flex justify-space-between align-center mb-1">
-                  <span class="text-caption font-weight-medium text-grey-darken-3 text-truncate max-w-75">
-                    {{ cat.category }}
-                  </span>
-                  <span class="text-caption font-weight-bold text-grey-darken-4">{{ cat.count }}</span>
-                </div>
-                <div class="progress-track">
-                  <div
-                    class="progress-fill"
-                    :style="{
-                      width: ((cat.count / (stats.summary.total_destinations || 1)) * 100) + '%',
-                      backgroundColor: categoryColors[i % categoryColors.length]
-                    }"
-                  />
+              <div class="category-bars-list">
+                <div
+                  v-for="(cat, i) in stats.destinations_by_category.slice(0, 5)"
+                  :key="i"
+                  class="category-bar-row mb-2-5"
+                >
+                  <div class="d-flex justify-space-between align-center mb-1">
+                    <span class="text-caption font-weight-medium text-grey-darken-3 text-truncate max-w-70">
+                      {{ cat.category }}
+                    </span>
+                    <span class="text-caption font-weight-bold text-grey-darken-4 ml-2">
+                      {{ cat.count }}
+                    </span>
+                  </div>
+                  <div class="progress-track">
+                    <div
+                      class="progress-fill"
+                      :style="{
+                        width: Math.min(100, Math.max(8, ((cat.count / (stats.summary.total_destinations || 1)) * 100))) + '%',
+                        backgroundColor: categoryColors[i % categoryColors.length]
+                      }"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -152,10 +156,10 @@
         </v-row>
 
         <!-- 4. Operational Feeds: Pending Stories, Recent Members, Top Destinations -->
-        <v-row dense>
+        <v-row class="mb-2" dense>
           <!-- Pending Stories Queue -->
-          <v-col cols="12" md="4" class="pa-1-5 pa-sm-2">
-            <div class="chart-card pa-4 pa-sm-5 h-100">
+          <v-col cols="12" md="4" class="pa-1 pa-sm-2">
+            <div class="chart-card pa-4 pa-sm-5">
               <div class="d-flex align-center justify-space-between mb-3">
                 <div>
                   <h3 class="chart-title">Antrian Moderasi</h3>
@@ -177,13 +181,13 @@
                   v-for="(story, i) in stats.pending_stories"
                   :key="story.id"
                   class="feed-item-row"
-                  :class="{ 'mb-2-5': i < stats.pending_stories.length - 1 }"
+                  :class="{ 'mb-2': i < stats.pending_stories.length - 1 }"
                 >
-                  <div class="d-flex align-center ga-2-5">
+                  <div class="d-flex align-center ga-2">
                     <div class="story-badge">
                       <v-icon size="14" color="#B45309">mdi-feather</v-icon>
                     </div>
-                    <div class="flex-grow-1 min-w-0">
+                    <div class="flex-grow-1 min-w-0 pr-1">
                       <div class="feed-item-title text-truncate">{{ story.title }}</div>
                       <div class="feed-item-meta text-truncate">{{ story.author }} · {{ story.submitted }}</div>
                     </div>
@@ -193,13 +197,14 @@
                       size="x-small"
                       to="/manage/stories"
                       aria-label="Review Cerita"
+                      class="flex-shrink-0"
                     >
                       <v-icon size="16" color="#DC2626">mdi-arrow-right</v-icon>
                     </v-btn>
                   </div>
                 </div>
 
-                <div class="mt-4">
+                <div class="mt-3">
                   <v-btn
                     to="/manage/stories"
                     color="#DC2626"
@@ -214,16 +219,16 @@
                   </v-btn>
                 </div>
               </div>
-              <div v-else class="text-center py-6">
-                <v-icon size="36" color="#16A34A">mdi-check-circle-outline</v-icon>
-                <p class="text-caption text-grey-darken-1 mt-2 mb-0 font-weight-medium">Semua cerita sudah dimoderasi</p>
+              <div v-else class="text-center py-5">
+                <v-icon size="32" color="#16A34A">mdi-check-circle-outline</v-icon>
+                <p class="text-caption text-grey-darken-1 mt-1 mb-0 font-weight-medium">Semua cerita sudah dimoderasi</p>
               </div>
             </div>
           </v-col>
 
           <!-- Recent Members -->
-          <v-col cols="12" md="4" class="pa-1-5 pa-sm-2">
-            <div class="chart-card pa-4 pa-sm-5 h-100">
+          <v-col cols="12" md="4" class="pa-1 pa-sm-2">
+            <div class="chart-card pa-4 pa-sm-5">
               <div class="d-flex align-center justify-space-between mb-3">
                 <div>
                   <h3 class="chart-title">Anggota Terbaru</h3>
@@ -244,15 +249,15 @@
                 v-for="(user, i) in stats.recent_users.slice(0, 4)"
                 :key="user.id"
                 class="feed-item-row"
-                :class="{ 'mb-2-5': i < Math.min(stats.recent_users.length, 4) - 1 }"
+                :class="{ 'mb-2': i < Math.min(stats.recent_users.length, 4) - 1 }"
               >
-                <div class="d-flex align-center ga-2-5">
-                  <v-avatar size="32" :color="roleColor(user.role)">
-                    <span class="text-caption font-weight-black text-white">
+                <div class="d-flex align-center ga-2">
+                  <v-avatar size="30" :color="roleColor(user.role)" class="flex-shrink-0">
+                    <span class="text-caption font-weight-black text-white" style="font-size: 0.72rem !important;">
                       {{ user.name.charAt(0).toUpperCase() }}
                     </span>
                   </v-avatar>
-                  <div class="flex-grow-1 min-w-0">
+                  <div class="flex-grow-1 min-w-0 pr-1">
                     <div class="feed-item-title text-truncate">{{ user.name }}</div>
                     <div class="feed-item-meta text-truncate">{{ user.email }}</div>
                   </div>
@@ -261,8 +266,8 @@
                     variant="flat"
                     size="x-small"
                     rounded="pill"
-                    class="text-white font-weight-bold"
-                    style="font-size: 0.62rem;"
+                    class="text-white font-weight-bold flex-shrink-0"
+                    style="font-size: 0.62rem; height: 18px;"
                   >
                     {{ roleLabel(user.role) }}
                   </v-chip>
@@ -272,8 +277,8 @@
           </v-col>
 
           <!-- Top Destinations -->
-          <v-col cols="12" md="4" class="pa-1-5 pa-sm-2">
-            <div class="chart-card pa-4 pa-sm-5 h-100">
+          <v-col cols="12" md="4" class="pa-1 pa-sm-2">
+            <div class="chart-card pa-4 pa-sm-5">
               <div class="d-flex align-center justify-space-between mb-3">
                 <div>
                   <h3 class="chart-title">Destinasi Terpopuler</h3>
@@ -294,11 +299,11 @@
                 v-for="(dest, i) in stats.top_destinations.slice(0, 4)"
                 :key="dest.id"
                 class="feed-item-row"
-                :class="{ 'mb-2-5': i < Math.min(stats.top_destinations.length, 4) - 1 }"
+                :class="{ 'mb-2': i < Math.min(stats.top_destinations.length, 4) - 1 }"
               >
-                <div class="d-flex align-center ga-2-5">
+                <div class="d-flex align-center ga-2">
                   <div class="rank-badge" :class="`rank-${i + 1}`">{{ i + 1 }}</div>
-                  <div class="flex-grow-1 min-w-0">
+                  <div class="flex-grow-1 min-w-0 pr-1">
                     <div class="feed-item-title text-truncate">{{ dest.name }}</div>
                     <div class="feed-item-meta text-truncate">{{ dest.category }} · {{ dest.city }}</div>
                   </div>
@@ -419,12 +424,25 @@ onMounted(fetchStats)
 .admin-dashboard-page {
   background: #FAFAF9;
   min-height: 100vh;
+  /* Crucial: extra bottom padding so the mobile floating BottomNav never covers cards */
+  padding-bottom: 96px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 960px) {
+  .admin-dashboard-page {
+    padding-bottom: 48px;
+  }
+}
+
+.dashboard-container {
+  max-width: 1200px;
 }
 
 .header-icon-box {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
   background: #FEF2F2;
   display: flex;
   align-items: center;
@@ -433,7 +451,7 @@ onMounted(fetchStats)
 }
 
 .page-main-title {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 900;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -441,7 +459,7 @@ onMounted(fetchStats)
 
 @media (min-width: 600px) {
   .page-main-title {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
   }
 }
 
@@ -467,14 +485,23 @@ onMounted(fetchStats)
 /* ── Chart Cards ── */
 .chart-card {
   background: #FFFFFF;
-  border-radius: 20px;
+  border-radius: 18px;
   border: 1px solid #F1F5F9;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+@media (min-width: 600px) {
+  .chart-card {
+    border-radius: 20px;
+  }
 }
 
 .chart-title {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 800;
   color: #0F172A;
   letter-spacing: -0.01em;
@@ -482,7 +509,7 @@ onMounted(fetchStats)
 }
 
 .chart-subtitle {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   color: #64748B;
   margin-bottom: 0;
   line-height: 1.35;
@@ -493,14 +520,14 @@ onMounted(fetchStats)
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  height: 140px;
-  gap: 4px;
+  height: 135px;
+  gap: 3px;
   padding: 0 2px;
 }
 
 @media (min-width: 600px) {
   .bar-chart-wrapper {
-    height: 160px;
+    height: 155px;
     gap: 8px;
   }
 }
@@ -525,17 +552,24 @@ onMounted(fetchStats)
 
 .bar {
   flex: 1;
-  border-radius: 4px 4px 0 0;
+  border-radius: 3px 3px 0 0;
   transition: height 0.4s ease;
   min-height: 4px;
-  max-width: 14px;
+  max-width: 12px;
+}
+
+@media (min-width: 600px) {
+  .bar {
+    max-width: 16px;
+    border-radius: 4px 4px 0 0;
+  }
 }
 
 .bar-user { background: linear-gradient(180deg, #DC2626, #EF4444); }
 .bar-dest { background: linear-gradient(180deg, #1D4ED8, #3B82F6); }
 
 .bar-label {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   color: #94A3B8;
   font-weight: 600;
   margin-top: 4px;
@@ -556,11 +590,25 @@ onMounted(fetchStats)
 .legend-dot-dest { background: #1D4ED8; }
 
 /* ── Progress Bars (Category) ── */
+.category-bars-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-bar-row {
+  width: 100%;
+}
+
+.mb-2-5 {
+  margin-bottom: 10px;
+}
+
 .progress-track {
   height: 6px;
   background: #F1F5F9;
   border-radius: 9999px;
   overflow: hidden;
+  width: 100%;
 }
 
 .progress-fill {
@@ -575,25 +623,35 @@ onMounted(fetchStats)
   background: #FAFAF9;
   border: 1px solid #F1F5F9;
   border-radius: 12px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .feed-item-title {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
   color: #1E293B;
   line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .feed-item-meta {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   color: #64748B;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .story-badge {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
   background: #FEF3C7;
   display: flex;
   align-items: center;
@@ -602,13 +660,13 @@ onMounted(fetchStats)
 }
 
 .rank-badge {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 900;
   flex-shrink: 0;
 }
@@ -618,6 +676,7 @@ onMounted(fetchStats)
 .rank-3 { background: #FEF9C3; color: #854D0E; }
 .rank-4 { background: #F3F4F6; color: #6B7280; }
 
-.text-primary-red { color: #DC2626; }
-.max-w-75 { max-width: 75%; }
+.text-primary-red { color: #DC2626 !important; }
+.max-w-70 { max-width: 70%; }
+.min-w-0 { min-width: 0 !important; }
 </style>
