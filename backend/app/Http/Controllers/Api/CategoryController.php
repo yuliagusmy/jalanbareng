@@ -12,6 +12,14 @@ class CategoryController extends Controller
 {
     public function index()
     {
+        if (Category::count() === 0) {
+            try {
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            } catch (\Throwable $e) {
+                // ignore
+            }
+        }
+
         $categories = Category::withCount('destinations')->get();
 
         return response()->json([

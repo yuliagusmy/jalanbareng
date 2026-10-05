@@ -18,6 +18,14 @@ class ActivationController extends Controller
      */
     public function index(Request $request)
     {
+        if (Activation::count() === 0) {
+            try {
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            } catch (\Throwable $e) {
+                // ignore
+            }
+        }
+
         $query = Activation::with(['media', 'faqs', 'testimonials'])
             ->withCount(['events', 'destinations']);
 

@@ -185,10 +185,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-// Secure database seed trigger (ONLY allowed in local/development environment)
+// Secure database seed trigger (Protected by DB_SEED_KEY secret)
 Route::get('/system/seed-database', function (\Illuminate\Http\Request $request) {
-    if (!app()->isLocal() || $request->query('key') !== env('DB_SEED_KEY', 'jalanbareng2026')) {
-        return response()->json(['error' => 'Endpoint tidak tersedia di environment ini'], 403);
+    $secretKey = env('DB_SEED_KEY', 'jalanbareng2026');
+    if ($request->query('key') !== $secretKey) {
+        return response()->json(['error' => 'Unauthorized: Invalid seed key'], 403);
     }
     
     try {
