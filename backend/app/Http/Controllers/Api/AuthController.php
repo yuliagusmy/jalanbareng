@@ -61,7 +61,7 @@ class AuthController extends Controller
                 ['name' => 'admin'],
                 ['display_name' => 'Administrator', 'description' => 'Full system access and management']
             );
-            User::firstOrCreate(
+            User::updateOrCreate(
                 ['email' => 'admin@jalanbareng.com'],
                 [
                     'name' => 'Admin Jalan Bareng',
