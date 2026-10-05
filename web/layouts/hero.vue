@@ -27,18 +27,8 @@
 
           <!-- User Menu / Login Button -->
           <template v-if="authStore.isLoggedIn">
-            <!-- Quick Admin Panel Button -->
-            <v-btn
-              v-if="authStore.isAdmin || authStore.isCommunityAdmin"
-              to="/manage/activations"
-              icon
-              variant="flat"
-              class="mr-1 admin-badge-btn"
-              :title="authStore.isAdmin ? 'Panel Admin' : 'Panel Manajemen'"
-              :aria-label="authStore.isAdmin ? 'Panel Admin' : 'Panel Manajemen'"
-            >
-              <v-icon color="#DC2626" size="22">mdi-shield-crown</v-icon>
-            </v-btn>
+            <!-- Single Admin Dropdown Button (Beside notification bell) -->
+            <AdminNavDropdown class="mr-1" />
 
             <NotificationBell class="mr-1" />
             <v-menu offset-y>
