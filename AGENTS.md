@@ -1,7 +1,7 @@
 # Jalan Bareng — Agent Rules & Constraints
 
 > Dokumen ini adalah **kontrak kerja agent**. Baca dan ikuti sebelum mengubah apapun.
-> Diperbarui: September 2026
+> Diperbarui: Oktober 2026
 
 ---
 
@@ -139,3 +139,49 @@ Setiap fitur yang dikerjakan agent harus memenuhi:
 - ❌ Jangan tambah Tailwind CSS
 - ❌ Jangan buat endpoint API baru yang tidak ada di `ARCHITECTURE.md`
 - ❌ Jangan override design system tanpa mengacu ke `DESIGN.md`
+
+---
+
+## 10. Protokol Keamanan Database (WAJIB DIBACA SEBELUM MENYENTUH SCHEMA)
+
+> Aturan ini melindungi data production di Railway/MySQL dari kehilangan akibat migration yang salah.
+
+### Prinsip Dasar
+
+| Jenis Perubahan | Aman? | Tindakan |
+|---|---|---|
+| Ubah tampilan / komponen Vue | ✅ Aman | Langsung push |
+| Tambah kolom baru | ✅ Aman | Buat migration baru |
+| Tambah tabel baru | ✅ Aman | Buat migration baru |
+| Ubah nama kolom / tabel | ⚠️ Hati-hati | Backup dulu, baru migration baru |
+| Edit migration yang sudah pernah dijalankan | 🚨 **DILARANG** | Buat migration baru sebagai gantinya |
+| `DROP TABLE` / `TRUNCATE` | 🚨 **DILARANG** | Harus konfirmasi eksplisit dari user |
+
+### Prosedur Wajib Sebelum Mengubah Schema Database
+
+Setiap kali ada perubahan yang menyentuh **struktur database** (tambah kolom, tambah tabel, ubah tipe data, dll), agent **wajib** mengikuti langkah berikut:
+
+1. **Informasikan ke user** — jelaskan perubahan schema apa yang akan dilakukan dan dampaknya
+2. **Minta konfirmasi eksplisit** — jangan lanjutkan tanpa persetujuan user
+3. **Test di lokal dulu** — jalankan migration di SQLite lokal (`php artisan migrate`) dan pastikan tidak ada error
+4. **Backup production** — ingatkan user untuk export data dari Railway sebelum migrate ke production:
+   ```bash
+   # Di Railway console atau via Adminer:
+   # Export seluruh database ke file .sql sebelum migrate
+   ```
+5. **Baru jalankan di production** — setelah backup dikonfirmasi, baru jalankan `php artisan migrate` di production
+
+### Aturan Migration
+
+- ✅ **Selalu buat file migration baru** — jangan edit file migration yang sudah pernah di-commit
+- ✅ Nama migration harus deskriptif: `add_photo_url_to_events_table`, bukan `fix_events`
+- ✅ Setiap migration harus punya method `down()` yang bisa rollback dengan aman
+- ❌ Jangan jalankan `php artisan migrate:fresh` atau `php artisan migrate:reset` di production — **data akan hilang semua**
+- ❌ Jangan jalankan `php artisan db:seed` di production tanpa konfirmasi user
+
+### Untuk Perubahan UI/Tampilan Saja
+
+Kalau hanya mengubah komponen Vue, halaman, atau styling:
+- Tidak perlu backup database
+- Tidak perlu konfirmasi tambahan
+- Langsung push ke GitHub — Vercel akan auto-deploy
