@@ -113,12 +113,84 @@
         </div>
 
         <!-- Loading State -->
-        <div v-if="loading" class="pa-12 text-center">
+        <div v-if="loading" class="pa-8 text-center">
           <v-progress-circular indeterminate color="primary" size="48"></v-progress-circular>
           <div class="text-caption text-grey mt-3">Memuat data tulisan...</div>
         </div>
 
-        <!-- Stories Table -->
+        <!-- Mobile Card View (xs / 390px) -->
+        <div v-else-if="stories.length > 0 && $vuetify.display.xs" class="pa-3">
+          <v-card
+            v-for="story in stories"
+            :key="story.id"
+            elevation="0"
+            rounded="xl"
+            class="pa-4 mb-3 mobile-story-card"
+          >
+            <div class="d-flex align-start ga-3">
+              <!-- Cover thumbnail -->
+              <v-avatar rounded="lg" size="52" class="flex-shrink-0 border" color="grey-lighten-4">
+                <v-img v-if="story.cover_image_url" :src="story.cover_image_url" cover></v-img>
+                <v-icon v-else color="grey">mdi-file-document-outline</v-icon>
+              </v-avatar>
+              <!-- Info -->
+              <div class="flex-grow-1 min-w-0">
+                <div class="font-weight-bold text-grey-darken-4 text-truncate mb-1">{{ story.title }}</div>
+                <div class="text-caption text-grey-darken-1 mb-1">
+                  Oleh <span class="font-weight-medium">{{ story.author_name }}</span>
+                </div>
+                <div class="d-flex align-center ga-2 flex-wrap">
+                  <v-chip
+                    size="x-small"
+                    :color="getStatusColor(story.status)"
+                    variant="tonal"
+                    class="font-weight-bold"
+                  >
+                    <v-icon start size="x-small">
+                      {{ story.status === 'approved' ? 'mdi-check-circle' : (story.status === 'pending' ? 'mdi-clock-outline' : 'mdi-close-circle') }}
+                    </v-icon>
+                    {{ formatStatusLabel(story.status) }}
+                  </v-chip>
+                  <span class="text-caption text-grey">{{ formatDate(story.created_at) }}</span>
+                </div>
+              </div>
+            </div>
+            <!-- Actions -->
+            <div class="d-flex align-center justify-end ga-1 mt-3 pt-3 border-t-story">
+              <v-btn
+                size="small"
+                variant="tonal"
+                color="primary"
+                rounded="pill"
+                prepend-icon="mdi-eye"
+                @click="openPreviewDialog(story)"
+              >
+                Tinjau
+              </v-btn>
+              <v-btn
+                v-if="story.status === 'pending'"
+                size="small"
+                variant="flat"
+                color="success"
+                rounded="pill"
+                icon="mdi-check"
+                :title="'Setujui & Publikasikan'"
+                @click="quickUpdateStatus(story, 'approved')"
+              />
+              <v-btn
+                size="small"
+                variant="text"
+                color="error"
+                rounded="pill"
+                icon="mdi-delete-outline"
+                :title="'Hapus Tulisan'"
+                @click="confirmDelete(story)"
+              />
+            </div>
+          </v-card>
+        </div>
+
+        <!-- Desktop Table (smAndUp) -->
         <v-table v-else-if="stories.length > 0" hover class="stories-admin-table">
           <thead>
             <tr>
@@ -698,6 +770,17 @@ onMounted(() => {
   .stat-card-compact .stat-label {
     font-size: 0.65rem;
   }
+}
+
+/* Mobile Story Card */
+.mobile-story-card {
+  background: #FFFFFF;
+  border: 1px solid #F1F5F9;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.border-t-story {
+  border-top: 1px solid #F1F5F9;
 }
 
 .stories-admin-table th {

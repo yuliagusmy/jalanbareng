@@ -112,8 +112,68 @@
         </v-row>
       </v-card>
 
-      <!-- Destinations Table -->
-      <v-card elevation="0" rounded="lg">
+      <!-- Mobile Card View (xs / 390px) -->
+      <div v-if="$vuetify.display.xs">
+        <div v-if="loading" class="py-2">
+          <v-skeleton-loader v-for="i in 4" :key="i" type="card" height="120" rounded="xl" class="mb-3" />
+        </div>
+        <div v-else-if="destinations.length === 0" class="text-center py-10">
+          <v-icon size="64" color="grey-lighten-1">mdi-map-marker-off</v-icon>
+          <p class="text-body-2 text-grey mt-2">Tidak ada destinasi ditemukan</p>
+        </div>
+        <div v-else>
+          <v-card
+            v-for="item in destinations"
+            :key="item.id"
+            elevation="0"
+            rounded="xl"
+            class="pa-4 mb-3 mobile-dest-card"
+          >
+            <div class="d-flex align-start ga-3">
+              <!-- Photo -->
+              <v-avatar size="60" rounded="lg" class="flex-shrink-0">
+                <v-img :src="getImageUrl(item.primary_photo)" :alt="item.name" cover></v-img>
+              </v-avatar>
+              <!-- Info -->
+              <div class="flex-grow-1 min-w-0">
+                <div class="font-weight-bold text-grey-darken-4 text-truncate mb-1">{{ item.name }}</div>
+                <div class="d-flex align-center ga-2 flex-wrap mb-1">
+                  <v-chip v-if="item.category" size="x-small" color="primary" variant="tonal">
+                    {{ item.category.name }}
+                  </v-chip>
+                </div>
+                <div class="text-caption text-grey-darken-1 d-flex align-center ga-2">
+                  <span><v-icon size="11" color="red">mdi-heart</v-icon> {{ item.likes_count || 0 }}</span>
+                  <span><v-icon size="11" color="blue">mdi-comment</v-icon> {{ item.comments_count || 0 }}</span>
+                  <span class="text-truncate">{{ item.user?.name || '-' }}</span>
+                </div>
+              </div>
+            </div>
+            <!-- Actions -->
+            <div class="d-flex align-center justify-end ga-1 mt-3 pt-3 border-t">
+              <v-btn size="small" variant="tonal" color="primary" rounded="pill" prepend-icon="mdi-eye" @click="viewDestination(item.id)">
+                Lihat
+              </v-btn>
+              <v-btn size="small" variant="tonal" color="warning" rounded="pill" icon="mdi-pencil" @click="editDestination(item.id)" />
+              <v-btn size="small" variant="text" color="error" rounded="pill" icon="mdi-delete" @click="confirmDelete(item)" />
+            </div>
+          </v-card>
+        </div>
+
+        <!-- Pagination Mobile -->
+        <div class="d-flex justify-center mt-2 mb-4">
+          <v-pagination
+            v-model="pagination.current_page"
+            :length="Math.ceil(pagination.total / pagination.per_page)"
+            :total-visible="3"
+            density="comfortable"
+            @update:model-value="fetchDestinations"
+          ></v-pagination>
+        </div>
+      </div>
+
+      <!-- Desktop Table (smAndUp) -->
+      <v-card v-else elevation="0" rounded="lg">
         <v-data-table :headers="headers" :items="destinations" :loading="loading" :items-per-page="pagination.per_page"
           hide-default-footer class="elevation-0">
           <template v-slot:item.primary_photo="{ item }">
@@ -435,7 +495,17 @@ onMounted(() => {
   background: #fafafa;
   min-height: 100vh;
 }
-</style>
+
+/* Mobile Destination Card */
+.mobile-dest-card {
+  background: #FFFFFF;
+  border: 1px solid #F1F5F9;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.mobile-dest-card .border-t {
+  border-top: 1px solid #F1F5F9;
+}
 
 /* Mobile-Optimized Compact Stat Cards */
 .stat-card-compact {
@@ -480,3 +550,4 @@ onMounted(() => {
     font-size: 0.7rem;
   }
 }
+</style>

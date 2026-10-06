@@ -74,8 +74,60 @@
         </v-row>
       </v-card>
 
-      <!-- Events Table -->
-      <v-card elevation="0" rounded="lg" style="overflow-x: auto;">
+      <!-- Mobile Card View (xs / 390px) -->
+      <div v-if="$vuetify.display.xs">
+        <div v-if="loading" class="py-2">
+          <v-skeleton-loader v-for="i in 4" :key="i" type="card" height="110" rounded="xl" class="mb-3" />
+        </div>
+        <div v-else-if="filteredEvents.length === 0" class="text-center py-10">
+          <v-icon size="48" color="grey-lighten-1">mdi-calendar-blank</v-icon>
+          <p class="text-body-2 text-grey mt-2">Belum ada data event</p>
+        </div>
+        <div v-else>
+          <v-card
+            v-for="item in filteredEvents"
+            :key="item.id"
+            elevation="0"
+            rounded="xl"
+            class="pa-4 mb-3 mobile-event-card"
+          >
+            <div class="d-flex align-start ga-3">
+              <!-- Poster thumbnail -->
+              <v-avatar size="56" rounded="lg" class="flex-shrink-0">
+                <v-img :src="getImageUrl(item.poster)" cover></v-img>
+              </v-avatar>
+              <!-- Info -->
+              <div class="flex-grow-1 min-w-0">
+                <div class="font-weight-bold text-grey-darken-4 text-truncate mb-1">{{ item.name }}</div>
+                <div class="d-flex align-center ga-2 flex-wrap">
+                  <v-chip :color="item.type === 'walking' ? 'success' : 'primary'" size="x-small" variant="tonal">
+                    {{ item.type === 'walking' ? 'Jalan Kaki' : 'Regular' }}
+                  </v-chip>
+                  <v-chip :color="getStatusColor(item.date)" size="x-small" variant="flat" class="text-white">
+                    {{ getStatusLabel(item.date) }}
+                  </v-chip>
+                </div>
+                <div class="text-caption text-grey-darken-1 mt-1">
+                  <v-icon size="12" class="mr-1">mdi-calendar</v-icon>
+                  {{ formatDate(item.date) }}
+                  <span class="ml-1">{{ item.time ? String(item.time).replace(':', '.') : '06.00' }} WITA</span>
+                </div>
+              </div>
+            </div>
+            <!-- Actions -->
+            <div class="d-flex align-center justify-end ga-1 mt-3 pt-3 border-t">
+              <v-btn size="small" variant="tonal" color="primary" rounded="pill" :to="`/events/${item.id}`" prepend-icon="mdi-eye">
+                Lihat
+              </v-btn>
+              <v-btn size="small" variant="tonal" color="warning" rounded="pill" :to="`/events/${item.id}/edit`" icon="mdi-pencil" />
+              <v-btn size="small" variant="text" color="error" rounded="pill" icon="mdi-delete" @click="confirmDelete(item)" />
+            </div>
+          </v-card>
+        </div>
+      </div>
+
+      <!-- Desktop Table (smAndUp) -->
+      <v-card v-else elevation="0" rounded="lg" style="overflow-x: auto;">
         <v-data-table :headers="headers" :items="filteredEvents" :loading="loading" :search="search" hide-default-footer
           class="elevation-0" style="min-width: 640px;">
           <!-- Poster Column -->
@@ -395,6 +447,17 @@ onMounted(() => {
 .admin-events-page {
   background: #fafafa;
   min-height: 100vh;
+}
+
+/* Mobile Event Card */
+.mobile-event-card {
+  background: #FFFFFF;
+  border: 1px solid #F1F5F9;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.mobile-event-card .border-t {
+  border-top: 1px solid #F1F5F9;
 }
 
 /* Compact Stats Cards - Mobile Optimized */
