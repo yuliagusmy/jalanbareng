@@ -1,6 +1,36 @@
 - Terintegrasi di sidebar admin, menu navigasi, dan aksi cepat dashboard manage
 - Backend service `ReportService.php` + endpoint `GET /api/admin/reports/engagement`, `GET /api/admin/reports/members`, `GET /api/admin/reports/participants`
 
+---
+
+## 📝 Pengembangan Fitur Cerita & Kabar Jalan Bareng
+
+> Dicatat: 6 Oktober 2026
+
+### A. Fix Form Kirim Tulisan — Mobile UX (Prioritas Tinggi)
+- [ ] Ganti `<v-dialog>` kecil ke **bottom sheet full-height** di mobile 390px
+- [ ] Textarea lebih besar, padding cukup, tidak terpotong keyboard
+- [ ] Label & placeholder yang jelas untuk setiap field
+
+### B. Fix Ukuran Headline Mobile (Kecil)
+- [ ] Samakan ukuran `h1` hero di `/cerita` dengan halaman lain (events, aktivasi) di viewport 390px
+- [ ] Target: konsisten `clamp(1.8rem, ...)` sesuai design system
+
+### C. Halaman Cerita Index — Rich Layout
+- [ ] Bagian atas: **"Cerita Terbaik"** — 2–3 card featured (sorted by likes + comments)
+- [ ] Bagian bawah: **"Cerita Terbaru"** — grid cerita dengan opsi sortir (Terbaru / Terpopuler)
+- [ ] Backend: tambah parameter `?sort=popular` di `GET /stories`
+
+### D. Beranda — Featured Story
+- [ ] Tampilkan **1 cerita terbaik** (most engaged) secara menonjol di section cerita beranda
+- [ ] Di bawahnya: 2–3 cerita terbaru sebagai preview
+
+### E. Like & Komentar di Detail Cerita (Prioritas Tinggi)
+- [ ] Tombol **like** di halaman `/cerita/[slug]` — pakai endpoint `POST /likes/toggle` (sudah ada)
+- [ ] Section **komentar** di bawah artikel — pakai endpoint `GET/POST /comments` (sudah ada)
+- [ ] **Reply** komentar — penulis & pembaca bisa saling balas
+- [ ] Perlu cek apakah `CommentController` & `LikeController` support `commentable_type = story`
+
 ### ✅ ~~Peta Rute Walking Tour~~ — SELESAI
 - Komponen MapLibre viewer baru di `web/components/events/WalkingRouteMapViewer.vue`
 - Rute digambar sebagai polyline halus dengan lapisan halo putih + garis merah utama Jalan Bareng via GeoJSON
