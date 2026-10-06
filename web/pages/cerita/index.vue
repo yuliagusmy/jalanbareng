@@ -105,7 +105,7 @@
 
         <div class="d-flex align-center ga-2 flex-wrap w-100 w-sm-auto justify-space-between justify-sm-end">
           <!-- Sort Filter Chips -->
-          <div class="d-flex ga-1.5">
+          <div class="d-flex ga-2">
             <button
               type="button"
               class="sort-chip-btn"
@@ -136,7 +136,8 @@
             rounded="pill"
             hide-details
             clearable
-            style="min-width: 170px; max-width: 230px;"
+            style="max-width: 230px;"
+            class="stories-search-field"
             @update:model-value="debounceSearch"
           ></v-text-field>
         </div>
@@ -183,7 +184,7 @@
               </div>
             </div>
 
-            <v-card-text class="pa-2.5 pa-sm-4 flex-grow-1 d-flex flex-column">
+            <v-card-text class="pa-3 pa-sm-4 flex-grow-1 d-flex flex-column">
               <div class="text-caption text-grey-darken-1 mb-1" style="font-size: 0.68rem !important;">
                 {{ formatDate(story.published_at) }}
               </div>
@@ -538,5 +539,16 @@ onMounted(() => {
   background: #FEF2F2;
   border-color: #DC2626;
   color: #DC2626;
+}
+
+/* Search field responsive — min-width hanya di sm+ agar tidak crowded di 320px */
+.stories-search-field {
+  min-width: 140px;
+}
+
+@media (min-width: 600px) {
+  .stories-search-field {
+    min-width: 170px;
+  }
 }
 </style>

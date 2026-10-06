@@ -117,7 +117,7 @@
               @update:model-value="() => { pagination.current_page = 1; fetchDestinations(); }"
             ></v-select>
           </v-col>
-          
+
           <!-- View Switcher (Grid vs Map) -->
           <v-col cols="12" sm="6" md="4" class="d-flex justify-sm-end mt-2 mt-sm-0">
             <div class="view-switch-tabs">
@@ -1201,11 +1201,13 @@ onMounted(() => {
 
   .cta-contrib-btn {
     font-size: 0.8rem !important;
-    height: 40px !important;
+    height: auto !important;
+    min-height: 40px !important;
     padding-left: 14px !important;
     padding-right: 14px !important;
     letter-spacing: 0 !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
+    word-break: keep-all;
     max-width: 100% !important;
   }
 }
