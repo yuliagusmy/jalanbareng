@@ -125,7 +125,7 @@
                 class="flex-shrink-0"
               ></v-img>
               <div class="min-w-0 flex-grow-1">
-                <div class="text-caption text-grey-darken-1 mb-1 d-flex align-center ga-1.5">
+                <div class="text-caption text-grey-darken-1 mb-1 d-flex align-center ga-2">
                   <span>{{ formatDate(story.published_at) }}</span>
                   <span>•</span>
                   <span class="text-truncate">{{ story.author_name }}</span>

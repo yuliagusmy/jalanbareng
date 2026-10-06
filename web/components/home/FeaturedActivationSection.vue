@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <div class="d-flex flex-column flex-sm-row justify-space-between align-start align-sm-center mb-6 mb-md-8 ga-4">
       <div>
-        <div class="d-flex align-center ga-2 mb-2 mb-md-2.5">
+        <div class="d-flex align-center ga-2 mb-2">
           <span class="text-caption font-weight-bold text-uppercase tracking-wider text-primary">
             Inisiatif Paling Aktif
           </span>
