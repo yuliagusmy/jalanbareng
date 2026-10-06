@@ -3,87 +3,73 @@
     <v-container class="py-8">
       <!-- Page Header -->
       <v-card elevation="0" rounded="xl" class="mb-6 border">
-        <v-card-title class="d-flex flex-wrap align-center justify-space-between px-6 py-4 ga-3">
-          <div class="d-flex align-center">
-            <v-avatar color="primary" variant="tonal" size="48" class="mr-4">
-              <v-icon size="28" color="primary">mdi-feather</v-icon>
-            </v-avatar>
-            <div>
-              <h1 class="text-h5 font-weight-bold text-grey-darken-4 mb-0">Kurasi & Kelola Tulisan</h1>
-              <p class="text-caption text-grey-darken-1 mb-0">Moderasi tulisan komunitas sebelum diterbitkan ke Beranda</p>
+        <v-card-title class="admin-page-header px-6 py-4">
+          <div class="header-content">
+            <div class="header-main">
+              <v-avatar color="primary" variant="tonal" size="48" class="header-icon">
+                <v-icon size="28" color="primary">mdi-feather</v-icon>
+              </v-avatar>
+              <div class="header-text">
+                <h1 class="text-h5 font-weight-bold text-grey-darken-4 mb-0">Kurasi & Kelola Tulisan</h1>
+                <p class="text-caption text-grey-darken-1 mb-0">Moderasi tulisan komunitas sebelum diterbitkan ke Beranda</p>
+              </div>
             </div>
-          </div>
 
-          <div class="d-flex align-center ga-2">
-            <v-btn
-              variant="outlined"
-              color="primary"
-              rounded="pill"
-              prepend-icon="mdi-refresh"
-              :loading="loading"
-              @click="fetchStories"
-            >
-              Segarkan
-            </v-btn>
+            <div class="header-actions">
+              <v-btn
+                variant="outlined"
+                color="primary"
+                rounded="pill"
+                prepend-icon="mdi-refresh"
+                :loading="loading"
+                @click="fetchStories"
+              >
+                Segarkan
+              </v-btn>
+            </div>
           </div>
         </v-card-title>
       </v-card>
 
       <!-- Stats Summary Cards -->
       <v-row class="mb-6">
-        <v-col cols="12" sm="6" md="3">
-          <v-card elevation="0" rounded="xl" class="pa-4 border bg-blue-lighten-5">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <div class="text-caption font-weight-bold text-blue-darken-3">TOTAL TULISAN</div>
-                <div class="text-h4 font-weight-bold text-blue-darken-4">{{ counts.all }}</div>
-              </div>
-              <v-avatar color="blue" size="44">
-                <v-icon color="white">mdi-book-multiple</v-icon>
-              </v-avatar>
-            </div>
+        <v-col cols="6" sm="6" md="3">
+          <v-card elevation="0" rounded="xl" class="stat-card-compact border bg-blue-lighten-5">
+            <v-avatar color="blue" size="44">
+              <v-icon color="white">mdi-book-multiple</v-icon>
+            </v-avatar>
+            <div class="stat-number text-blue-darken-4">{{ counts.all }}</div>
+            <div class="stat-label text-blue-darken-3">Total Tulisan</div>
           </v-card>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
-          <v-card elevation="0" rounded="xl" class="pa-4 border bg-amber-lighten-5">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <div class="text-caption font-weight-bold text-amber-darken-3">BUTUH KURASI</div>
-                <div class="text-h4 font-weight-bold text-amber-darken-4">{{ counts.pending }}</div>
-              </div>
-              <v-avatar color="amber-darken-2" size="44">
-                <v-icon color="white">mdi-clock-alert-outline</v-icon>
-              </v-avatar>
-            </div>
+        <v-col cols="6" sm="6" md="3">
+          <v-card elevation="0" rounded="xl" class="stat-card-compact border bg-amber-lighten-5">
+            <v-avatar color="amber-darken-2" size="44">
+              <v-icon color="white">mdi-clock-alert-outline</v-icon>
+            </v-avatar>
+            <div class="stat-number text-amber-darken-4">{{ counts.pending }}</div>
+            <div class="stat-label text-amber-darken-3">Butuh Kurasi</div>
           </v-card>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
-          <v-card elevation="0" rounded="xl" class="pa-4 border bg-green-lighten-5">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <div class="text-caption font-weight-bold text-green-darken-3">DITERBITKAN</div>
-                <div class="text-h4 font-weight-bold text-green-darken-4">{{ counts.approved }}</div>
-              </div>
-              <v-avatar color="green-darken-1" size="44">
-                <v-icon color="white">mdi-check-decagram</v-icon>
-              </v-avatar>
-            </div>
+        <v-col cols="6" sm="6" md="3">
+          <v-card elevation="0" rounded="xl" class="stat-card-compact border bg-green-lighten-5">
+            <v-avatar color="green-darken-1" size="44">
+              <v-icon color="white">mdi-check-decagram</v-icon>
+            </v-avatar>
+            <div class="stat-number text-green-darken-4">{{ counts.approved }}</div>
+            <div class="stat-label text-green-darken-3">Diterbitkan</div>
           </v-card>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
-          <v-card elevation="0" rounded="xl" class="pa-4 border bg-red-lighten-5">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <div class="text-caption font-weight-bold text-red-darken-3">DITOLAK</div>
-                <div class="text-h4 font-weight-bold text-red-darken-4">{{ counts.rejected }}</div>
-              </div>
-              <v-avatar color="red-darken-1" size="44">
-                <v-icon color="white">mdi-close-circle-outline</v-icon>
-              </v-avatar>
-            </div>
+        <v-col cols="6" sm="6" md="3">
+          <v-card elevation="0" rounded="xl" class="stat-card-compact border bg-red-lighten-5">
+            <v-avatar color="red-darken-1" size="44">
+              <v-icon color="white">mdi-close-circle-outline</v-icon>
+            </v-avatar>
+            <div class="stat-number text-red-darken-4">{{ counts.rejected }}</div>
+            <div class="stat-label text-red-darken-3">Ditolak</div>
           </v-card>
         </v-col>
       </v-row>
@@ -609,6 +595,111 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Admin Page Header - Responsive */
+.admin-page-header .header-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.admin-page-header .header-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-page-header .header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-page-header .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .admin-page-header .header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-page-header .header-main {
+    width: 100%;
+  }
+
+  .admin-page-header .header-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .admin-page-header .header-text h1 {
+    font-size: 1.125rem !important;
+  }
+
+  .admin-page-header .header-text p {
+    font-size: 0.75rem !important;
+  }
+
+  .admin-page-header .header-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .admin-page-header .header-actions .v-btn {
+    flex: 1;
+  }
+}
+
+/* Compact Stats Cards - Mobile Optimized */
+.stat-card-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.stat-card-compact .stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-card-compact .stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 600px) {
+  .stat-card-compact {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .stat-card-compact .v-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .stat-card-compact .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .stat-card-compact .stat-label {
+    font-size: 0.65rem;
+  }
+}
+
 .stories-admin-table th {
   background-color: #f8fafc;
   color: #475569;

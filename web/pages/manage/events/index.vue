@@ -22,14 +22,12 @@
       <!-- Stats Cards -->
       <v-row class="mb-6">
         <v-col cols="6" sm="6" md="3" v-for="stat in stats" :key="stat.label">
-          <v-card elevation="0" rounded="lg" class="pa-3 pa-sm-4" :color="stat.bgColor">
-            <div class="d-flex align-center">
-              <v-icon :size="$vuetify.display.xs ? 28 : 40" :color="stat.color" class="mr-3 mr-sm-4">{{ stat.icon }}</v-icon>
-              <div>
-                <div class="text-h5 text-sm-h4 font-weight-bold" :class="`text-${stat.color}`">{{ stat.value }}</div>
-                <div class="text-caption text-grey-darken-1">{{ stat.label }}</div>
-              </div>
-            </div>
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" :color="stat.bgColor">
+            <v-avatar :color="stat.color" size="44">
+              <v-icon color="white">{{ stat.icon }}</v-icon>
+            </v-avatar>
+            <div class="stat-number" :class="`text-${stat.color}-darken-2`">{{ stat.value }}</div>
+            <div class="stat-label" :class="`text-${stat.color}-darken-1`">{{ stat.label }}</div>
           </v-card>
         </v-col>
       </v-row>
@@ -397,5 +395,48 @@ onMounted(() => {
 .admin-events-page {
   background: #fafafa;
   min-height: 100vh;
+}
+
+/* Compact Stats Cards - Mobile Optimized */
+.stat-card-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.stat-card-compact .stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-card-compact .stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 600px) {
+  .stat-card-compact {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .stat-card-compact .v-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .stat-card-compact .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .stat-card-compact .stat-label {
+    font-size: 0.65rem;
+  }
 }
 </style>

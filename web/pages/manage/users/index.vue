@@ -28,47 +28,39 @@
       <!-- Stats Cards -->
       <v-row class="mb-6">
         <v-col cols="6" sm="6" md="3">
-          <v-card elevation="0" rounded="lg" class="pa-3 pa-sm-4" color="blue-lighten-5">
-            <div class="d-flex align-center">
-              <v-icon :size="$vuetify.display.xs ? 28 : 40" color="blue" class="mr-3 mr-sm-4">mdi-account-multiple</v-icon>
-              <div>
-                <div class="text-h5 text-sm-h4 font-weight-bold text-blue">{{ stats.total }}</div>
-                <div class="text-caption text-grey-darken-1">Total User</div>
-              </div>
-            </div>
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" color="blue-lighten-5">
+            <v-avatar color="blue" size="44">
+              <v-icon color="white">mdi-account-multiple</v-icon>
+            </v-avatar>
+            <div class="stat-number text-blue-darken-2">{{ stats.total }}</div>
+            <div class="stat-label text-blue-darken-1">Total User</div>
           </v-card>
         </v-col>
         <v-col cols="6" sm="6" md="3">
-          <v-card elevation="0" rounded="lg" class="pa-3 pa-sm-4" color="purple-lighten-5">
-            <div class="d-flex align-center">
-              <v-icon :size="$vuetify.display.xs ? 28 : 40" color="purple" class="mr-3 mr-sm-4">mdi-shield-crown</v-icon>
-              <div>
-                <div class="text-h5 text-sm-h4 font-weight-bold text-purple">{{ stats.admins }}</div>
-                <div class="text-caption text-grey-darken-1">Admin</div>
-              </div>
-            </div>
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" color="purple-lighten-5">
+            <v-avatar color="purple" size="44">
+              <v-icon color="white">mdi-shield-crown</v-icon>
+            </v-avatar>
+            <div class="stat-number text-purple-darken-2">{{ stats.admins }}</div>
+            <div class="stat-label text-purple-darken-1">Admin</div>
           </v-card>
         </v-col>
         <v-col cols="6" sm="6" md="3">
-          <v-card elevation="0" rounded="lg" class="pa-3 pa-sm-4" color="green-lighten-5">
-            <div class="d-flex align-center">
-              <v-icon :size="$vuetify.display.xs ? 28 : 40" color="green" class="mr-3 mr-sm-4">mdi-account-star</v-icon>
-              <div>
-                <div class="text-h5 text-sm-h4 font-weight-bold text-green">{{ stats.communityAdmins }}</div>
-                <div class="text-caption text-grey-darken-1">Comm. Admin</div>
-              </div>
-            </div>
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" color="green-lighten-5">
+            <v-avatar color="green" size="44">
+              <v-icon color="white">mdi-account-star</v-icon>
+            </v-avatar>
+            <div class="stat-number text-green-darken-2">{{ stats.communityAdmins }}</div>
+            <div class="stat-label text-green-darken-1">Comm. Admin</div>
           </v-card>
         </v-col>
         <v-col cols="6" sm="6" md="3">
-          <v-card elevation="0" rounded="lg" class="pa-3 pa-sm-4" color="orange-lighten-5">
-            <div class="d-flex align-center">
-              <v-icon :size="$vuetify.display.xs ? 28 : 40" color="orange" class="mr-3 mr-sm-4">mdi-account</v-icon>
-              <div>
-                <div class="text-h5 text-sm-h4 font-weight-bold text-orange">{{ stats.members }}</div>
-                <div class="text-caption text-grey-darken-1">Member</div>
-              </div>
-            </div>
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" color="orange-lighten-5">
+            <v-avatar color="orange" size="44">
+              <v-icon color="white">mdi-account</v-icon>
+            </v-avatar>
+            <div class="stat-number text-orange-darken-2">{{ stats.members }}</div>
+            <div class="stat-label text-orange-darken-1">Member</div>
           </v-card>
         </v-col>
       </v-row>
@@ -1114,5 +1106,48 @@ onMounted(() => {
 .admin-users-page {
   background: #fafafa;
   min-height: 100vh;
+}
+
+/* Compact Stats Cards - Mobile Optimized */
+.stat-card-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.stat-card-compact .stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-card-compact .stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 600px) {
+  .stat-card-compact {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .stat-card-compact .v-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .stat-card-compact .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .stat-card-compact .stat-label {
+    font-size: 0.65rem;
+  }
 }
 </style>
