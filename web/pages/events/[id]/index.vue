@@ -159,10 +159,10 @@
 
                 <h3 class="cta-title">Siap Ikut Kegiatan?</h3>
                 <p class="cta-desc">
-                  {{ isCuratedTikum 
-                    ? 'Kegiatan ini menerapkan kurasi peserta demi kenyamanan rute bersama. Daftarkan diri, admin akan menghubungi peserta yang lolos.' 
-                    : (event.price && event.price > 0 
-                        ? `Biaya kegiatan Rp ${event.price.toLocaleString('id-ID')}${event.price_description ? ` (${event.price_description})` : ''}. Amankan slot kegiatanmu sekarang.` 
+                  {{ isCuratedTikum
+                    ? 'Kegiatan ini menerapkan kurasi peserta demi kenyamanan rute bersama. Daftarkan diri, admin akan menghubungi peserta yang lolos.'
+                    : (event.price && event.price > 0
+                        ? `Biaya kegiatan Rp ${event.price.toLocaleString('id-ID')}${event.price_description ? ` (${event.price_description})` : ''}. Amankan slot kegiatanmu sekarang.`
                         : 'Amankan slot kegiatanmu. Pendaftaran gratis dan kuota terbatas untuk kenyamanan bersama.')
                   }}
                 </p>
@@ -195,24 +195,6 @@
                 >
                   <v-icon start size="18">mdi-calendar-check</v-icon>
                   <span>Kegiatan Telah Selesai</span>
-                </v-btn>
-
-                <!-- Tandai Ikut (Tracking Internal) -->
-                <v-btn
-                  v-if="isUpcoming && authStore.isLoggedIn"
-                  :loading="joiningEvent"
-                  :disabled="hasJoined"
-                  :color="hasJoined ? '#16A34A' : 'grey-darken-1'"
-                  size="small"
-                  block
-                  rounded="pill"
-                  variant="outlined"
-                  class="font-weight-medium mb-3"
-                  @click="tandaiIkut"
-                  :aria-label="hasJoined ? 'Sudah tandai ikut' : 'Tandai keikutsertaan'"
-                >
-                  <v-icon start size="16">{{ hasJoined ? 'mdi-check-circle' : 'mdi-checkbox-marked-circle-outline' }}</v-icon>
-                  <span>{{ hasJoined ? 'Sudah Ditandai Ikut ✓' : 'Tandai Ikut (Tracking Internal)' }}</span>
                 </v-btn>
 
                 <!-- Share Buttons -->
@@ -375,24 +357,6 @@
                 <v-icon start size="18">mdi-clipboard-edit-outline</v-icon>
                 <span>Daftar Kegiatan</span>
                 <v-icon end size="16">mdi-arrow-right</v-icon>
-              </v-btn>
-
-              <!-- Tandai Ikut (Tracking Internal, mobile) -->
-              <v-btn
-                v-if="isUpcoming && authStore.isLoggedIn"
-                :loading="joiningEvent"
-                :disabled="hasJoined"
-                :color="hasJoined ? '#16A34A' : 'grey-darken-1'"
-                size="small"
-                block
-                rounded="pill"
-                variant="outlined"
-                class="font-weight-medium mb-2"
-                @click="tandaiIkut"
-                :aria-label="hasJoined ? 'Sudah tandai ikut' : 'Tandai keikutsertaan'"
-              >
-                <v-icon start size="15">{{ hasJoined ? 'mdi-check-circle' : 'mdi-checkbox-marked-circle-outline' }}</v-icon>
-                <span>{{ hasJoined ? 'Sudah Ditandai Ikut ✓' : 'Tandai Ikut' }}</span>
               </v-btn>
 
               <div class="d-flex align-center justify-space-between px-1">
@@ -694,8 +658,6 @@ const lightboxDialog = ref(false)
 const showMobileStickyBar = ref(false)
 const isAboveHeroCta = ref(true)
 const heroCtaRef = ref<HTMLElement | null>(null)
-const joiningEvent = ref(false)
-const hasJoined = ref(false)
 
 const stripHtml = (html: string) => {
   if (!html) return ''
