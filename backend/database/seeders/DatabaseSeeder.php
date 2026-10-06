@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Ensure all migrations are executed before seeding
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+
         $this->call([
             RoleSeeder::class,
             CategorySeeder::class,
