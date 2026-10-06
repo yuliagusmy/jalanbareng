@@ -52,18 +52,16 @@
 | **Bagikan destinasi** baru | ❌ Harus login | ✅ Bisa |
 | Lihat riwayat keikutsertaan event | ❌ | ✅ Di profil |
 
-### F. Value Proposition Login — UI/UX
-- [ ] **Halaman login** — tambahkan seksi "Kenapa bergabung?" dengan manfaat konkret member
-- [ ] **Prompt login** yang muncul saat guest klik tombol like/komentar/submit — bukan error, tapi undangan yang ramah: *"Bergabung dulu untuk ikut meramaikan 👇"*
-- [ ] **Prompt login** di form submit cerita & bagikan destinasi — jika belum login, redirect ke login dengan pesan konteks yang jelas
-- [ ] CTA "Masuk / Daftar" di navbar lebih menonjol untuk guest
+### ✅ ~~F. Value Proposition Login — UI/UX~~ — SELESAI (6 Oktober 2026)
+- [x] **Halaman login** — seksi "Kenapa Perlu Punya Akun?" menjelaskan manfaat konkret member (kirim cerita, apresiasi/komentar, bagikan destinasi) sementara pencarian link gform event tetap bebas
+- [x] **Prompt login ramah** — dialog/sheet undangan ramah via `AuthPromptDialog.vue`
+- [x] **Direct redirect dengan parameter konteks** — `?redirect=...` otomatis dipasang saat guest memilih masuk/daftar
 
-### G. Guard Aksi Terproteksi di Frontend
-- [ ] Tombol **Like** — jika guest klik → muncul dialog/snackbar undangan login
-- [ ] Tombol **Komentar** — jika guest klik textarea → muncul prompt login
-- [ ] Tombol **Kirim Tulisan** — jika guest klik → redirect ke login dengan `?redirect=/cerita`
-- [ ] Tombol **Bagikan Destinasi** — jika guest klik → redirect ke login
-- [ ] Semua guard pakai composable `useAuthGuard()` yang konsisten (buat baru jika belum ada)
+### ✅ ~~G. Guard Aksi Terproteksi di Frontend~~ — SELESAI (6 Oktober 2026)
+- [x] Composable terpusat `useAuthGuard()` di `web/composables/useAuthGuard.ts`
+- [x] Tombol **Kirim Tulisan** di `/cerita` terproteksi dengan prompt ramah
+- [x] Tombol **Bagikan Destinasi** di `/destinations` terproteksi dengan prompt ramah
+- [x] Global dialog mounted di `web/app.vue` siap dipakai untuk like & komentar berikutnya
 
 ### H. Halaman Profil Member — Dashboard Kontribusi
 - [ ] Setelah login, user lihat ringkasan kontribusi: cerita yang dikirim, destinasi yang dibagikan, komentar aktif
