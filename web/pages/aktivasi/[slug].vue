@@ -226,7 +226,7 @@
                 <h3 class="featured-card-title font-weight-bold mb-2">{{ activation.featured_event.name }}</h3>
 
                 <div class="d-flex align-center mb-2 text-caption text-grey-darken-2">
-                  <v-icon size="14" :color="activation.color_theme || '#DC2626'" class="mr-1.5">mdi-calendar</v-icon>
+                  <v-icon size="14" :color="activation.color_theme || '#DC2626'" class="mr-2">mdi-calendar</v-icon>
                   <span>{{ formatDate(activation.featured_event.date) }}</span>
                 </div>
 
@@ -253,7 +253,7 @@
         class="upcoming-events-section mb-8 mb-md-14">
         <div class="section-header-row mb-3 mb-md-5">
           <div>
-            <h2 class="section-heading font-weight-bold mb-0.5">Event Mendatang</h2>
+            <h2 class="section-heading font-weight-bold mb-1">Event Mendatang</h2>
             <p class="section-subtitle text-grey-darken-1 mb-0">Ikuti kegiatan seru bersama komunitas</p>
           </div>
           <v-btn
@@ -343,7 +343,7 @@
         class="past-events-section mb-8 mb-md-14">
         <div class="section-header-row mb-3 mb-md-5">
           <div>
-            <h2 class="section-heading font-weight-bold mb-0.5">Kegiatan Selesai</h2>
+            <h2 class="section-heading font-weight-bold mb-1">Kegiatan Selesai</h2>
             <p class="section-subtitle text-grey-darken-1 mb-0">Arsip edisi jalan dan dokumentasi bersama pejalan</p>
           </div>
           <v-chip size="small" variant="tonal" color="grey-darken-2" class="font-weight-medium">
@@ -376,10 +376,10 @@
               <h4 class="past-event-title">{{ event.name }}</h4>
               <div v-if="event.distance || event.start_point" class="past-event-meta">
                 <span v-if="event.distance" class="mr-2">
-                  <v-icon size="11" class="mr-0.5">mdi-map-marker-distance</v-icon>{{ event.distance }} km
+                  <v-icon size="11" class="mr-1">mdi-map-marker-distance</v-icon>{{ event.distance }} km
                 </span>
                 <span v-if="event.start_point" class="text-truncate">
-                  <v-icon size="11" class="mr-0.5">mdi-map-marker</v-icon>{{ event.start_point }}
+                  <v-icon size="11" class="mr-1">mdi-map-marker</v-icon>{{ event.start_point }}
                 </span>
               </div>
             </div>
@@ -429,7 +429,7 @@
           background: `linear-gradient(135deg, ${activation.color_theme || '#DC2626'} 0%, ${darkenColor(activation.color_theme || '#991B1B', 25)} 100%)`
         }">
           <div class="cta-content">
-            <v-icon size="28" color="white" class="mb-1.5">mdi-account-group</v-icon>
+            <v-icon size="28" color="white" class="mb-2">mdi-account-group</v-icon>
             <h2 class="cta-title text-white font-weight-bold">Bergabung dengan {{ activation.name }}</h2>
             <p class="cta-subtitle text-white">Jadilah bagian dari pejalan dan komunitas kami</p>
           </div>

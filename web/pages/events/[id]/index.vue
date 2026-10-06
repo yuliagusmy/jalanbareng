@@ -266,7 +266,7 @@
                   <div class="spec-value" :class="{ 'text-amber-darken-3 font-weight-bold': isCuratedTikum }">
                     {{ isCuratedTikum ? '🔒 Rahasia (Sistem Kurasi)' : getEventLocation(event) }}
                   </div>
-                  <div v-if="isCuratedTikum" class="spec-subnote mt-0.5">
+                  <div v-if="isCuratedTikum" class="spec-subnote mt-1">
                     Dikirim via WhatsApp/DM setelah kurasi
                   </div>
                 </div>
@@ -314,13 +314,13 @@
                   <v-icon size="18" color="#D97706">mdi-shield-lock-outline</v-icon>
                 </v-avatar>
                 <div>
-                  <div class="font-weight-bold text-subtitle-2 text-grey-darken-4 d-flex align-center ga-1.5 flex-wrap">
+                  <div class="font-weight-bold text-subtitle-2 text-grey-darken-4 d-flex align-center ga-2 flex-wrap">
                     <span>Sistem Kurasi Peserta</span>
                     <span class="secret-chip">Private Tikum</span>
                   </div>
                 </div>
               </div>
-              <p class="curation-intro-text text-caption text-grey-darken-2 mb-2.5" style="line-height: 1.45;">
+              <p class="curation-intro-text text-caption text-grey-darken-2 mb-3" style="line-height: 1.45;">
                 Demi ketertiban dan kenyamanan pejalan kaki, titik kumpul dirahasiakan &amp; dikirimkan privat ke WhatsApp/DM khusus bagi peserta yang lolos kurasi.
               </p>
               <div class="curation-mini-flow d-flex align-center justify-space-between ga-1 pa-2 rounded-lg">
@@ -363,7 +363,7 @@
                 <span class="text-caption text-grey-darken-2 font-weight-medium">
                   {{ isCuratedTikum ? '🔒 Seleksi Peserta via Form' : (event.price && event.price > 0 ? `🎟️ HTM Rp ${event.price.toLocaleString('id-ID')}` : '🎟️ Gratis • Terbuka') }}
                 </span>
-                <div class="d-flex align-center ga-1.5">
+                <div class="d-flex align-center ga-2">
                   <button
                     type="button"
                     class="mobile-mini-share whatsapp"

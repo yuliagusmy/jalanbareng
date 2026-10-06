@@ -852,6 +852,8 @@ onMounted(() => {
   margin: 0 0 24px;
   line-height: 1.2;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .hero-meta {
@@ -1495,6 +1497,15 @@ onMounted(() => {
   .quick-stats {
     gap: 16px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Mask right edge as visual scroll hint */
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  }
+
+  .quick-stats::-webkit-scrollbar {
+    display: none;
   }
 
   .sidebar {
