@@ -68,7 +68,67 @@
 
       <!-- Filter & Search -->
       <v-card elevation="0" rounded="lg" class="mb-6 pa-4">
-        <v-row>
+        <!-- Mobile: search + filter toggle -->
+        <div v-if="$vuetify.display.xs" class="d-flex align-center ga-2">
+          <v-text-field
+            v-model="search"
+            placeholder="Cari destinasi..."
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            rounded="lg"
+            density="compact"
+            clearable
+            hide-details
+            class="flex-grow-1"
+            @update:model-value="fetchDestinations"
+          ></v-text-field>
+          <v-btn
+            :variant="activeFilterCount > 0 ? 'flat' : 'outlined'"
+            :color="activeFilterCount > 0 ? 'primary' : 'grey-darken-1'"
+            icon
+            rounded="lg"
+            size="40"
+            @click="showFilters = !showFilters"
+            :aria-label="showFilters ? 'Tutup filter' : 'Buka filter'"
+          >
+            <v-badge v-if="activeFilterCount > 0" :content="activeFilterCount" color="primary" floating>
+              <v-icon size="20">mdi-filter-variant</v-icon>
+            </v-badge>
+            <v-icon v-else size="20">mdi-filter-variant</v-icon>
+          </v-btn>
+        </div>
+
+        <!-- Mobile: collapsible filter panel -->
+        <v-expand-transition>
+          <div v-if="$vuetify.display.xs && showFilters" class="mt-3 d-flex flex-column ga-2">
+            <v-select v-model="filterActivation" :items="activations" item-title="name" item-value="id"
+              placeholder="Semua Aktivasi" variant="outlined" rounded="lg" density="compact" clearable hide-details
+              @update:model-value="fetchDestinations">
+              <template v-slot:prepend-inner><v-icon size="18">mdi-star-circle</v-icon></template>
+            </v-select>
+            <v-select v-model="filterCategory" :items="categories" item-title="name" item-value="id"
+              placeholder="Semua Kategori" variant="outlined" rounded="lg" density="compact" clearable hide-details
+              @update:model-value="fetchDestinations">
+              <template v-slot:prepend-inner><v-icon size="18">mdi-filter</v-icon></template>
+            </v-select>
+            <v-select v-model="filterUser" :items="users" item-title="name" item-value="id"
+              placeholder="Semua User" variant="outlined" rounded="lg" density="compact" clearable hide-details
+              @update:model-value="fetchDestinations">
+              <template v-slot:prepend-inner><v-icon size="18">mdi-account</v-icon></template>
+            </v-select>
+            <v-select v-model="sortBy" :items="sortOptions" item-title="label" item-value="value"
+              variant="outlined" rounded="lg" density="compact" hide-details
+              @update:model-value="fetchDestinations">
+              <template v-slot:prepend-inner><v-icon size="18">mdi-sort</v-icon></template>
+            </v-select>
+            <v-btn v-if="activeFilterCount > 0" variant="text" color="error" size="small" @click="clearFilters" prepend-icon="mdi-close-circle">
+              Reset Filter
+            </v-btn>
+          </div>
+        </v-expand-transition>
+
+        <!-- Desktop: semua filter tampil biasa -->
+        <v-row v-if="!$vuetify.display.xs">
           <v-col cols="12" md="3">
             <v-text-field v-model="search" placeholder="Cari destinasi..." prepend-inner-icon="mdi-magnify"
               variant="outlined" rounded="lg" density="comfortable" clearable hide-details
@@ -321,6 +381,19 @@ const filterActivation = ref(null)
 const filterUser = ref(null)
 const deleteDialog = ref(false)
 const destinationToDelete = ref(null)
+
+// Mobile filter panel state
+const showFilters = ref(false)
+const activeFilterCount = computed(() =>
+  [filterActivation.value, filterCategory.value, filterUser.value].filter(Boolean).length
+)
+const clearFilters = () => {
+  filterActivation.value = null
+  filterCategory.value = null
+  filterUser.value = null
+  sortBy.value = 'newest'
+  fetchDestinations()
+}
 
 const stats = ref({
   total: 0,

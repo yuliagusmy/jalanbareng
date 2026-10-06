@@ -34,7 +34,62 @@
 
       <!-- Filter & Search -->
       <v-card elevation="0" rounded="lg" class="mb-6 pa-4">
-        <v-row>
+        <!-- Mobile: search + filter toggle -->
+        <div v-if="$vuetify.display.xs" class="d-flex align-center ga-2 mb-0">
+          <v-text-field
+            v-model="search"
+            placeholder="Cari event..."
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            rounded="lg"
+            density="compact"
+            clearable
+            hide-details
+            class="flex-grow-1"
+          ></v-text-field>
+          <v-btn
+            :variant="activeFilterCount > 0 ? 'flat' : 'outlined'"
+            :color="activeFilterCount > 0 ? 'primary' : 'grey-darken-1'"
+            icon
+            rounded="lg"
+            size="40"
+            @click="showFilters = !showFilters"
+            :aria-label="showFilters ? 'Tutup filter' : 'Buka filter'"
+          >
+            <v-badge v-if="activeFilterCount > 0" :content="activeFilterCount" color="primary" floating>
+              <v-icon size="20">mdi-filter-variant</v-icon>
+            </v-badge>
+            <v-icon v-else size="20">mdi-filter-variant</v-icon>
+          </v-btn>
+        </div>
+
+        <!-- Mobile: collapsible filter panel -->
+        <v-expand-transition>
+          <div v-if="$vuetify.display.xs && showFilters" class="mt-3 d-flex flex-column ga-2">
+            <v-select v-model="filterActivation" :items="activations" item-title="name" item-value="id"
+              placeholder="Semua Aktivasi" variant="outlined" rounded="lg" density="compact" clearable hide-details>
+              <template v-slot:prepend-inner><v-icon size="18">mdi-star-circle</v-icon></template>
+            </v-select>
+            <v-select v-model="filterType" :items="eventTypes" placeholder="Semua Jenis" variant="outlined"
+              rounded="lg" density="compact" clearable hide-details>
+              <template v-slot:prepend-inner><v-icon size="18">mdi-filter</v-icon></template>
+            </v-select>
+            <v-select v-model="filterStatus" :items="statusOptions" placeholder="Semua Status" variant="outlined"
+              rounded="lg" density="compact" clearable hide-details>
+              <template v-slot:prepend-inner><v-icon size="18">mdi-calendar-clock</v-icon></template>
+            </v-select>
+            <v-select v-model="sortBy" :items="sortOptions" item-title="label" item-value="value" variant="outlined"
+              rounded="lg" density="compact" hide-details>
+              <template v-slot:prepend-inner><v-icon size="18">mdi-sort</v-icon></template>
+            </v-select>
+            <v-btn v-if="activeFilterCount > 0" variant="text" color="error" size="small" @click="clearFilters" prepend-icon="mdi-close-circle">
+              Reset Filter
+            </v-btn>
+          </div>
+        </v-expand-transition>
+
+        <!-- Desktop: semua filter tampil biasa -->
+        <v-row v-if="!$vuetify.display.xs">
           <v-col cols="12" sm="6" md="3">
             <v-text-field v-model="search" placeholder="Cari event..." prepend-inner-icon="mdi-magnify"
               variant="outlined" rounded="lg" density="comfortable" clearable hide-details></v-text-field>
@@ -249,6 +304,18 @@ const sortBy = ref('newest')
 const deleteDialog = ref(false)
 const deleting = ref(false)
 const eventToDelete = ref(null)
+
+// Mobile filter panel state
+const showFilters = ref(false)
+const activeFilterCount = computed(() =>
+  [filterActivation.value, filterType.value, filterStatus.value].filter(Boolean).length
+)
+const clearFilters = () => {
+  filterActivation.value = null
+  filterType.value = null
+  filterStatus.value = null
+  sortBy.value = 'newest'
+}
 
 const eventTypes = [
   { title: 'Regular Event', value: 'regular' },

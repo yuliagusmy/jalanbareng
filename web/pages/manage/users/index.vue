@@ -67,7 +67,75 @@
 
       <!-- Filter & Search -->
       <v-card elevation="0" rounded="lg" class="mb-6 pa-4">
-        <v-row>
+        <!-- Mobile: search + filter toggle -->
+        <div v-if="$vuetify.display.xs" class="d-flex align-center ga-2">
+          <v-text-field
+            v-model="search"
+            placeholder="Cari user..."
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            rounded="lg"
+            density="compact"
+            clearable
+            hide-details
+            class="flex-grow-1"
+            @update:model-value="fetchUsers"
+          ></v-text-field>
+          <v-btn
+            :variant="activeFilterCount > 0 ? 'flat' : 'outlined'"
+            :color="activeFilterCount > 0 ? 'primary' : 'grey-darken-1'"
+            icon
+            rounded="lg"
+            size="40"
+            @click="showFilters = !showFilters"
+            :aria-label="showFilters ? 'Tutup filter' : 'Buka filter'"
+          >
+            <v-badge v-if="activeFilterCount > 0" :content="activeFilterCount" color="primary" floating>
+              <v-icon size="20">mdi-filter-variant</v-icon>
+            </v-badge>
+            <v-icon v-else size="20">mdi-filter-variant</v-icon>
+          </v-btn>
+        </div>
+
+        <!-- Mobile: collapsible filter panel -->
+        <v-expand-transition>
+          <div v-if="$vuetify.display.xs && showFilters" class="mt-3 d-flex flex-column ga-2">
+            <v-select
+              v-model="filterRole"
+              :items="roleOptions"
+              item-title="label"
+              item-value="value"
+              placeholder="Semua Role"
+              variant="outlined"
+              rounded="lg"
+              density="compact"
+              clearable
+              hide-details
+              @update:model-value="fetchUsers"
+            >
+              <template v-slot:prepend-inner><v-icon size="18">mdi-filter</v-icon></template>
+            </v-select>
+            <v-select
+              v-model="sortBy"
+              :items="sortOptions"
+              item-title="label"
+              item-value="value"
+              variant="outlined"
+              rounded="lg"
+              density="compact"
+              hide-details
+              @update:model-value="fetchUsers"
+            >
+              <template v-slot:prepend-inner><v-icon size="18">mdi-sort</v-icon></template>
+            </v-select>
+            <v-btn v-if="activeFilterCount > 0" variant="text" color="error" size="small" @click="clearFilters" prepend-icon="mdi-close-circle">
+              Reset Filter
+            </v-btn>
+          </div>
+        </v-expand-transition>
+
+        <!-- Desktop: semua filter tampil biasa -->
+        <v-row v-if="!$vuetify.display.xs">
           <v-col cols="12" sm="6" md="5">
             <v-text-field
               v-model="search"
@@ -702,6 +770,17 @@ const sortBy = ref('newest')
 const filterRole = ref(null)
 const editDialog = ref(false)
 const viewDialog = ref(false)
+
+// Mobile filter panel state
+const showFilters = ref(false)
+const activeFilterCount = computed(() =>
+  [filterRole.value].filter(Boolean).length
+)
+const clearFilters = () => {
+  filterRole.value = null
+  sortBy.value = 'newest'
+  fetchUsers()
+}
 const addDialog = ref(false)
 const deleteDialog = ref(false)
 // const banDialog = ref(false)
