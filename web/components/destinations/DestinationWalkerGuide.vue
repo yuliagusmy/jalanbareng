@@ -59,23 +59,23 @@
       <h2 class="section-title">Fasilitas Pejalan di Sekitar</h2>
       <div class="amenities-pills-row">
         <div class="amenity-chip">
-          <v-icon size="16" color="#0284C7" class="mr-1.5">mdi-water-outline</v-icon>
+          <v-icon size="16" color="#0284C7" class="mr-2">mdi-water-outline</v-icon>
           <span>Warung & Titik Minum (~50m)</span>
         </div>
         <div class="amenity-chip">
-          <v-icon size="16" color="#059669" class="mr-1.5">mdi-toilet</v-icon>
+          <v-icon size="16" color="#059669" class="mr-2">mdi-toilet</v-icon>
           <span>Toilet Umum & Musholla</span>
         </div>
         <div class="amenity-chip">
-          <v-icon size="16" color="#D97706" class="mr-1.5">mdi-seat</v-icon>
+          <v-icon size="16" color="#D97706" class="mr-2">mdi-seat</v-icon>
           <span>Bangku Istirahat Warga</span>
         </div>
         <div class="amenity-chip">
-          <v-icon size="16" color="#6366F1" class="mr-1.5">mdi-bus</v-icon>
+          <v-icon size="16" color="#6366F1" class="mr-2">mdi-bus</v-icon>
           <span>Akses Bus / Angkot</span>
         </div>
         <div class="amenity-chip">
-          <v-icon size="16" color="#E11D48" class="mr-1.5">mdi-camera-outline</v-icon>
+          <v-icon size="16" color="#E11D48" class="mr-2">mdi-camera-outline</v-icon>
           <span>Spot Sunset & Foto Estetik</span>
         </div>
       </div>

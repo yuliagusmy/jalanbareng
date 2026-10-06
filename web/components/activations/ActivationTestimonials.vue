@@ -10,7 +10,7 @@
       <div class="testimonial-card h-100">
         <!-- Quote Icon & Text -->
         <div class="d-flex align-start mb-2">
-          <v-icon size="20" color="#DC2626" class="mr-2 flex-shrink-0 mt-0.5">
+          <v-icon size="20" color="#DC2626" class="mr-2 flex-shrink-0 mt-1">
             mdi-format-quote-open
           </v-icon>
           <p class="testimonial-quote mb-0 flex-grow-1">

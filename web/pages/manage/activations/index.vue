@@ -200,7 +200,7 @@
           >
             <div class="d-flex align-start justify-space-between mb-2">
               <div class="flex-grow-1 min-w-0 pr-2">
-                <div class="d-flex align-center ga-1-5 mb-0.5">
+                <div class="d-flex align-center ga-2 mb-1">
                   <h3 class="text-subtitle-1 font-weight-bold text-truncate">{{ item.name }}</h3>
                   <v-icon v-if="item.is_featured" size="16" color="#D97706">mdi-star</v-icon>
                 </div>

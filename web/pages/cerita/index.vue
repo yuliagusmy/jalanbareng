@@ -78,7 +78,7 @@
                     </span>
                   </div>
                   <div>
-                    <div class="text-caption text-white opacity-80 mb-0.5" style="font-size: 0.72rem !important;">
+                    <div class="text-caption text-white opacity-80 mb-1" style="font-size: 0.72rem !important;">
                       {{ formatDate(story.published_at) }} • {{ story.author_name }}
                     </div>
                     <h3 class="text-subtitle-2 text-sm-subtitle-1 font-weight-bold text-white line-clamp-2">

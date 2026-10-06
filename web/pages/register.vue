@@ -72,7 +72,7 @@
                     class="photo-img"
                   />
                   <div class="photo-badge-chip">
-                    <v-icon size="12" color="#DC2626" class="mr-0.5">mdi-map-marker</v-icon>
+                    <v-icon size="12" color="#DC2626" class="mr-1">mdi-map-marker</v-icon>
                     <span>Ruang Publik</span>
                   </div>
                 </div>
@@ -115,7 +115,7 @@
 
           <!-- Form Header -->
           <div class="mb-3 mb-sm-4 text-center text-sm-left">
-            <h1 class="form-title font-weight-black text-grey-darken-4 mb-0.5">
+            <h1 class="form-title font-weight-black text-grey-darken-4 mb-1">
               Daftar Sekarang
             </h1>
             <p class="form-subtitle text-grey-darken-1 mb-0">
@@ -167,7 +167,7 @@
 
               <v-form ref="registerForm" v-model="formValid" @submit.prevent="handleRegister">
                 <!-- Nama Lengkap -->
-                <div class="input-group mb-2.5">
+                <div class="input-group mb-3">
                   <label class="input-label mb-1 d-block text-body-2 font-weight-bold text-grey-darken-3">
                     Nama Lengkap
                   </label>
@@ -186,7 +186,7 @@
                 </div>
 
                 <!-- Email Input -->
-                <div class="input-group mb-2.5">
+                <div class="input-group mb-3">
                   <label class="input-label mb-1 d-block text-body-2 font-weight-bold text-grey-darken-3">
                     Email
                   </label>
@@ -205,7 +205,7 @@
                 </div>
 
                 <!-- No. WhatsApp / HP Input (Opsional) -->
-                <div class="input-group mb-2.5">
+                <div class="input-group mb-3">
                   <label class="input-label mb-1 d-block text-body-2 font-weight-bold text-grey-darken-3">
                     No. WhatsApp / HP <span class="text-grey-darken-1 font-weight-regular text-caption">(Opsional)</span>
                   </label>
@@ -223,7 +223,7 @@
                 </div>
 
                 <!-- Password Input -->
-                <div class="input-group mb-2.5">
+                <div class="input-group mb-3">
                   <label class="input-label mb-1 d-block text-body-2 font-weight-bold text-grey-darken-3">
                     Kata Sandi
                   </label>

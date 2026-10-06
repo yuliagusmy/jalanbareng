@@ -158,7 +158,7 @@
                   @click="form.card_style = style.value"
                 >
                   <div
-                    class="style-color-dot mx-auto mb-1.5"
+                    class="style-color-dot mx-auto mb-2"
                     :style="{ background: style.color }"
                   ></div>
                   <div class="text-caption font-weight-bold">{{ style.label }}</div>

@@ -293,7 +293,7 @@
                       </div>
                       <div class="flex-grow-1 min-w-0">
                         <div class="event-type-badge mb-1" :class="ev.type === 'walking' ? 'type-walking' : 'type-regular'">
-                          <v-icon size="11" class="mr-0.5" aria-hidden="true">{{ ev.type === 'walking' ? 'mdi-walk' : 'mdi-calendar-star' }}</v-icon>
+                          <v-icon size="11" class="mr-1" aria-hidden="true">{{ ev.type === 'walking' ? 'mdi-walk' : 'mdi-calendar-star' }}</v-icon>
                           {{ ev.type === 'walking' ? 'Jalan Kaki' : 'Agenda Tematik' }}
                         </div>
                         <h3 class="event-name">{{ ev.name }}</h3>

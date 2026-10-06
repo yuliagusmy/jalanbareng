@@ -340,11 +340,11 @@
                 <div class="d-flex align-center justify-space-between pt-1">
                   <div class="d-flex align-center ga-2">
                     <span class="stat-chip">
-                      <v-icon size="12" color="#DC2626" class="mr-0.5">mdi-heart</v-icon>
+                      <v-icon size="12" color="#DC2626" class="mr-1">mdi-heart</v-icon>
                       {{ destination.likes_count || 0 }}
                     </span>
                     <span class="stat-chip">
-                      <v-icon size="12" color="#6B7280" class="mr-0.5">mdi-comment-outline</v-icon>
+                      <v-icon size="12" color="#6B7280" class="mr-1">mdi-comment-outline</v-icon>
                       {{ destination.comments_count || 0 }}
                     </span>
                   </div>

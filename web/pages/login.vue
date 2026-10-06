@@ -72,7 +72,7 @@
                     class="photo-img"
                   />
                   <div class="photo-badge-chip">
-                    <v-icon size="12" color="#DC2626" class="mr-0.5">mdi-map-marker</v-icon>
+                    <v-icon size="12" color="#DC2626" class="mr-1">mdi-map-marker</v-icon>
                     <span>Ruang Publik</span>
                   </div>
                 </div>
@@ -115,7 +115,7 @@
 
           <!-- Form Header -->
           <div class="mb-3 mb-sm-4 text-center text-sm-left">
-            <h1 class="form-title font-weight-black text-grey-darken-4 mb-0.5">
+            <h1 class="form-title font-weight-black text-grey-darken-4 mb-1">
               Selamat Datang Kembali
             </h1>
             <p class="form-subtitle text-grey-darken-1 mb-0">
@@ -229,14 +229,14 @@
 
           <!-- Value Proposition: Kenapa Perlu Akun? -->
           <div class="why-join-box mt-4 pa-4 rounded-xl">
-            <div class="d-flex align-center mb-1.5">
+            <div class="d-flex align-center mb-2">
               <v-icon size="16" color="#DC2626" class="mr-2">mdi-compass-outline</v-icon>
               <span class="text-caption font-weight-bold text-grey-darken-4 text-uppercase" style="letter-spacing: 0.05em;">Kenapa Perlu Punya Akun?</span>
             </div>
-            <p class="text-caption text-grey-darken-2 mb-2.5" style="line-height: 1.5;">
+            <p class="text-caption text-grey-darken-2 mb-3" style="line-height: 1.5;">
               Mencari info dan link pendaftaran event selalu bebas tanpa login. Akun Jalan Bareng hadir agar kamu dapat:
             </p>
-            <div class="d-flex flex-column ga-1.5 text-caption text-grey-darken-3">
+            <div class="d-flex flex-column ga-2 text-caption text-grey-darken-3">
               <div class="d-flex align-center">
                 <v-icon size="14" color="#DC2626" class="mr-2">mdi-feather</v-icon>
                 <span>Kirim cerita & riset lorong pejalan kaki</span>

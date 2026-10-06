@@ -89,7 +89,7 @@
       <section v-if="selectedCategory === '' && featuredActivations.length > 0" class="mb-14">
         <div class="section-header-row mb-6">
           <div>
-            <div class="section-eyebrow d-inline-flex align-center ga-1.5 mb-2">
+            <div class="section-eyebrow d-inline-flex align-center ga-2 mb-2">
               <v-icon size="14" color="#DC2626">mdi-fire</v-icon>
               <span>SOROTAN KOMUNITAS</span>
             </div>
@@ -136,7 +136,7 @@
                         {{ getCategoryLabel(activation.category) }}
                       </span>
                       <span v-if="activation.city" class="city-indicator">
-                        <v-icon size="13" class="mr-0.5 text-grey">mdi-map-marker-outline</v-icon>
+                        <v-icon size="13" class="mr-1 text-grey">mdi-map-marker-outline</v-icon>
                         {{ activation.city }}
                       </span>
                     </div>
@@ -184,7 +184,7 @@
           <div class="section-header-box mb-6">
             <div class="d-flex align-center justify-space-between flex-wrap ga-3">
               <div>
-                <div class="section-eyebrow d-inline-flex align-center ga-1.5 mb-2">
+                <div class="section-eyebrow d-inline-flex align-center ga-2 mb-2">
                   <v-icon size="15" color="#DC2626">mdi-city-variant-outline</v-icon>
                   <span>JEJARING REGIONAL</span>
                 </div>
@@ -222,7 +222,7 @@
           <div class="section-header-box mb-6">
             <div class="d-flex align-center justify-space-between flex-wrap ga-3">
               <div>
-                <div class="section-eyebrow d-inline-flex align-center ga-1.5 mb-2">
+                <div class="section-eyebrow d-inline-flex align-center ga-2 mb-2">
                   <v-icon size="15" color="#DC2626">mdi-palette-outline</v-icon>
                   <span>INISIATIF & MINAT</span>
                 </div>
@@ -260,7 +260,7 @@
           <div class="section-header-box mb-6">
             <div class="d-flex align-center justify-space-between flex-wrap ga-3">
               <div>
-                <div class="section-eyebrow d-inline-flex align-center ga-1.5 mb-2">
+                <div class="section-eyebrow d-inline-flex align-center ga-2 mb-2">
                   <v-icon size="15" color="#DC2626">mdi-storefront-outline</v-icon>
                   <span>SIMPUL & RUANG FISIK</span>
                 </div>

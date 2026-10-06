@@ -31,13 +31,13 @@
 
     <!-- Card Content -->
     <div class="pa-3 pa-sm-4 d-flex flex-column flex-grow-1">
-      <div class="d-flex align-center justify-space-between mb-1.5 gap-2">
+      <div class="d-flex align-center justify-space-between mb-2 gap-2">
         <span v-if="activation.city" class="city-indicator">
-          <v-icon size="12" class="mr-0.5 text-grey">mdi-map-marker-outline</v-icon>
+          <v-icon size="12" class="mr-1 text-grey">mdi-map-marker-outline</v-icon>
           <span class="text-truncate">{{ activation.city }}</span>
         </span>
         <span v-else class="city-indicator text-grey">
-          <v-icon size="12" class="mr-0.5 text-grey">mdi-tag-outline</v-icon>
+          <v-icon size="12" class="mr-1 text-grey">mdi-tag-outline</v-icon>
           <span class="text-truncate">{{ getCategoryBadge(activation.category) }}</span>
         </span>
         <span class="event-count-chip">

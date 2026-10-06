@@ -37,7 +37,7 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="d-flex flex-column ga-2.5">
+      <div class="d-flex flex-column ga-3">
         <v-btn
           color="#DC2626"
           size="large"

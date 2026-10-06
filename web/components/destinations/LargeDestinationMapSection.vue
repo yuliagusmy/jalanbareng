@@ -5,7 +5,7 @@
       <div class="d-flex flex-column flex-md-row align-md-end justify-space-between mb-5 ga-4">
         <div>
           <div class="map-eyebrow d-inline-flex align-center mb-2">
-            <v-icon size="14" color="#DC2626" class="mr-1.5">mdi-map-marker-radius-outline</v-icon>
+            <v-icon size="14" color="#DC2626" class="mr-2">mdi-map-marker-radius-outline</v-icon>
             <span>PETA EKSPLORASI KOTA</span>
           </div>
           <h2 class="map-heading text-grey-darken-4 font-weight-black mb-1">
@@ -19,11 +19,11 @@
         <!-- Quick Status Badges -->
         <div class="d-flex align-center ga-2 flex-wrap">
           <div class="map-badge-item">
-            <v-icon size="15" color="#DC2626" class="mr-1.5">mdi-map-marker-multiple</v-icon>
+            <v-icon size="15" color="#DC2626" class="mr-2">mdi-map-marker-multiple</v-icon>
             <span class="font-weight-bold">{{ displayCount }} Titik Terpetakan</span>
           </div>
           <div v-if="selectedActivationName" class="map-badge-item active-city-badge">
-            <v-icon size="15" color="#2563EB" class="mr-1.5">mdi-city-variant-outline</v-icon>
+            <v-icon size="15" color="#2563EB" class="mr-2">mdi-city-variant-outline</v-icon>
             <span class="font-weight-bold">{{ selectedActivationName }}</span>
           </div>
         </div>
@@ -49,9 +49,9 @@
         </div>
 
         <!-- Footer Map Quick Tip -->
-        <div class="grand-map-footer px-4 py-2.5 d-flex align-center justify-space-between flex-wrap ga-2">
+        <div class="grand-map-footer px-4 py-3 d-flex align-center justify-space-between flex-wrap ga-2">
           <div class="d-flex align-center text-caption text-grey-darken-1">
-            <v-icon size="14" color="#DC2626" class="mr-1.5">mdi-gesture-tap</v-icon>
+            <v-icon size="14" color="#DC2626" class="mr-2">mdi-gesture-tap</v-icon>
             <span>Klik pin mana saja untuk melihat nama, kategori, foto, dan tombol panduan.</span>
           </div>
           <div class="d-none d-sm-flex align-center text-caption text-grey-darken-2 font-weight-medium">
