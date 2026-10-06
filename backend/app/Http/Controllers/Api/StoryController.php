@@ -17,7 +17,14 @@ class StoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Story::published()->latest('published_at');
+        $query = Story::published();
+
+        $sort = $request->input('sort', 'latest');
+        if ($sort === 'popular') {
+            $query->orderByDesc('views_count')->latest('published_at');
+        } else {
+            $query->latest('published_at');
+        }
 
         if ($request->has('featured') && $request->boolean('featured')) {
             $query->featured();

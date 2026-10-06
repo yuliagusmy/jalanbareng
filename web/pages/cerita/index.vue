@@ -43,22 +43,104 @@
 
     <!-- Main Container -->
     <v-container class="py-6 py-md-10">
-      <!-- Search & Filters -->
-      <v-row class="mb-6" align="center">
-        <v-col cols="12" sm="8" md="6">
+      <!-- Featured Top Stories (Cerita Terbaik / Pilihan) -->
+      <section v-if="!searchQuery && featuredStories.length > 0" class="mb-8 mb-md-10">
+        <div class="d-flex align-center ga-2 mb-3">
+          <v-icon color="#DC2626" size="18">mdi-star-four-points</v-icon>
+          <h2 class="text-subtitle-1 font-weight-black text-grey-darken-4 mb-0">
+            Cerita Pilihan &amp; Terpopuler
+          </h2>
+        </div>
+
+        <v-row dense>
+          <v-col
+            v-for="story in featuredStories"
+            :key="`featured-${story.id}`"
+            cols="12"
+            sm="6"
+          >
+            <div
+              class="featured-top-card cursor-pointer"
+              @click="navigateTo(`/cerita/${story.slug}`)"
+            >
+              <v-img
+                :src="story.cover_image_url || 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&fit=crop'"
+                height="190"
+                cover
+                class="featured-top-img"
+              >
+                <div class="featured-top-overlay d-flex flex-column justify-space-between pa-4">
+                  <div class="d-flex align-center justify-space-between">
+                    <span class="top-badge-pill">✦ Pilihan</span>
+                    <span v-if="story.views_count" class="top-views-pill">
+                      <v-icon size="11" class="mr-1">mdi-eye-outline</v-icon>
+                      {{ story.views_count }} dibaca
+                    </span>
+                  </div>
+                  <div>
+                    <div class="text-caption text-white opacity-80 mb-0.5" style="font-size: 0.72rem !important;">
+                      {{ formatDate(story.published_at) }} • {{ story.author_name }}
+                    </div>
+                    <h3 class="text-subtitle-2 text-sm-subtitle-1 font-weight-bold text-white line-clamp-2">
+                      {{ story.title }}
+                    </h3>
+                  </div>
+                </div>
+              </v-img>
+            </div>
+          </v-col>
+        </v-row>
+      </section>
+
+      <!-- Section Headline & Sort/Search Controls -->
+      <div class="d-flex flex-column flex-sm-row justify-space-between align-start align-sm-center mb-5 ga-3">
+        <div>
+          <h2 class="text-subtitle-1 font-weight-black text-grey-darken-4 mb-0">
+            {{ searchQuery ? 'Hasil Pencarian' : 'Semua Tulisan' }}
+          </h2>
+          <span class="text-caption text-grey-darken-1">
+            Menampilkan {{ stories.length }} cerita
+          </span>
+        </div>
+
+        <div class="d-flex align-center ga-2 flex-wrap w-100 w-sm-auto justify-space-between justify-sm-end">
+          <!-- Sort Filter Chips -->
+          <div class="d-flex ga-1.5">
+            <button
+              type="button"
+              class="sort-chip-btn"
+              :class="{ active: sortOption === 'latest' }"
+              @click="setSort('latest')"
+            >
+              <v-icon start size="14">mdi-clock-outline</v-icon>
+              Terbaru
+            </button>
+            <button
+              type="button"
+              class="sort-chip-btn"
+              :class="{ active: sortOption === 'popular' }"
+              @click="setSort('popular')"
+            >
+              <v-icon start size="14">mdi-fire</v-icon>
+              Terpopuler
+            </button>
+          </div>
+
+          <!-- Search Field -->
           <v-text-field
             v-model="searchQuery"
-            placeholder="Cari judul, topik, atau nama penulis..."
+            placeholder="Cari judul / penulis..."
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
-            density="comfortable"
+            density="compact"
             rounded="pill"
             hide-details
             clearable
+            style="min-width: 170px; max-width: 230px;"
             @update:model-value="debounceSearch"
           ></v-text-field>
-        </v-col>
-      </v-row>
+        </div>
+      </div>
 
       <!-- Loading State -->
       <v-row v-if="loading" dense>
@@ -154,8 +236,10 @@ const { api } = useApi()
 const { requireAuth } = useAuthGuard()
 
 const stories = ref<any[]>([])
+const featuredStories = ref<any[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
+const sortOption = ref<'latest' | 'popular'>('latest')
 const showSubmitDialog = ref(false)
 
 const handleOpenSubmitDialog = () => {
@@ -168,6 +252,12 @@ const handleOpenSubmitDialog = () => {
       showSubmitDialog.value = true
     },
   })
+}
+
+const setSort = (sort: 'latest' | 'popular') => {
+  if (sortOption.value === sort) return
+  sortOption.value = sort
+  fetchStories()
 }
 
 let searchTimeout: any = null
@@ -192,12 +282,29 @@ const filterFallbackStories = (query: string) => {
   )
 }
 
+const fetchFeatured = async () => {
+  try {
+    const res = await api.get('/stories', {
+      params: { sort: 'popular', limit: 2 }
+    })
+    const fetched = res.data.stories || res.data.data || []
+    if (fetched && fetched.length > 0) {
+      featuredStories.value = fetched
+    } else {
+      featuredStories.value = [...defaultDummyStories].sort((a, b) => b.views_count - a.views_count).slice(0, 2)
+    }
+  } catch {
+    featuredStories.value = [...defaultDummyStories].sort((a, b) => b.views_count - a.views_count).slice(0, 2)
+  }
+}
+
 const fetchStories = async () => {
   loading.value = true
   try {
     const res = await api.get('/stories', {
       params: {
         q: searchQuery.value || undefined,
+        sort: sortOption.value,
         per_page: 24,
       }
     })
@@ -205,11 +312,18 @@ const fetchStories = async () => {
     if (fetched && fetched.length > 0) {
       stories.value = fetched
     } else {
-      stories.value = filterFallbackStories(searchQuery.value)
+      let dummy = filterFallbackStories(searchQuery.value)
+      if (sortOption.value === 'popular') {
+        dummy = [...dummy].sort((a, b) => b.views_count - a.views_count)
+      }
+      stories.value = dummy
     }
   } catch (err) {
-    console.error('Failed to load stories archive from API, using fallback:', err)
-    stories.value = filterFallbackStories(searchQuery.value)
+    let dummy = filterFallbackStories(searchQuery.value)
+    if (sortOption.value === 'popular') {
+      dummy = [...dummy].sort((a, b) => b.views_count - a.views_count)
+    }
+    stories.value = dummy
   } finally {
     loading.value = false
   }
@@ -223,6 +337,7 @@ const debounceSearch = () => {
 }
 
 onMounted(() => {
+  fetchFeatured()
   fetchStories()
 })
 </script>
@@ -356,5 +471,72 @@ onMounted(() => {
     font-size: 0.825rem !important;
     line-height: 1.3 !important;
   }
+}
+
+.featured-top-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.featured-top-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+}
+
+.featured-top-img {
+  position: relative;
+}
+
+.featured-top-overlay {
+  height: 100%;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.85) 100%);
+}
+
+.top-badge-pill {
+  padding: 3px 8px;
+  background: #DC2626;
+  color: #fff;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.top-views-pill {
+  padding: 2px 7px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.35;
+}
+
+.sort-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid #E2E8F0;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sort-chip-btn.active {
+  background: #FEF2F2;
+  border-color: #DC2626;
+  color: #DC2626;
 }
 </style>
