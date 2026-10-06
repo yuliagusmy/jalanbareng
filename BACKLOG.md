@@ -7,14 +7,14 @@
 
 > Dicatat: 6 Oktober 2026
 
-### A. Fix Form Kirim Tulisan — Mobile UX (Prioritas Tinggi)
-- [ ] Ganti `<v-dialog>` kecil ke **bottom sheet full-height** di mobile 390px
-- [ ] Textarea lebih besar, padding cukup, tidak terpotong keyboard
-- [ ] Label & placeholder yang jelas untuk setiap field
+### ✅ ~~A. Fix Form Kirim Tulisan — Mobile UX~~ — SELESAI (6 Oktober 2026)
+- [x] Dialog otomatis fullscreen/full-sheet di mobile 390px (`$vuetify.display.smAndDown`)
+- [x] Sticky header dengan tombol kembali & tombol cepat "Kirim"
+- [x] Sticky footer action bar di mobile agar tombol submit selalu dapat diakses
+- [x] Tiptap toolbar responsif 1 baris yang dapat di-scroll horizontal tanpa bertumpuk
 
-### B. Fix Ukuran Headline Mobile (Kecil)
-- [ ] Samakan ukuran `h1` hero di `/cerita` dengan halaman lain (events, aktivasi) di viewport 390px
-- [ ] Target: konsisten `clamp(1.8rem, ...)` sesuai design system
+### ✅ ~~B. Fix Ukuran Headline Mobile (Kecil)~~ — SELESAI (6 Oktober 2026)
+- [x] Samakan ukuran `h1` hero di `/cerita` dengan halaman lain (events, destinasi) di viewport 390px (`1.95rem` & line-height `1.15`)
 
 ### C. Halaman Cerita Index — Rich Layout
 - [ ] Bagian atas: **"Cerita Terbaik"** — 2–3 card featured (sorted by likes + comments)
