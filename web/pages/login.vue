@@ -226,6 +226,31 @@
               </div>
             </v-form>
           </div>
+
+          <!-- Value Proposition: Kenapa Perlu Akun? -->
+          <div class="why-join-box mt-4 pa-4 rounded-xl">
+            <div class="d-flex align-center mb-1.5">
+              <v-icon size="16" color="#DC2626" class="mr-2">mdi-compass-outline</v-icon>
+              <span class="text-caption font-weight-bold text-grey-darken-4 text-uppercase" style="letter-spacing: 0.05em;">Kenapa Perlu Punya Akun?</span>
+            </div>
+            <p class="text-caption text-grey-darken-2 mb-2.5" style="line-height: 1.5;">
+              Mencari info dan link pendaftaran event selalu bebas tanpa login. Akun Jalan Bareng hadir agar kamu dapat:
+            </p>
+            <div class="d-flex flex-column ga-1.5 text-caption text-grey-darken-3">
+              <div class="d-flex align-center">
+                <v-icon size="14" color="#DC2626" class="mr-2">mdi-feather</v-icon>
+                <span>Kirim cerita & riset lorong pejalan kaki</span>
+              </div>
+              <div class="d-flex align-center">
+                <v-icon size="14" color="#DC2626" class="mr-2">mdi-comment-text-outline</v-icon>
+                <span>Apresiasi, komentar, & respon karya kawan lain</span>
+              </div>
+              <div class="d-flex align-center">
+                <v-icon size="14" color="#DC2626" class="mr-2">mdi-map-marker-plus-outline</v-icon>
+                <span>Rekomendasikan destinasi & landmark sudut kota</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -749,6 +774,11 @@ const handleGoogleLogin = async () => {
 
 .register-link:hover {
   text-decoration: underline;
+}
+
+.why-join-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
 }
 
 /* ============================================================

@@ -57,28 +57,15 @@
             <!-- Action Buttons -->
             <div class="mt-4 mt-md-6 d-flex align-center justify-center ga-3 flex-wrap">
               <v-btn
-                v-if="authStore.isLoggedIn"
                 color="#DC2626"
                 size="large"
                 rounded="pill"
                 elevation="0"
-                class="font-weight-bold px-6 text-white"
-                to="/destinations/create"
+                class="font-weight-bold px-6 text-white text-none"
+                @click="handleAddDestination"
               >
                 <v-icon start size="18">mdi-plus</v-icon>
                 Tambah Destinasi
-              </v-btn>
-              <v-btn
-                v-else
-                color="#DC2626"
-                size="large"
-                rounded="pill"
-                elevation="0"
-                class="font-weight-bold px-6 text-white"
-                to="/register"
-              >
-                <v-icon start size="18">mdi-account-plus-outline</v-icon>
-                Daftar untuk Berbagi
               </v-btn>
             </div>
           </v-col>
@@ -444,29 +431,15 @@
               </v-row>
 
               <v-btn
-                v-if="authStore.isLoggedIn"
                 color="#DC2626"
                 size="large"
                 rounded="pill"
                 elevation="0"
-                class="cta-contrib-btn font-weight-bold px-5 px-sm-8 text-white"
-                to="/destinations/create"
+                class="cta-contrib-btn font-weight-bold px-5 px-sm-8 text-white text-none"
+                @click="handleAddDestination"
               >
                 <v-icon start size="18">mdi-plus</v-icon>
-                <span>Tambah Destinasi Baru</span>
-              </v-btn>
-              <v-btn
-                v-else
-                color="#DC2626"
-                size="large"
-                rounded="pill"
-                elevation="0"
-                class="cta-contrib-btn font-weight-bold px-4 px-sm-8 text-white"
-                to="/register"
-              >
-                <v-icon start size="18">mdi-account-plus-outline</v-icon>
-                <span class="d-none d-sm-inline">Daftar untuk Berkontribusi</span>
-                <span class="d-inline d-sm-none">Daftar &amp; Berkontribusi</span>
+                <span>Bagikan Destinasi Baru</span>
               </v-btn>
             </v-col>
           </v-row>
@@ -491,6 +464,7 @@ import FeaturedLandmarksSection from '~/components/destinations/FeaturedLandmark
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 import { useBookmarks } from '~/composables/useBookmarks'
+import { useAuthGuard } from '~/composables/useAuthGuard'
 import { useRuntimeConfig, useRoute, useRouter, useSeoMeta } from '#app'
 
 definePageMeta({
@@ -508,9 +482,22 @@ useSeoMeta({
 
 const authStore = useAuthStore()
 const { api } = useApi()
+const { requireAuth } = useAuthGuard()
 const route = useRoute()
 const router = useRouter()
 const { bookmarks, bookmarksCount, isBookmarked, toggleBookmark } = useBookmarks()
+
+const handleAddDestination = () => {
+  requireAuth({
+    action: 'add_destination',
+    title: 'Bagikan Destinasi Baru',
+    message: 'Masuk atau buat akun untuk menambahkan rekomendasi rute lorong, landmark kota, atau ruang publik favoritmu.',
+    redirect: '/destinations/create',
+    onSuccess: () => {
+      router.push('/destinations/create')
+    },
+  })
+}
 
 const showOnlyBookmarked = ref(false)
 const snackbar = ref(false)

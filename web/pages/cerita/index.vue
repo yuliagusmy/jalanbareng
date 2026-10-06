@@ -29,8 +29,8 @@
                 size="large"
                 rounded="pill"
                 elevation="0"
-                class="font-weight-bold px-6 text-white"
-                @click="showSubmitDialog = true"
+                class="font-weight-bold px-6 text-white text-none"
+                @click="handleOpenSubmitDialog"
               >
                 <v-icon start size="18">mdi-feather</v-icon>
                 Kirim Tulisan Anda
@@ -128,7 +128,7 @@
         <v-icon size="56" color="grey" class="mb-3">mdi-text-box-search-outline</v-icon>
         <h3 class="text-h6 font-weight-bold text-grey-darken-3 mb-1">Tidak ada tulisan yang cocok</h3>
         <p class="text-body-2 text-grey mb-4">Coba cari dengan kata kunci lain atau kirim tulisan Anda sendiri.</p>
-        <v-btn color="primary" rounded="pill" @click="showSubmitDialog = true">
+        <v-btn color="primary" rounded="pill" class="text-none" @click="handleOpenSubmitDialog">
           Kirim Tulisan
         </v-btn>
       </v-card>
@@ -141,6 +141,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
+import { useAuthGuard } from '~/composables/useAuthGuard'
 import SubmitStoryDialog from '~/components/stories/SubmitStoryDialog.vue'
 import { defaultDummyStories } from '~/utils/dummyStories'
 
@@ -150,11 +151,24 @@ useSeoMeta({
 })
 
 const { api } = useApi()
+const { requireAuth } = useAuthGuard()
 
 const stories = ref<any[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
 const showSubmitDialog = ref(false)
+
+const handleOpenSubmitDialog = () => {
+  requireAuth({
+    action: 'submit_story',
+    title: 'Kirim Tulisan Pejalan Kaki',
+    message: 'Masuk atau buat akun Jalan Bareng agar tulisanmu terhubung dengan profil penulis kontribusimu.',
+    redirect: '/cerita',
+    onSuccess: () => {
+      showSubmitDialog.value = true
+    },
+  })
+}
 
 let searchTimeout: any = null
 

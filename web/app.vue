@@ -5,5 +5,6 @@
       <NuxtPage />
     </NuxtLayout>
     <PwaInstallPrompt />
+    <AuthPromptDialog />
   </v-app>
 </template>
