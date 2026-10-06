@@ -31,6 +31,44 @@
 - [ ] **Reply** komentar — penulis & pembaca bisa saling balas
 - [ ] Perlu cek apakah `CommentController` & `LikeController` support `commentable_type = story`
 
+---
+
+## 🔐 Kejelasan Nilai Login & Access Control Member
+
+> Dicatat: 6 Oktober 2026
+
+**Konteks:** Saat ini user tidak cukup paham *kenapa* harus login. Perlu dibuat lebih tegas & jelas.
+
+### Prinsip Akses
+
+| Aksi | Guest (Tanpa Login) | Member (Login) |
+|---|---|---|
+| Baca cerita & artikel | ✅ Boleh | ✅ Boleh |
+| Lihat event & cari link Google Form | ✅ Boleh | ✅ Boleh |
+| Jelajah destinasi & peta | ✅ Boleh | ✅ Boleh |
+| **Like** cerita / destinasi | ❌ Harus login | ✅ Bisa |
+| **Komentar** & reply | ❌ Harus login | ✅ Bisa |
+| **Submit cerita** Jalan Bareng | ❌ Harus login | ✅ Bisa |
+| **Bagikan destinasi** baru | ❌ Harus login | ✅ Bisa |
+| Lihat riwayat keikutsertaan event | ❌ | ✅ Di profil |
+
+### F. Value Proposition Login — UI/UX
+- [ ] **Halaman login** — tambahkan seksi "Kenapa bergabung?" dengan manfaat konkret member
+- [ ] **Prompt login** yang muncul saat guest klik tombol like/komentar/submit — bukan error, tapi undangan yang ramah: *"Bergabung dulu untuk ikut meramaikan 👇"*
+- [ ] **Prompt login** di form submit cerita & bagikan destinasi — jika belum login, redirect ke login dengan pesan konteks yang jelas
+- [ ] CTA "Masuk / Daftar" di navbar lebih menonjol untuk guest
+
+### G. Guard Aksi Terproteksi di Frontend
+- [ ] Tombol **Like** — jika guest klik → muncul dialog/snackbar undangan login
+- [ ] Tombol **Komentar** — jika guest klik textarea → muncul prompt login
+- [ ] Tombol **Kirim Tulisan** — jika guest klik → redirect ke login dengan `?redirect=/cerita`
+- [ ] Tombol **Bagikan Destinasi** — jika guest klik → redirect ke login
+- [ ] Semua guard pakai composable `useAuthGuard()` yang konsisten (buat baru jika belum ada)
+
+### H. Halaman Profil Member — Dashboard Kontribusi
+- [ ] Setelah login, user lihat ringkasan kontribusi: cerita yang dikirim, destinasi yang dibagikan, komentar aktif
+- [ ] Ini menjawab "saya login untuk apa?" — ada jejak aktivitas yang terasa nyata
+
 ### ✅ ~~Peta Rute Walking Tour~~ — SELESAI
 - Komponen MapLibre viewer baru di `web/components/events/WalkingRouteMapViewer.vue`
 - Rute digambar sebagai polyline halus dengan lapisan halo putih + garis merah utama Jalan Bareng via GeoJSON
