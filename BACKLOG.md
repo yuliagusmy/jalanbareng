@@ -82,6 +82,52 @@
 
 ---
 
+## 🗺️ Future Feature: Live Map & GPS Route Tracking Jalan Bareng
+
+> Dicatat: 6 Oktober 2026
+> Inspirasi: Google Maps + Strava + fitur peta rute walking tour yang sudah ada
+
+**Konsep:** Halaman `/destinations` berevolusi menjadi **full-screen interactive map** seperti Google Maps — dengan fitur live GPS tracking khusus untuk admin/tour leader saat memimpin jalan.
+
+---
+
+### I. Full-Screen Map Mode di Halaman Destinasi
+- [ ] Halaman `/destinations` tampil sebagai **peta penuh 1 layar** (tanpa navbar/header) saat dibuka di mobile
+- [ ] **Titik lokasi user saat ini** (GPS dot biru) — pakai `navigator.geolocation.watchPosition()`
+- [ ] Tombol **"Direktori"** (slide-up panel) untuk menampilkan daftar destinasi & landmark terdekat
+- [ ] Filter cepat di atas peta: Landmark, Kuliner, Titik Kumpul, dll.
+- [ ] Marker destinasi interaktif: klik → muncul card mini preview + tombol "Lihat Detail"
+
+### J. Tombol "Mulai Jalan" — GPS Route Recording (Admin/Tour Leader Only)
+- [ ] Tombol **"Mulai Jalan"** hanya muncul untuk user dengan role `admin` atau `community_admin`
+- [ ] Saat ditekan: mulai merekam trek GPS secara real-time (`watchPosition` setiap N detik)
+- [ ] Rekaman trek ditampilkan sebagai **polyline merah** di peta secara live
+- [ ] Indikator status recording (waktu berjalan, jarak tempuh, kecepatan rata-rata)
+- [ ] Tombol **"Selesai"** untuk menghentikan recording dan masuk ke halaman review rute
+
+### K. Review & Share Rute ke Halaman Event
+- [ ] Setelah selesai recording: tampil **ringkasan rute** (peta mini, total jarak, durasi, elevasi)
+- [ ] Tombol **"Bagikan ke Event"** — admin pilih event yang sedang aktif (hari ini / minggu ini)
+- [ ] Rute yang di-share tersimpan ke database event → muncul di halaman detail event sebagai **"Rute Jalan Kita Hari Ini"**
+- [ ] Rute ditampilkan menggunakan komponen `WalkingRouteMapViewer.vue` yang sudah ada
+
+### L. Fitur Tambahan yang Bisa Dikembangkan
+- [ ] **Live tracking publik** — peserta event bisa melihat posisi tour leader bergerak secara real-time (WebSocket / SSE)
+- [ ] **Checkpoint system** — admin bisa drop pin checkpoint saat jalan, otomatis tercatat di rute
+- [ ] **Foto di lokasi** — peserta bisa upload foto yang otomatis di-pin ke koordinat saat diambil
+- [ ] **Riwayat rute per event** — arsip semua rute yang pernah direkam, bisa dibandingkan antar edisi
+- [ ] **Ekspor GPX** — rute bisa diunduh sebagai file GPX untuk dibuka di Strava/Komoot/Maps
+- [ ] **Statistik komunitas** — total km yang sudah dijelajahi komunitas Jalan Bareng sejak berdiri
+
+### Catatan Teknis
+- GPS tracking: `navigator.geolocation.watchPosition()` + simpan ke `ref([])` di store
+- Penyimpanan rute: kolom `recorded_route` (JSON/GeoJSON) di tabel `events` — migration baru
+- Map engine: **MapLibre GL JS** (sudah dipakai di `WalkingRouteMapViewer.vue`)
+- Real-time (opsional): Laravel Broadcasting + Pusher/Soketi atau Server-Sent Events
+- Backend endpoint baru yang perlu dibuat: `POST /events/{id}/route` (simpan rute hasil recording)
+
+---
+
 ## Prioritas Rendah / Nice-to-Have
  
 ### ✅ ~~Migrasi Google Cloud Console~~ — SELESAI (5 Oktober 2026)
