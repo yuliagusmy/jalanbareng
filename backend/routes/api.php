@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DestinationController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ActivationController;
 use App\Http\Controllers\Api\PageController;
@@ -49,6 +50,9 @@ Route::middleware('auth:sanctum')->group(function () {
 // Public read-only routes
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
+
+// Partners (public)
+Route::get('/partners', [PartnerController::class, 'index']);
 
 Route::get('/destinations', [DestinationController::class, 'index']);
 Route::get('/destinations/{destination}', [DestinationController::class, 'show']);
@@ -125,16 +129,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/activations', [ActivationController::class, 'store']);
         Route::post('/activations/{id}', [ActivationController::class, 'update']);
         Route::delete('/activations/{id}', [ActivationController::class, 'destroy']);
-        
+
         // Activation Media
         Route::post('/activations/{id}/media', [ActivationController::class, 'uploadMedia']);
         Route::delete('/activations/{id}/media/{mediaId}', [ActivationController::class, 'deleteMedia']);
-        
+
         // Activation FAQs
         Route::post('/activations/{id}/faqs', [ActivationController::class, 'storeFaq']);
         Route::put('/activations/{id}/faqs/{faqId}', [ActivationController::class, 'updateFaq']);
         Route::delete('/activations/{id}/faqs/{faqId}', [ActivationController::class, 'deleteFaq']);
-        
+
         // Activation Testimonials
         Route::post('/activations/{id}/testimonials', [ActivationController::class, 'storeTestimonial']);
         Route::post('/activations/{id}/testimonials/{testimonialId}', [ActivationController::class, 'updateTestimonial']);
@@ -153,6 +157,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/admin/stories/{id}/status', [StoryController::class, 'adminUpdateStatus']);
         Route::post('/admin/stories/{id}', [StoryController::class, 'adminUpdate']);
         Route::delete('/admin/stories/{id}', [StoryController::class, 'adminDestroy']);
+
+        // Partners (Admin CRUD)
+        Route::get('/admin/partners', [PartnerController::class, 'adminIndex']);
+        Route::post('/admin/partners', [PartnerController::class, 'store']);
+        Route::get('/admin/partners/{partner}', [PartnerController::class, 'show']);
+        Route::put('/admin/partners/{partner}', [PartnerController::class, 'update']);
+        Route::delete('/admin/partners/{partner}', [PartnerController::class, 'destroy']);
 
         // Users Management (Admin & Community Admin view)
         Route::get('/users', [UserController::class, 'index']);
@@ -196,7 +207,7 @@ Route::get('/system/seed-database', function (\Illuminate\Http\Request $request)
     if ($request->query('key') !== $secretKey) {
         return response()->json(['error' => 'Unauthorized: Invalid seed key'], 403);
     }
-    
+
     try {
         \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
         return response()->json([
@@ -218,7 +229,7 @@ Route::get('/system/migrate-database', function (\Illuminate\Http\Request $reque
     if ($request->query('key') !== $secretKey) {
         return response()->json(['error' => 'Unauthorized: Invalid seed key'], 403);
     }
-    
+
     try {
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
         return response()->json([
