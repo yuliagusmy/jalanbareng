@@ -10,6 +10,19 @@ class CommentController extends Controller
 {
     public function index(Request $request)
     {
+        // If filtering by user_id (for profile page)
+        if ($request->has('user_id')) {
+            $comments = Comment::with(['user', 'commentable'])
+                ->where('user_id', $request->user_id)
+                ->withCount(['likes', 'replies'])
+                ->orderByDesc('created_at')
+                ->limit(20)
+                ->get();
+
+            return response()->json($comments);
+        }
+
+        // Otherwise, filter by commentable (existing behavior)
         $request->validate([
             'commentable_type' => 'required|string',
             'commentable_id'   => 'required|integer',

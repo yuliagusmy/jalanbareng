@@ -126,6 +126,17 @@
                     {{ profileData.events_count }}
                   </span>
                 </v-tab>
+                <v-tab value="stories" class="tab-item">
+                  <v-icon start size="18">mdi-text-box-outline</v-icon>
+                  Cerita
+                  <span v-if="profileData?.stories_count" class="tab-badge ml-2">
+                    {{ profileData.stories_count }}
+                  </span>
+                </v-tab>
+                <v-tab value="comments" class="tab-item">
+                  <v-icon start size="18">mdi-comment-multiple-outline</v-icon>
+                  Komentar
+                </v-tab>
                 <v-tab value="saved" class="tab-item">
                   <v-icon start size="18" color="#DC2626">mdi-bookmark-outline</v-icon>
                   Disimpan
@@ -447,7 +458,148 @@
                 </div>
               </v-window-item>
 
-              <!-- TAB 5: Destinasi yang Disimpan / Ingin Dikunjungi -->
+              <!-- TAB 5: Cerita yang Dikirim -->
+              <v-window-item value="stories">
+                <div class="tab-inner-content">
+                  <div v-if="loading" class="text-center py-12">
+                    <v-progress-circular indeterminate color="#DC2626" size="44"></v-progress-circular>
+                    <p class="mt-3 text-caption text-grey">Memuat daftar cerita...</p>
+                  </div>
+
+                  <div v-else-if="userStories.length > 0" class="stories-grid">
+                    <v-row>
+                      <v-col
+                        v-for="story in userStories"
+                        :key="story.id"
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-card
+                          hover
+                          rounded="xl"
+                          class="story-tile-card"
+                          :to="`/cerita/${story.slug}`"
+                        >
+                          <v-img
+                            v-if="story.cover_image_url"
+                            :src="story.cover_image_url"
+                            height="160"
+                            cover
+                            class="story-img"
+                          >
+                            <template v-slot:placeholder>
+                              <div class="d-flex align-center justify-center fill-height bg-grey-lighten-3">
+                                <v-progress-circular indeterminate color="#DC2626"></v-progress-circular>
+                              </div>
+                            </template>
+                          </v-img>
+                          <div v-else class="story-img-placeholder">
+                            <v-icon size="48" color="#D1D5DB">mdi-text-box-outline</v-icon>
+                          </div>
+                          <v-card-text class="pa-4">
+                            <h4 class="story-title">{{ story.title }}</h4>
+                            <p v-if="story.excerpt" class="story-excerpt">{{ story.excerpt }}</p>
+                            <div class="story-meta d-flex align-center justify-space-between mt-3">
+                              <span class="meta-stat">
+                                <v-icon size="14" color="#0284C7" class="mr-1">mdi-eye-outline</v-icon>
+                                {{ story.views_count || 0 }} views
+                              </span>
+                              <span class="text-caption text-grey">
+                                {{ formatDate(story.published_at) }}
+                              </span>
+                            </div>
+                          </v-card-text>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </div>
+
+                  <div v-else class="empty-tab-state text-center py-12">
+                    <v-icon size="64" color="#D1D5DB">mdi-text-box-off-outline</v-icon>
+                    <h3 class="empty-title mt-3">Belum Ada Cerita</h3>
+                    <p class="empty-subtitle">Bagikan pengalaman jalan kaki Anda dengan komunitas</p>
+                    <v-btn
+                      color="#DC2626"
+                      variant="flat"
+                      to="/cerita"
+                      rounded="pill"
+                      size="large"
+                      class="mt-4 font-weight-bold text-white px-6"
+                    >
+                      <v-icon start size="18">mdi-pencil</v-icon>
+                      Tulis Cerita Baru
+                    </v-btn>
+                  </div>
+                </div>
+              </v-window-item>
+
+              <!-- TAB 6: Komentar Aktif -->
+              <v-window-item value="comments">
+                <div class="tab-inner-content">
+                  <div v-if="loadingComments" class="text-center py-12">
+                    <v-progress-circular indeterminate color="#DC2626" size="44"></v-progress-circular>
+                    <p class="mt-3 text-caption text-grey">Memuat komentar...</p>
+                  </div>
+
+                  <div v-else-if="userComments.length > 0" class="comments-list">
+                    <div
+                      v-for="comment in userComments"
+                      :key="comment.id"
+                      class="comment-card"
+                    >
+                      <div class="comment-header d-flex align-center justify-space-between mb-2">
+                        <div class="d-flex align-center ga-2">
+                          <v-icon size="16" :color="getCommentTypeColor(comment.commentable_type)">
+                            {{ getCommentTypeIcon(comment.commentable_type) }}
+                          </v-icon>
+                          <span class="comment-type-label">{{ getCommentTypeLabel(comment.commentable_type) }}</span>
+                        </div>
+                        <span class="text-caption text-grey">{{ formatCommentDate(comment.created_at) }}</span>
+                      </div>
+
+                      <NuxtLink
+                        :to="getCommentLink(comment)"
+                        class="comment-target-link mb-2"
+                      >
+                        <v-icon size="14" class="mr-1">mdi-open-in-new</v-icon>
+                        {{ comment.commentable?.name || comment.commentable?.title || 'Lihat konten' }}
+                      </NuxtLink>
+
+                      <p class="comment-content">{{ comment.content }}</p>
+
+                      <div class="comment-footer d-flex align-center ga-3 mt-2">
+                        <span class="meta-stat">
+                          <v-icon size="14" color="#EF4444" class="mr-1">mdi-heart</v-icon>
+                          {{ comment.likes_count || 0 }}
+                        </span>
+                        <span v-if="comment.replies_count" class="meta-stat">
+                          <v-icon size="14" color="#0284C7" class="mr-1">mdi-comment-outline</v-icon>
+                          {{ comment.replies_count }} balasan
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div v-else class="empty-tab-state text-center py-12">
+                    <v-icon size="64" color="#D1D5DB">mdi-comment-off-outline</v-icon>
+                    <h3 class="empty-title mt-3">Belum Ada Komentar</h3>
+                    <p class="empty-subtitle">Mulai berinteraksi dengan destinasi, event, atau cerita komunitas</p>
+                    <v-btn
+                      color="#DC2626"
+                      variant="flat"
+                      to="/destinations"
+                      rounded="pill"
+                      size="large"
+                      class="mt-4 font-weight-bold text-white px-6"
+                    >
+                      <v-icon start size="18">mdi-compass-outline</v-icon>
+                      Jelajahi Konten
+                    </v-btn>
+                  </div>
+                </div>
+              </v-window-item>
+
+              <!-- TAB 7: Destinasi yang Disimpan / Ingin Dikunjungi -->
               <v-window-item value="saved">
                 <div class="tab-inner-content">
                   <div v-if="bookmarks.length > 0" class="destinations-grid">
@@ -700,6 +852,9 @@ const loading = ref(false)
 const profileData = ref<any>(null)
 const userDestinations = ref<any[]>([])
 const userEvents = ref<any[]>([])
+const userStories = ref<any[]>([])
+const userComments = ref<any[]>([])
+const loadingComments = ref(false)
 
 const snackbar = ref(false)
 const snackbarText = ref('')
@@ -792,11 +947,85 @@ const fetchProfileData = async () => {
     profileData.value = response.data.user
     userDestinations.value = response.data.user.destinations || []
     userEvents.value = response.data.user.participated_events || []
+    userStories.value = response.data.user.stories || []
   } catch (error) {
     console.error('Error fetching profile data:', error)
   } finally {
     loading.value = false
   }
+}
+
+const fetchUserComments = async () => {
+  if (!authStore.user?.id) return
+
+  loadingComments.value = true
+  try {
+    const response = await api.get(`/comments?user_id=${authStore.user.id}`)
+    userComments.value = response.data
+  } catch (error) {
+    console.error('Error fetching comments:', error)
+    userComments.value = []
+  } finally {
+    loadingComments.value = false
+  }
+}
+
+// Comment helper functions
+const getCommentTypeIcon = (type: string) => {
+  if (type.includes('Destination')) return 'mdi-map-marker'
+  if (type.includes('Event')) return 'mdi-calendar'
+  if (type.includes('Story')) return 'mdi-text-box'
+  return 'mdi-comment'
+}
+
+const getCommentTypeColor = (type: string) => {
+  if (type.includes('Destination')) return '#DC2626'
+  if (type.includes('Event')) return '#16A34A'
+  if (type.includes('Story')) return '#0284C7'
+  return '#6B7280'
+}
+
+const getCommentTypeLabel = (type: string) => {
+  if (type.includes('Destination')) return 'Destinasi'
+  if (type.includes('Event')) return 'Event'
+  if (type.includes('Story')) return 'Cerita'
+  return 'Komentar'
+}
+
+const getCommentLink = (comment: any) => {
+  if (comment.commentable_type.includes('Destination')) {
+    return `/destinations/${comment.commentable_id}`
+  }
+  if (comment.commentable_type.includes('Event')) {
+    return `/events/${comment.commentable_id}`
+  }
+  if (comment.commentable_type.includes('Story')) {
+    return `/cerita/${comment.commentable?.slug || comment.commentable_id}`
+  }
+  return '#'
+}
+
+const formatCommentDate = (date: string) => {
+  if (!date) return ''
+  const d = new Date(date)
+  const now = new Date()
+  const diff = now.getTime() - d.getTime()
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+  if (days === 0) return 'Hari ini'
+  if (days === 1) return 'Kemarin'
+  if (days < 7) return `${days} hari lalu`
+  if (days < 30) return `${Math.floor(days / 7)} minggu lalu`
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+const formatDate = (date: string) => {
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  })
 }
 
 const onProfileSaved = async () => {
@@ -819,6 +1048,13 @@ onMounted(async () => {
     await authStore.fetchUser()
   }
   await fetchProfileData()
+})
+
+// Fetch comments when tab changes to comments
+watch(tab, (newTab) => {
+  if (newTab === 'comments' && userComments.value.length === 0) {
+    fetchUserComments()
+  }
 })
 </script>
 
@@ -1283,5 +1519,115 @@ onMounted(async () => {
 .card-remove-bookmark-btn:hover {
   transform: scale(1.1);
   background: #FEF2F2;
+}
+
+/* Stories Grid */
+.stories-grid {
+  margin-top: 8px;
+}
+
+.story-tile-card {
+  border: 1px solid #E5E7EB;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.story-tile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+  border-color: #CBD5E1;
+}
+
+.story-img {
+  object-fit: cover;
+}
+
+.story-img-placeholder {
+  height: 160px;
+  background: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.story-excerpt {
+  font-size: 0.8rem;
+  color: #6B7280;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Comments List */
+.comments-list {
+  margin-top: 8px;
+}
+
+.comment-card {
+  padding: 16px 20px;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.comment-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.comment-type-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.comment-target-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #DC2626;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.comment-target-link:hover {
+  color: #B91C1C;
+  text-decoration: underline;
+}
+
+.comment-content {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.6;
+  margin: 8px 0 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.comment-footer {
+  padding-top: 8px;
+  border-top: 1px solid #F3F4F6;
 }
 </style>
