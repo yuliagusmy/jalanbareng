@@ -4,12 +4,7 @@
 
 ## 🔄 Sedang Dikerjakan / Belum Selesai
 
-**Fitur Kelola Mitra (BACKLOG section 8)** — belum dimulai, siap dikerjakan.
-
-Scope yang perlu dibangun:
-- Backend: migration tabel `partners`, Model `Partner.php`, `PartnerController.php` dengan endpoint publik (`GET /api/partners`) dan admin CRUD (`POST/PUT/DELETE /api/admin/partners`)
-- Frontend admin: `web/pages/manage/partners/index.vue` — tabel + filter + form modal
-- Frontend publik: `web/pages/mitra.vue` — halaman daftar mitra
+Tidak ada.
 
 ## ⏳ File Belum Di-commit
 
@@ -17,27 +12,24 @@ Tidak ada.
 
 ## ✅ Terakhir Diselesaikan
 
-- `fix: batch replace all invalid Vuetify utility classes across codebase`
-  - 13 file difix, 37 penggantian class invalid (ga-1.5→ga-2, mb-2.5→mb-3, mr-0.5→mr-1, dll.)
-  - File: AuthPromptDialog, register, profile/[id], login, ActivationTestimonials, ActivationCard, aktivasi/index, SubmitStoryDialog, cerita/index, manage/activations/index, destinations/index, LargeDestinationMapSection, DestinationWalkerGuide
-- `fix: mobile responsiveness audit fixes for detail pages` — events, aktivasi, destinations detail pages
+- `feat: add Kelola Mitra feature (partners CRUD + public page)`
+  - **Backend**: migration `create_partners_table` (name, category, role, collab_type, initial, logo_url, bg_color, text_color, website_url, sort_order, is_active)
+  - **Model**: `Partner.php` dengan scope `active()`
+  - **Controller**: `PartnerController.php` — `GET /api/partners` (publik), admin CRUD di `/api/admin/partners`
+  - **Admin page**: `web/pages/manage/partners/index.vue` — stats cards, filter, mobile card + desktop table, form dialog dengan live preview, toggle aktif/nonaktif
+  - **Public page**: `web/pages/mitra.vue` — hero, grouping per kategori, partner card grid, logo/initial fallback, CTA kolaborasi
+- `fix: batch replace all invalid Vuetify utility classes across codebase` — 37 penggantian di 13 file
+- `fix: mobile responsiveness audit fixes for detail pages`
 - `feat: add accessibility and scroll indicators to CategorySection`
-- `fix: collapsible filter panel for admin pages on mobile 390px`
 
 ## 🐛 Isu yang Ditemukan
 
-- `DestinationCard.vue` di `web/components/` tidak dipakai (tidak ada import). Bisa dihapus kapan saja.
+- Migration `create_partners_table` belum dijalankan di lokal (PHP 8.0 di mesin dev tidak kompatibel, butuh PHP 8.2+). Jalankan di production setelah deploy: `php artisan migrate`
+- Halaman `/mitra` dan `/manage/partners` belum ada di navbar/sidebar navigasi — perlu ditambahkan agar bisa ditemukan user.
+- `DestinationCard.vue` di `web/components/` tidak dipakai, bisa dihapus.
 
-## 📋 Antrian Berikutnya (dari BACKLOG.md)
+## 📋 Antrian Berikutnya
 
-1. **Kelola Mitra (BACKLOG section 8)** — sedang dalam antrian, scope ada di atas
-2. **Fitur I/J dari BACKLOG** — Full-screen map mode & GPS recording (kompleks, prioritas rendah)
-
-### Cara Melanjutkan (Kelola Mitra)
-
-1. Buat migration: `php artisan make:migration create_partners_table`
-2. Buat model: `php artisan make:model Partner`
-3. Buat controller: `php artisan make:controller Api/PartnerController`
-4. Tambahkan route di `backend/routes/api.php`
-5. Buat halaman admin: `web/pages/manage/partners/index.vue`
-6. Buat halaman publik: `web/pages/mitra.vue`
+1. **Tambahkan link `/mitra` ke navbar** dan `/manage/partners` ke sidebar navigasi admin
+2. **Jalankan migration** di production setelah deploy: `php artisan migrate`
+3. **Fitur I/J dari BACKLOG** — Full-screen map mode & GPS recording (kompleks, prioritas rendah)
