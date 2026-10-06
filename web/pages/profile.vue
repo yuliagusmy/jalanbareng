@@ -58,9 +58,15 @@
               </div>
               <div class="stat-divider"></div>
               <div class="stat-pill">
+                <v-icon size="16" color="#0284C7">mdi-text-box-outline</v-icon>
+                <span class="stat-num">{{ profileData?.stories_count || 0 }}</span>
+                <span class="stat-txt">Tulisan</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-pill">
                 <v-icon size="16" color="#16A34A">mdi-calendar-check</v-icon>
                 <span class="stat-num">{{ profileData?.events_count || 0 }}</span>
-                <span class="stat-txt">Event Diikuti</span>
+                <span class="stat-txt">Event</span>
               </div>
               <div class="stat-divider"></div>
               <div class="stat-pill">
