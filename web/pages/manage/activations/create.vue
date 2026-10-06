@@ -275,6 +275,12 @@
                   <v-col cols="12" md="6">
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">Tampilkan Section</h3>
                     <v-checkbox
+                      v-model="formData.show_schedule"
+                      label="Jadwal / Agenda"
+                      density="compact"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
                       v-model="formData.show_gallery"
                       label="Gallery"
                       density="compact"
@@ -402,6 +408,7 @@ const formData = reactive({
   social_linktree: '',
   is_active: true,
   is_featured: false,
+  show_schedule: true,
   show_gallery: true,
   show_testimonials: true,
   show_faq: true,

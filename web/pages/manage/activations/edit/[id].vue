@@ -680,7 +680,12 @@ const fetchActivation = async () => {
       // Now fetch full details using slug
       const detailResponse = await api.get(`/activations/${found.slug}`)
       activation.value = detailResponse.data
-      Object.assign(formData, activation.value)
+      const formKeys = Object.keys(formData)
+      formKeys.forEach((key) => {
+        if (activation.value[key] !== undefined) {
+          (formData as any)[key] = activation.value[key]
+        }
+      })
     }
   } catch (error) {
     console.error('Error fetching activation:', error)
@@ -701,9 +706,10 @@ const submit = async () => {
   try {
     const data = new FormData()
 
-    // Append all form fields EXCEPT file fields (hero_image, icon)
+    // Append defined form fields EXCEPT file fields (hero_image, icon)
     // File fields are handled separately below
-    Object.keys(formData).forEach(key => {
+    const formKeys = Object.keys(formData)
+    formKeys.forEach(key => {
       // Skip file-related fields as they're handled separately
       if (key === 'hero_image' || key === 'icon') {
         return
