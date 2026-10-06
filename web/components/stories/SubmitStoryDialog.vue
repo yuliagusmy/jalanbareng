@@ -1,22 +1,64 @@
 <template>
-  <v-dialog v-model="dialog" max-width="720" persistent scrollable>
-    <v-card rounded="xl" class="story-dialog">
+  <v-dialog
+    v-model="dialog"
+    :fullscreen="$vuetify.display.smAndDown"
+    max-width="720"
+    persistent
+    scrollable
+    :transition="$vuetify.display.smAndDown ? 'dialog-bottom-transition' : 'dialog-transition'"
+  >
+    <v-card :rounded="$vuetify.display.smAndDown ? '0' : 'xl'" class="story-dialog d-flex flex-column h-100">
       <!-- Header -->
-      <v-card-title class="d-flex align-center justify-space-between pa-5 pa-md-6 border-b">
+      <v-card-title class="d-flex align-center justify-space-between pa-3 pa-sm-5 border-b bg-white">
         <div class="d-flex align-center">
-          <v-avatar color="primary" variant="tonal" size="44" class="mr-3">
-            <v-icon color="primary" size="24">mdi-feather</v-icon>
+          <v-btn
+            v-if="$vuetify.display.smAndDown"
+            icon="mdi-arrow-left"
+            variant="text"
+            density="comfortable"
+            class="mr-1"
+            aria-label="Kembali"
+            @click="closeDialog"
+            :disabled="submitting"
+          ></v-btn>
+          <v-avatar color="primary" variant="tonal" :size="$vuetify.display.smAndDown ? 36 : 44" class="mr-3">
+            <v-icon color="primary" :size="$vuetify.display.smAndDown ? 20 : 24">mdi-feather</v-icon>
           </v-avatar>
           <div>
-            <h3 class="text-h6 font-weight-bold text-grey-darken-4 mb-0">Kirim Tulisan Jalan Bareng</h3>
-            <span class="text-caption text-grey-darken-1">Bagikan cerita, riset, atau pengalaman jelajahmu</span>
+            <h3 class="text-subtitle-1 text-sm-h6 font-weight-bold text-grey-darken-4 mb-0">Kirim Tulisan</h3>
+            <span class="text-caption text-grey-darken-1 d-none d-sm-block">Bagikan cerita, riset, atau catatan perjalananmu</span>
           </div>
         </div>
-        <v-btn icon="mdi-close" variant="text" density="comfortable" @click="closeDialog" :disabled="submitting"></v-btn>
+        <div class="d-flex align-center ga-2">
+          <v-btn
+            v-if="$vuetify.display.smAndDown && !submittedSuccess"
+            color="primary"
+            variant="flat"
+            size="small"
+            rounded="pill"
+            class="font-weight-bold px-4 text-none"
+            :loading="submitting"
+            @click="submitStory"
+          >
+            Kirim
+          </v-btn>
+          <v-btn
+            v-if="!$vuetify.display.smAndDown"
+            icon="mdi-close"
+            variant="text"
+            density="comfortable"
+            aria-label="Tutup"
+            @click="closeDialog"
+            :disabled="submitting"
+          ></v-btn>
+        </div>
       </v-card-title>
 
       <!-- Form Content -->
-      <v-card-text class="pa-5 pa-md-6" style="max-height: 70vh;">
+      <v-card-text
+        class="pa-4 pa-sm-6 flex-grow-1 overflow-y-auto"
+        :style="$vuetify.display.smAndDown ? 'max-height: none;' : 'max-height: 72vh;'"
+      >
         <!-- Success State Alert -->
         <v-alert
           v-if="submittedSuccess"
@@ -44,11 +86,11 @@
             variant="tonal"
             density="compact"
             rounded="lg"
-            class="mb-6"
+            class="mb-4"
             icon="mdi-information-outline"
           >
             <span class="text-caption">
-              Semua tulisan yang masuk akan melewati proses kurasi oleh tim kurator Jalan Bareng demi menjaga kenyamanan dan kualitas bacaan komunitas.
+              Semua tulisan yang masuk akan melewati kurasi tim Jalan Bareng demi kenyamanan dan mutu bacaan komunitas.
             </span>
           </v-alert>
 
@@ -76,6 +118,7 @@
             <v-textarea
               v-model="form.excerpt"
               rows="2"
+              auto-grow
               placeholder="Tuliskan 1-2 kalimat pengantar yang menarik untuk ditampilkan pada kartu pratinjau..."
               variant="outlined"
               density="comfortable"
@@ -93,29 +136,29 @@
             </label>
             <TiptapEditor
               v-model="form.content"
-              min-height="300px"
+              :min-height="$vuetify.display.smAndDown ? '220px' : '300px'"
               show-word-count
             />
             <div v-if="contentError" class="text-error text-caption mt-1">{{ contentError }}</div>
-            <span class="text-caption text-grey d-block mt-1">Gunakan toolbar untuk memformat tulisan: heading, tebal, miring, kutipan, gambar, dan lainnya.</span>
+            <span class="text-caption text-grey d-block mt-1">Toolbar editor dapat digeser ke samping jika menggunakan layar HP.</span>
           </div>
 
           <!-- Pilihan Warna & Gaya Kartu -->
           <div class="mb-5">
             <label class="text-subtitle-2 font-weight-bold mb-2 d-block text-grey-darken-3">
-              Pilihan Nuansa Warna Kartu (Inspirasi Publikasi)
+              Pilihan Nuansa Warna Kartu
             </label>
             <v-row dense>
               <v-col cols="6" sm="3" v-for="style in cardStyleOptions" :key="style.value">
                 <v-card
                   variant="outlined"
                   rounded="lg"
-                  class="pa-3 text-center cursor-pointer style-picker-card"
+                  class="pa-2.5 text-center cursor-pointer style-picker-card"
                   :class="{ 'active-style': form.card_style === style.value }"
                   @click="form.card_style = style.value"
                 >
                   <div
-                    class="style-color-dot mx-auto mb-2"
+                    class="style-color-dot mx-auto mb-1.5"
                     :style="{ background: style.color }"
                   ></div>
                   <div class="text-caption font-weight-bold">{{ style.label }}</div>
@@ -212,7 +255,7 @@
               </label>
               <v-text-field
                 v-model="form.author_bio"
-                placeholder="Contoh: Penggiat pejalan kaki kota Bandung"
+                placeholder="Contoh: Pejalan kaki kota Makassar"
                 variant="outlined"
                 density="comfortable"
                 rounded="lg"
@@ -227,8 +270,12 @@
         </v-form>
       </v-card-text>
 
-      <!-- Footer Buttons -->
-      <v-card-actions v-if="!submittedSuccess" class="pa-5 pa-md-6 border-t d-flex justify-end ga-3">
+      <!-- Footer Buttons (Sticky on mobile) -->
+      <v-card-actions
+        v-if="!submittedSuccess"
+        class="pa-3 pa-sm-5 border-t d-flex justify-end ga-3 bg-white"
+        :class="{ 'mobile-sticky-footer': $vuetify.display.smAndDown }"
+      >
         <v-btn variant="text" rounded="pill" @click="closeDialog" :disabled="submitting">
           Batal
         </v-btn>
@@ -236,7 +283,7 @@
           color="primary"
           variant="flat"
           rounded="pill"
-          class="px-6"
+          class="px-6 font-weight-bold"
           :loading="submitting"
           @click="submitStory"
         >
@@ -412,5 +459,12 @@ const submitStory = async () => {
   height: 24px;
   border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-sticky-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
 }
 </style>

@@ -313,7 +313,7 @@ onMounted(() => {
   }
 
   .hero-title {
-    font-size: clamp(1.5rem, 6.2vw, 2.05rem);
+    font-size: 1.95rem;
     line-height: 1.15;
   }
 

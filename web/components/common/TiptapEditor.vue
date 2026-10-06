@@ -560,4 +560,30 @@ onBeforeUnmount(() => {
   font-size: 11px;
   color: #9CA3AF;
 }
+
+/* Mobile Responsiveness (Compact 390px Viewport) */
+@media (max-width: 600px) {
+  .tiptap-toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  .tiptap-toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .toolbar-btn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+  }
+
+  .toolbar-divider {
+    flex-shrink: 0;
+  }
+}
 </style>
