@@ -17,50 +17,42 @@
         </v-card-title>
       </v-card>
 
-      <!-- Stats Cards -->
-      <v-row class="mb-6">
-        <v-col cols="12" sm="3">
-          <v-card elevation="0" rounded="lg" class="pa-4" color="blue-lighten-5">
-            <div class="d-flex align-center">
-              <v-icon size="40" color="blue" class="mr-4">mdi-map-marker-multiple</v-icon>
-              <div>
-                <div class="text-h4 font-weight-bold text-blue">{{ stats.total }}</div>
-                <div class="text-caption text-grey-darken-1">Total Destinasi</div>
-              </div>
+      <!-- Stats Cards - Mobile Optimized -->
+      <v-row class="mb-6" dense>
+        <v-col cols="6" sm="3">
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" color="blue-lighten-5">
+            <div class="stat-icon-wrapper">
+              <v-icon size="28" color="blue">mdi-map-marker-multiple</v-icon>
             </div>
+            <div class="stat-number text-blue">{{ stats.total }}</div>
+            <div class="stat-label">Total Destinasi</div>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="3">
-          <v-card elevation="0" rounded="lg" class="pa-4" color="green-lighten-5">
-            <div class="d-flex align-center">
-              <v-icon size="40" color="green" class="mr-4">mdi-check-circle</v-icon>
-              <div>
-                <div class="text-h4 font-weight-bold text-green">{{ stats.published }}</div>
-                <div class="text-caption text-grey-darken-1">Published</div>
-              </div>
+        <v-col cols="6" sm="3">
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" color="green-lighten-5">
+            <div class="stat-icon-wrapper">
+              <v-icon size="28" color="green">mdi-check-circle</v-icon>
             </div>
+            <div class="stat-number text-green">{{ stats.published }}</div>
+            <div class="stat-label">Published</div>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="3">
-          <v-card elevation="0" rounded="lg" class="pa-4" color="red-lighten-5">
-            <div class="d-flex align-center">
-              <v-icon size="40" color="red" class="mr-4">mdi-heart</v-icon>
-              <div>
-                <div class="text-h4 font-weight-bold text-red">{{ stats.totalLikes }}</div>
-                <div class="text-caption text-grey-darken-1">Total Likes</div>
-              </div>
+        <v-col cols="6" sm="3">
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" color="red-lighten-5">
+            <div class="stat-icon-wrapper">
+              <v-icon size="28" color="red">mdi-heart</v-icon>
             </div>
+            <div class="stat-number text-red">{{ stats.totalLikes }}</div>
+            <div class="stat-label">Total Likes</div>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="3">
-          <v-card elevation="0" rounded="lg" class="pa-4" color="orange-lighten-5">
-            <div class="d-flex align-center">
-              <v-icon size="40" color="orange" class="mr-4">mdi-comment-multiple</v-icon>
-              <div>
-                <div class="text-h4 font-weight-bold text-orange">{{ stats.totalComments }}</div>
-                <div class="text-caption text-grey-darken-1">Total Komentar</div>
-              </div>
+        <v-col cols="6" sm="3">
+          <v-card elevation="0" rounded="lg" class="stat-card-compact" color="orange-lighten-5">
+            <div class="stat-icon-wrapper">
+              <v-icon size="28" color="orange">mdi-comment-multiple</v-icon>
             </div>
+            <div class="stat-number text-orange">{{ stats.totalComments }}</div>
+            <div class="stat-label">Total Komentar</div>
           </v-card>
         </v-col>
       </v-row>
@@ -435,3 +427,47 @@ onMounted(() => {
   min-height: 100vh;
 }
 </style>
+
+/* Mobile-Optimized Compact Stat Cards */
+.stat-card-compact {
+  padding: 16px 12px;
+  text-align: center;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon-wrapper {
+  margin-bottom: 8px;
+}
+
+.stat-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+  .stat-card-compact {
+    padding: 12px 8px;
+    min-height: 100px;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+  }
+}
