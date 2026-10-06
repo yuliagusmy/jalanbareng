@@ -437,7 +437,7 @@
                             <h4 class="event-title">{{ event.name }}</h4>
                             <p class="event-date">
                               <v-icon size="14" class="mr-1" color="#16A34A">mdi-calendar-outline</v-icon>
-                              {{ formatDate(event.date) }}
+                              {{ formatEventDate(event.date) }}
                             </p>
                           </v-card-text>
                         </v-card>
@@ -923,7 +923,7 @@ const getSocialHandle = (url: string) => {
   return handle.startsWith('@') ? handle : `@${handle}`
 }
 
-const formatDate = (date: string) => {
+const formatEventDate = (date: string) => {
   if (!date) return '-'
   return new Date(date).toLocaleDateString('id-ID', {
     day: 'numeric',
