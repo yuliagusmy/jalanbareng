@@ -1,24 +1,27 @@
 <template>
   <div class="admin-categories-page">
     <v-container class="py-8">
-      <!-- Header -->
+      <!-- Header - Mobile Responsive -->
       <v-card elevation="0" rounded="lg" class="mb-6">
-        <v-card-title class="d-flex align-center px-6 py-4">
-          <v-icon class="mr-3" size="32" color="primary">mdi-shape</v-icon>
-          <div>
-            <h1 class="text-h5 font-weight-bold">Kelola Kategori</h1>
-            <p class="text-caption text-grey mb-0">Manage kategori destinasi</p>
+        <v-card-title class="d-flex flex-column flex-sm-row align-start align-sm-center px-4 px-sm-6 py-4 ga-3">
+          <div class="d-flex align-center flex-grow-1">
+            <v-icon class="mr-3" size="32" color="primary">mdi-shape</v-icon>
+            <div>
+              <h1 class="text-h6 text-sm-h5 font-weight-bold">Kelola Kategori</h1>
+              <p class="text-caption text-grey mb-0 d-none d-sm-block">Manage kategori destinasi</p>
+            </div>
           </div>
-          <v-spacer></v-spacer>
           <v-btn
             color="primary"
             variant="flat"
             rounded="lg"
-            size="large"
+            :size="$vuetify.display.smAndDown ? 'small' : 'large'"
+            block
+            class="d-sm-inline-flex"
             @click="openAddDialog"
           >
-            <v-icon start>mdi-plus</v-icon>
-            Tambah Kategori
+            <v-icon start :size="$vuetify.display.smAndDown ? 16 : 20">mdi-plus</v-icon>
+            <span :class="$vuetify.display.smAndDown ? 'text-caption' : ''">Tambah Kategori</span>
           </v-btn>
         </v-card-title>
       </v-card>
