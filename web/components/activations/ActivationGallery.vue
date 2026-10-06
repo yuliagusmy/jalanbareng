@@ -154,11 +154,7 @@ const previousImage = () => {
   currentIndex.value = (currentIndex.value - 1 + photoMedia.value.length) % photoMedia.value.length
 }
 
-const getImageUrl = (url?: string) => {
-  if (!url) return ''
-  if (url.startsWith('http') || url.startsWith('/')) return url
-  return `${apiBase}/storage/${url}`
-}
+const { getImageUrl } = useImageUrl()
 
 const getYouTubeEmbedUrl = (url: string) => {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/

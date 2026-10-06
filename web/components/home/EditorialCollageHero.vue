@@ -58,8 +58,8 @@
           <div class="collage-lane lane-outer d-none d-sm-flex">
             <div class="color-card card-amber elevation-1">
               <div class="card-img-wrapper">
-                <img :src="cards[0].prev" class="card-img img-back" alt="Dokumentasi jalan" />
-                <img :src="cards[0].current" class="card-img img-front" alt="Dokumentasi jalan" />
+                <img :src="cards[0].prev" class="card-img img-back" alt="Dokumentasi jalan" @error="onImgError" />
+                <img :src="cards[0].current" class="card-img img-front" alt="Dokumentasi jalan" @error="onImgError" />
               </div>
             </div>
           </div>
@@ -68,14 +68,14 @@
           <div class="collage-lane lane-stacked">
             <div class="color-card card-cream card-stacked-top elevation-1">
               <div class="card-img-wrapper">
-                <img :src="cards[1].prev" class="card-img img-back" alt="Dokumentasi jalan" />
-                <img :src="cards[1].current" class="card-img img-front" alt="Dokumentasi jalan" />
+                <img :src="cards[1].prev" class="card-img img-back" alt="Dokumentasi jalan" @error="onImgError" />
+                <img :src="cards[1].current" class="card-img img-front" alt="Dokumentasi jalan" @error="onImgError" />
               </div>
             </div>
             <div class="color-card card-teal card-stacked-bottom elevation-1">
               <div class="card-img-wrapper">
-                <img :src="cards[2].prev" class="card-img img-back" alt="Dokumentasi jalan" />
-                <img :src="cards[2].current" class="card-img img-front" alt="Dokumentasi jalan" />
+                <img :src="cards[2].prev" class="card-img img-back" alt="Dokumentasi jalan" @error="onImgError" />
+                <img :src="cards[2].current" class="card-img img-front" alt="Dokumentasi jalan" @error="onImgError" />
               </div>
             </div>
           </div>
@@ -84,8 +84,8 @@
           <div class="collage-lane lane-center">
             <div class="color-card card-yellow card-center-hero elevation-3">
               <div class="card-img-wrapper">
-                <img :src="cards[3].prev" class="card-img img-back" alt="Dokumentasi kawan jalan" />
-                <img :src="cards[3].current" class="card-img img-front" alt="Dokumentasi kawan jalan" />
+                <img :src="cards[3].prev" class="card-img img-back" alt="Dokumentasi kawan jalan" @error="onImgError" />
+                <img :src="cards[3].current" class="card-img img-front" alt="Dokumentasi kawan jalan" @error="onImgError" />
               </div>
             </div>
           </div>
@@ -94,14 +94,14 @@
           <div class="collage-lane lane-stacked">
             <div class="color-card card-coral card-stacked-top-tall elevation-1">
               <div class="card-img-wrapper">
-                <img :src="cards[4].prev" class="card-img img-back" alt="Dokumentasi jalan" />
-                <img :src="cards[4].current" class="card-img img-front" alt="Dokumentasi jalan" />
+                <img :src="cards[4].prev" class="card-img img-back" alt="Dokumentasi jalan" @error="onImgError" />
+                <img :src="cards[4].current" class="card-img img-front" alt="Dokumentasi jalan" @error="onImgError" />
               </div>
             </div>
             <div class="color-card card-sky card-stacked-bottom-short elevation-1">
               <div class="card-img-wrapper">
-                <img :src="cards[5].prev" class="card-img img-back" alt="Dokumentasi jalan" />
-                <img :src="cards[5].current" class="card-img img-front" alt="Dokumentasi jalan" />
+                <img :src="cards[5].prev" class="card-img img-back" alt="Dokumentasi jalan" @error="onImgError" />
+                <img :src="cards[5].current" class="card-img img-front" alt="Dokumentasi jalan" @error="onImgError" />
               </div>
             </div>
           </div>
@@ -110,8 +110,8 @@
           <div class="collage-lane lane-outer d-none d-sm-flex">
             <div class="color-card card-mint elevation-1">
               <div class="card-img-wrapper">
-                <img :src="cards[6].prev" class="card-img img-back" alt="Dokumentasi jalan" />
-                <img :src="cards[6].current" class="card-img img-front" alt="Dokumentasi jalan" />
+                <img :src="cards[6].prev" class="card-img img-back" alt="Dokumentasi jalan" @error="onImgError" />
+                <img :src="cards[6].current" class="card-img img-front" alt="Dokumentasi jalan" @error="onImgError" />
               </div>
               <div class="card-tag-bottom">#MenelusuriKota</div>
             </div>
@@ -165,6 +165,14 @@ const emitScroll = () => {
 
 const { api } = useApi()
 const config = useRuntimeConfig()
+const { getImageUrl } = useImageUrl()
+
+const onImgError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  if (img && !img.src.includes('/images/hero/walk_1.jpg')) {
+    img.src = '/images/hero/walk_1.jpg'
+  }
+}
 
 // Pool of community photography assets (gabungan dokumentasi server dan aset lokal)
 const photoPool = ref<string[]>([
@@ -201,9 +209,7 @@ const fetchCommunityMedia = async () => {
       const serverPhotos = items
         .map((m: any) => {
           if (!m.file_url) return null
-          if (m.file_url.startsWith('http')) return m.file_url
-          const cleanApiUrl = (config.public.apiBase as string) || (config.public.apiUrl as string)?.replace('/api', '') || 'http://localhost:8001'
-          return `${cleanApiUrl}/storage/${m.file_url}`
+          return getImageUrl(m.file_url)
         })
         .filter(Boolean)
 

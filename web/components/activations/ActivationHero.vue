@@ -10,7 +10,7 @@
             color="white"
             class="mb-4"
           >
-            <v-img :src="`${apiBase}/storage/${activation.icon}`" />
+            <v-img :src="getImageUrl(activation.icon)" />
           </v-avatar>
 
           <!-- Title -->
@@ -62,8 +62,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
+const { getImageUrl } = useImageUrl()
 
 const heroStyle = computed(() => {
   const styles: any = {
@@ -74,7 +73,7 @@ const heroStyle = computed(() => {
   }
 
   if (props.activation.hero_image) {
-    styles.backgroundImage = `url(${apiBase}/storage/${props.activation.hero_image})`
+    styles.backgroundImage = `url(${getImageUrl(props.activation.hero_image)})`
     styles.backgroundSize = 'cover'
     styles.backgroundPosition = 'center'
   } else {

@@ -17,6 +17,14 @@ export const useImageUrl = () => {
         'hero_makassar.jpg': '/images/activations/hero_makassar.jpg',
         'hero_palopo.jpg': '/images/activations/hero_palopo.jpg',
 
+        // Makassar Photos -> bundled local images
+        'makassar_sign_group.jpg': '/images/activations/makassar/makassar_sign_group.jpg',
+        'makassar_morning_walk.jpg': '/images/activations/makassar/makassar_morning_walk.jpg',
+        'makassar_circle_sharing.jpg': '/images/activations/makassar/makassar_circle_sharing.jpg',
+        'makassar_walking_crowd.jpg': '/images/activations/makassar/makassar_walking_crowd.jpg',
+        'makassar_baroncong_culture.jpg': '/images/activations/makassar/makassar_baroncong_culture.jpg',
+        'makassar_book_circle.jpg': '/images/activations/makassar/makassar_book_circle.jpg',
+
         // Events Seed Photos -> bundled local images
         'media_heritage_1.jpg': '/images/activations/hero_gowa.jpg',
         'media_heritage_2.jpg': '/images/activations/hero_jaksel.jpg',

@@ -207,7 +207,7 @@
             <v-col cols="12" md="6">
               <div class="featured-image-wrapper">
                 <img v-if="activation.featured_event.poster"
-                  :src="`${apiBase}/storage/${activation.featured_event.poster}`" :alt="activation.featured_event.name"
+                  :src="getImageUrl(activation.featured_event.poster)" :alt="activation.featured_event.name"
                   class="featured-image" />
                 <div v-else class="featured-placeholder">
                   <v-icon size="56" color="grey-lighten-1">mdi-calendar-star</v-icon>
@@ -279,7 +279,7 @@
           >
             <div class="event-strip-img-wrap">
               <img v-if="event.poster"
-                :src="`${apiBase}/storage/${event.poster}`"
+                :src="getImageUrl(event.poster)"
                 :alt="event.name"
                 class="event-strip-img"
               />
@@ -307,7 +307,7 @@
           <v-col v-for="event in upcomingEvents.slice(0, 3)" :key="event.id" cols="12" md="4">
             <v-card elevation="0" class="event-card-modern h-100" :to="`/events/${event.id}`" rounded="xl">
               <div class="event-image-wrapper-modern">
-                <img v-if="event.poster" :src="`${apiBase}/storage/${event.poster}`" :alt="event.name"
+                <img v-if="event.poster" :src="getImageUrl(event.poster)" :alt="event.name"
                   class="event-image" />
                 <div v-else class="event-placeholder">
                   <v-icon size="56" color="grey-lighten-1">mdi-calendar</v-icon>
@@ -362,7 +362,7 @@
             <div class="past-event-img-wrap">
               <img
                 v-if="event.poster"
-                :src="`${apiBase}/storage/${event.poster}`"
+                :src="getImageUrl(event.poster)"
                 :alt="event.name"
                 class="past-event-img"
               />
@@ -493,6 +493,7 @@ const route = useRoute()
 const api = useApi()
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
+const { getImageUrl } = useImageUrl()
 
 const activation = ref<any>(null)
 const loading = ref(true)
@@ -576,7 +577,7 @@ const heroCard1Image = computed(() => {
     return '/images/activations/hero_makassar.jpg'
   }
   if (activation.value?.hero_image) {
-    return `${apiBase}/storage/${activation.value.hero_image}`
+    return getImageUrl(activation.value.hero_image)
   }
   return '/images/hero/walk_2.jpg'
 })
@@ -588,7 +589,7 @@ const heroCard2Image = computed(() => {
   if (activation.value?.media && activation.value.media.length > 0) {
     const photo = activation.value.media[0]
     const path = photo?.file_url || photo?.file_path
-    return path ? `${apiBase}/storage/${path}` : '/images/hero/walk_1.jpg'
+    return path ? getImageUrl(path) : '/images/hero/walk_1.jpg'
   }
   return '/images/hero/walk_1.jpg'
 })
@@ -600,7 +601,7 @@ const heroCard3Image = computed(() => {
   if (activation.value?.media && activation.value.media.length > 1) {
     const photo = activation.value.media[1]
     const path = photo?.file_url || photo?.file_path
-    return path ? `${apiBase}/storage/${path}` : '/images/hero/walk_5.jpg'
+    return path ? getImageUrl(path) : '/images/hero/walk_5.jpg'
   }
   return '/images/hero/walk_5.jpg'
 })
