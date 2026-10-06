@@ -4,7 +4,7 @@
 
 ## 🔄 Sedang Dikerjakan / Belum Selesai
 
-Tidak ada task in-progress saat ini. Semua perubahan sudah di-commit.
+Tidak ada task in-progress saat ini.
 
 ## ⏳ File Belum Di-commit
 
@@ -12,41 +12,31 @@ Tidak ada.
 
 ## ✅ Terakhir Diselesaikan
 
-- `fix: collapsible filter panel for admin pages on mobile 390px` — di Events, Destinations, Users, Activations: mobile xs menampilkan search bar + tombol filter toggle dengan badge jumlah filter aktif; filter select muncul/hilang via v-expand-transition
-- `fix: add mobile card view for admin tables (events, destinations, stories)` — tabel admin diubah ke card view di xs breakpoint
-- `fix: optimize all admin pages stats cards for mobile 390px` — stats cards vertikal compact 2 kolom di Stories, Events, Users, Activations
-- `fix: make admin page headers mobile-responsive` — header stack vertikal di mobile, tombol full-width
-- `fix: optimize admin stats cards for mobile 390px` — Destinations & Categories
+- `fix: mobile responsiveness fixes for cerita and destinations pages`
+  - `cerita/index.vue`: `ga-1.5` → `ga-2` (valid Vuetify), `pa-2.5` → `pa-3` (valid Vuetify), inline `min-width: 170px` dihapus diganti class `.stories-search-field` dengan responsive min-width (140px mobile, 170px sm+)
+  - `destinations/index.vue`: `.cta-contrib-btn` di mobile diubah dari `white-space: nowrap; height: 40px` ke `white-space: normal; height: auto; min-height: 40px` agar tidak overflow di 320px
+- `docs: add PROGRESS.md and agent handoff protocol to AGENTS.md` — Section 11 AGENTS.md + file PROGRESS.md dibuat
+- `fix: collapsible filter panel for admin pages on mobile 390px` — Events, Destinations, Users, Activations: search bar selalu tampil + tombol filter toggle dengan badge count
+- `fix: add mobile card view for admin tables (events, destinations, stories)` — tabel admin diganti card view di xs breakpoint
+- `fix: optimize all admin pages stats cards for mobile 390px` — stats cards vertikal compact 2 kolom
 
 ## 🐛 Isu yang Ditemukan
 
-Tidak ada isu aktif saat ini.
+- `DestinationCard.vue` di `web/components/` tidak dipakai di mana pun (tidak ada import). Bisa dihapus kapan saja tapi tidak urgent.
 
 ## 📋 Antrian Berikutnya (dari BACKLOG.md)
 
-Berdasarkan sisa item di BACKLOG.md:
+1. **Audit sub-komponen homepage** — `EditorialCollageHero`, `WeeklyRegistrationHub`, `FeaturedStorySection`, dll. belum diaudit untuk 390px. Homepage modular, semua isu ada di sub-komponen.
 
-1. **Fitur E** — Like & Komentar di halaman detail cerita `/cerita/[slug]`
-   - Tombol like pakai endpoint `POST /likes/toggle` (sudah ada)
-   - Section komentar pakai endpoint `GET/POST /comments` (sudah ada)
-   - Perlu cek `CommentController` & `LikeController` support `commentable_type = story`
+2. **Aksesibilitas `CategorySection.vue`** — scroll container belum punya `aria-label` dan tidak ada indikator visual (dot pagination) bahwa ada item di luar layar.
 
-2. **Audit responsivitas halaman publik** (BACKLOG section 11)
-   - Halaman `/destinations`, `/events`, `/cerita` di 320px–390px
-   - Eliminasi bug horizontal scroll, margin/padding konsisten
+3. **Fitur I/J dari BACKLOG** — Full-screen map mode & GPS recording di halaman destinasi (kompleks, prioritas rendah).
 
-3. **Fitur I** — Full-screen map mode di halaman destinasi (kompleks, prioritas lebih rendah)
-
-4. **Migrasi production** — Setup VPS, MySQL, Object Storage (BACKLOG section Future Features)
+4. **Kelola Mitra (BACKLOG section 8)** — Tabel `partners`, CRUD admin, halaman publik `/mitra`.
 
 ### Cara Melanjutkan
 
 ```bash
-# Cek kondisi terkini
 git log --oneline -5
 git status
-
-# Mulai task berikutnya (Fitur E — Like & Komentar di cerita)
-# 1. Cek LikeController dan CommentController
-# 2. Update halaman /cerita/[slug]
 ```
