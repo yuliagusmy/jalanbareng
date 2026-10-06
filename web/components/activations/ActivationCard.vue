@@ -31,21 +31,21 @@
 
     <!-- Card Content -->
     <div class="pa-3 pa-sm-4 d-flex flex-column flex-grow-1">
-      <div class="d-flex align-center justify-space-between mb-1.5">
-        <span v-if="activation.city" class="city-indicator text-truncate">
+      <div class="d-flex align-center justify-space-between mb-1.5 gap-2">
+        <span v-if="activation.city" class="city-indicator">
           <v-icon size="12" class="mr-0.5 text-grey">mdi-map-marker-outline</v-icon>
-          {{ activation.city }}
+          <span class="text-truncate">{{ activation.city }}</span>
         </span>
-        <span v-else class="city-indicator text-truncate text-grey">
+        <span v-else class="city-indicator text-grey">
           <v-icon size="12" class="mr-0.5 text-grey">mdi-tag-outline</v-icon>
-          {{ getCategoryBadge(activation.category) }}
+          <span class="text-truncate">{{ getCategoryBadge(activation.category) }}</span>
         </span>
         <span class="event-count-chip">
           {{ activation.events_count || 0 }} Event
         </span>
       </div>
 
-      <h3 class="card-title text-subtitle-1 font-weight-bold text-grey-darken-4 mb-1">
+      <h3 class="card-title text-subtitle-1 font-weight-bold text-grey-darken-4 mb-1" style="text-wrap: balance;">
         {{ activation.name }}
       </h3>
 
@@ -198,30 +198,48 @@ const getFooterLabel = (category: string) => {
   font-size: 0.78rem;
   font-weight: 600;
   color: #4B5563;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.city-indicator .text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .event-count-chip {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   font-size: 0.72rem;
   font-weight: 700;
   color: #DC2626;
   background: #FEF2F2;
-  padding: 2px 8px;
+  padding: 6px 10px;
+  min-height: 28px;
   border-radius: 9999px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .card-title {
   color: #111827;
-  line-height: 1.3;
+  line-height: 1.35;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .card-desc {
-  line-height: 1.45;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .action-link-text {
@@ -242,5 +260,25 @@ const getFooterLabel = (category: string) => {
   align-items: center;
   justify-content: center;
   background: #F3F4F6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activation-card,
+  .card-top-img,
+  .action-link-text {
+    transition: none;
+  }
+
+  .activation-card:hover {
+    transform: none;
+  }
+
+  .activation-card:hover .card-top-img {
+    transform: none;
+  }
+
+  .activation-card:hover .action-link-text {
+    transform: none;
+  }
 }
 </style>

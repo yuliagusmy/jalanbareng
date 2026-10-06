@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DestinationResource;
 use App\Models\Destination;
 use App\Models\DestinationPhoto;
 use App\Support\Geo;
@@ -56,7 +57,7 @@ class DestinationController extends Controller
         $perPage = $request->input('per_page', 20);
         $destinations = $query->latest()->paginate($perPage);
 
-        return response()->json($destinations);
+        return DestinationResource::collection($destinations);
     }
 
     public function myPosts(Request $request)
@@ -90,7 +91,7 @@ class DestinationController extends Controller
         $perPage = $request->input('per_page', 12);
         $destinations = $query->paginate($perPage);
 
-        return response()->json($destinations);
+        return DestinationResource::collection($destinations);
     }
 
 
@@ -148,7 +149,7 @@ class DestinationController extends Controller
 
             return response()->json([
                 'message' => 'Destination created successfully',
-                'destination' => $destination,
+                'destination' => new DestinationResource($destination),
             ], 201);
 
         } catch (\Exception $e) {
@@ -215,7 +216,7 @@ class DestinationController extends Controller
         }
 
         return response()->json([
-            'destination' => $destination,
+            'destination' => new DestinationResource($destination),
         ]);
     }
 
@@ -256,7 +257,7 @@ class DestinationController extends Controller
 
             return response()->json([
                 'message' => 'Destination updated successfully',
-                'destination' => $destination,
+                'destination' => new DestinationResource($destination),
             ]);
 
         } catch (\Exception $e) {
@@ -320,7 +321,7 @@ class DestinationController extends Controller
         }
 
         return response()->json([
-            'destinations' => $destinations,
+            'destinations' => DestinationResource::collection($destinations),
             'radius_km' => $radiusKm,
         ]);
     }

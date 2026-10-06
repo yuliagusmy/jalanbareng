@@ -132,8 +132,8 @@ const props = defineProps({
 
 @media (max-width: 600px) {
   .category-scroll-item {
-    flex: 0 0 135px;
-    width: 135px;
+    flex: 0 0 145px;
+    width: 145px;
   }
 }
 
@@ -188,10 +188,15 @@ const props = defineProps({
 
 .category-name {
   color: white;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  text-wrap: balance;
+  line-height: 1.3;
 }
 
 /* Responsive */
@@ -205,9 +210,24 @@ const props = defineProps({
   .category-image-wrapper {
     height: 240px;
   }
-  
+
   .category-name {
     font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-card,
+  .category-image {
+    transition: none;
+  }
+
+  .category-card:hover {
+    transform: none;
+  }
+
+  .category-card:hover .category-image {
+    transform: none;
   }
 }
 </style>

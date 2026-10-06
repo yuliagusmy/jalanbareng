@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\EventResource;
 use App\Models\Event;
 use App\Models\EventPhoto;
 use App\Support\Geo;
@@ -55,7 +56,7 @@ class EventController extends Controller
         $sortDir = $request->input('sort', 'desc') === 'asc' ? 'asc' : 'desc';
         $events = $query->orderBy('date', $sortDir)->paginate($perPage);
 
-        return response()->json($events);
+        return EventResource::collection($events);
     }
 
     public function store(Request $request)
@@ -156,7 +157,7 @@ class EventController extends Controller
 
             return response()->json([
                 'message' => 'Event created successfully',
-                'event' => $event,
+                'event' => new EventResource($event),
             ], 201);
 
         } catch (\Exception $e) {
@@ -232,7 +233,7 @@ class EventController extends Controller
         }
 
         return response()->json([
-            'event' => $event,
+            'event' => new EventResource($event),
         ]);
     }
 
@@ -281,7 +282,7 @@ class EventController extends Controller
                 }
                 // Store new poster
                 $validatedData['poster'] = $request->file('poster')->store('events', 'public');
-                
+
                 // Update event photo record
                 $eventPhoto = $event->photos()->where('is_poster', true)->first();
                 if ($eventPhoto) {
@@ -322,7 +323,7 @@ class EventController extends Controller
             if ($request->has('time')) {
                 $validatedData['time'] = $request->input('time');
             }
-            
+
             // Map duration to estimated_duration
             if (isset($validatedData['duration'])) {
                 $validatedData['estimated_duration'] = $validatedData['duration'];
@@ -368,7 +369,7 @@ class EventController extends Controller
 
             return response()->json([
                 'message' => 'Event updated successfully',
-                'event' => $event,
+                'event' => new EventResource($event),
             ]);
 
         } catch (\Exception $e) {
@@ -446,7 +447,7 @@ class EventController extends Controller
             ->get();
 
         return response()->json([
-            'events' => $events,
+            'events' => EventResource::collection($events),
         ]);
     }
 }
