@@ -63,7 +63,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(credentials: { email: string; password: string }) {
       const { api } = useApi()
-      const authToken = useCookie('auth_token')
+      const authToken = useCookie('auth_token', { maxAge: 60 * 60 * 24 * 30 })
 
       try {
         // Get CSRF cookie first (for Sanctum)
@@ -95,7 +95,7 @@ export const useAuthStore = defineStore('auth', {
       phone?: string
     }) {
       const { api } = useApi()
-      const authToken = useCookie('auth_token')
+      const authToken = useCookie('auth_token', { maxAge: 60 * 60 * 24 * 30 })
 
       try {
         // Get CSRF cookie first
@@ -121,7 +121,7 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       const { api } = useApi()
-      const authToken = useCookie('auth_token')
+      const authToken = useCookie('auth_token', { maxAge: 60 * 60 * 24 * 30 })
 
       try {
         await api.post('/auth/logout')
@@ -141,7 +141,7 @@ export const useAuthStore = defineStore('auth', {
 
     async fetchUser() {
       const { api } = useApi()
-      const authToken = useCookie('auth_token')
+      const authToken = useCookie('auth_token', { maxAge: 60 * 60 * 24 * 30 })
 
       if (!authToken.value) {
         return
@@ -174,7 +174,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     setToken(token: string) {
-      const authToken = useCookie('auth_token')
+      const authToken = useCookie('auth_token', { maxAge: 60 * 60 * 24 * 30 })
       this.token = token
       authToken.value = token
       this.isAuthenticated = true
