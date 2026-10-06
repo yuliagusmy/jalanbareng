@@ -152,12 +152,15 @@ export const useAuthStore = defineStore('auth', {
         this.user = response.data.user
         this.isAuthenticated = true
         this.token = authToken.value
-      } catch (error) {
-        // Clear auth if fetch fails
-        this.token = null
-        this.user = null
-        this.isAuthenticated = false
-        authToken.value = null
+      } catch (error: any) {
+        // Hanya logout jika token memang tidak valid (401)
+        // Jangan logout karena error jaringan atau backend sementara down
+        if (error.response?.status === 401) {
+          this.token = null
+          this.user = null
+          this.isAuthenticated = false
+          authToken.value = null
+        }
       }
     },
 
