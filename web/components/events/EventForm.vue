@@ -14,16 +14,19 @@
             </div>
           </div>
 
-          <!-- Quick action for desktop only -->
-          <div class="d-none d-sm-flex align-center ga-2 flex-shrink-0">
-            <v-btn v-if="currentStep > 1" @click="previousStep" variant="outlined" rounded="pill" size="small" class="text-none font-weight-medium">
+          <!-- Header Actions (Visible on Mobile & Desktop) -->
+          <div class="d-flex align-center ga-2 flex-shrink-0">
+            <v-btn v-if="currentStep > 1" @click="previousStep" variant="outlined" rounded="pill" size="small" class="text-none font-weight-medium d-none d-sm-inline-flex">
               <v-icon start size="16">mdi-arrow-left</v-icon>Sebelumnya
             </v-btn>
-            <v-btn v-if="currentStep < totalSteps" @click="nextStep" color="#DC2626" rounded="pill" size="small" class="text-none font-weight-bold text-white">
+            <v-btn v-if="isEditMode" @click="submit" :loading="loading" color="#DC2626" variant="flat" rounded="pill" size="small" class="text-none font-weight-bold text-white shadow-sm">
+              <v-icon start size="16">mdi-check-circle</v-icon>Simpan Perubahan
+            </v-btn>
+            <v-btn v-else-if="currentStep < totalSteps" @click="nextStep" color="#DC2626" variant="flat" rounded="pill" size="small" class="text-none font-weight-bold text-white shadow-sm">
               Selanjutnya<v-icon end size="16">mdi-arrow-right</v-icon>
             </v-btn>
-            <v-btn v-else @click="submit" :loading="loading" color="#DC2626" rounded="pill" size="small" class="text-none font-weight-bold text-white">
-              <v-icon start size="16">mdi-check</v-icon>{{ isEditMode ? 'Simpan' : 'Bagikan' }}
+            <v-btn v-else @click="submit" :loading="loading" color="#DC2626" variant="flat" rounded="pill" size="small" class="text-none font-weight-bold text-white shadow-sm">
+              <v-icon start size="16">mdi-check</v-icon>Bagikan
             </v-btn>
           </div>
         </div>
@@ -51,13 +54,27 @@
             <v-divider v-if="idx < steps.length - 1" class="mx-3 flex-grow-1" :color="currentStep > step.value ? '#DC2626' : 'grey-lighten-2'"></v-divider>
           </div>
         </div>
-        <!-- Mobile Progress Bar -->
-        <div class="d-flex d-sm-none flex-column ga-1.5">
+        <!-- Mobile Progress Bar & Step Taps -->
+        <div class="d-flex d-sm-none flex-column ga-2">
           <div class="d-flex align-center justify-space-between text-caption font-weight-bold">
             <span class="text-grey-darken-4">{{ steps[currentStep - 1]?.title }}</span>
             <span class="text-red-darken-2 font-weight-black">{{ currentStep }} / {{ totalSteps }}</span>
           </div>
           <v-progress-linear :model-value="(currentStep / totalSteps) * 100" color="#DC2626" height="6" rounded bg-color="grey-lighten-3"></v-progress-linear>
+          <div class="d-flex align-center justify-space-between ga-1 mt-1">
+            <v-btn
+              v-for="(step, idx) in steps"
+              :key="step.value"
+              @click="currentStep = step.value"
+              size="x-small"
+              rounded="pill"
+              :variant="currentStep === step.value ? 'flat' : 'tonal'"
+              :color="currentStep === step.value ? '#DC2626' : (currentStep > step.value ? 'grey-darken-3' : 'grey-lighten-1')"
+              class="text-none flex-grow-1 font-weight-bold px-1"
+            >
+              {{ idx + 1 }}. {{ step.title }}
+            </v-btn>
+          </div>
         </div>
       </v-card>
 
@@ -98,7 +115,54 @@
                     <v-text-field v-model="formData.date" label="Tanggal Kegiatan" type="date" variant="outlined" :rules="[rules.required]"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6">
-                    <v-text-field v-model="formData.time" label="Waktu Mulai" type="time" variant="outlined" :rules="[rules.required]"></v-text-field>
+                    <div class="d-flex flex-column">
+                      <div class="d-flex align-center justify-space-between mb-1">
+                        <label class="text-caption font-weight-bold text-grey-darken-3">
+                          Waktu Mulai (Format 24 Jam) *
+                        </label>
+                        <v-chip color="#DC2626" variant="flat" size="x-small" class="font-weight-black text-white">
+                          {{ formData.time || `${timeHour}:${timeMinute}` }} WITA/WIB
+                        </v-chip>
+                      </div>
+                      <div class="d-flex align-center ga-2">
+                        <v-select
+                          v-model="timeHour"
+                          label="Jam (00–23)"
+                          :items="hoursList"
+                          variant="outlined"
+                          density="comfortable"
+                          class="flex-grow-1"
+                          :menu-props="{ maxHeight: 260 }"
+                          hide-details
+                        ></v-select>
+                        <span class="text-h6 font-weight-bold text-grey-darken-3 pb-1">:</span>
+                        <v-select
+                          v-model="timeMinute"
+                          label="Menit (00–59)"
+                          :items="minutesList"
+                          variant="outlined"
+                          density="comfortable"
+                          class="flex-grow-1"
+                          :menu-props="{ maxHeight: 260 }"
+                          hide-details
+                        ></v-select>
+                      </div>
+                      <!-- Quick preset chips -->
+                      <div class="d-flex flex-wrap align-center ga-1 mt-2">
+                        <span class="text-caption text-grey-darken-1 mr-1">Preset Cepat:</span>
+                        <v-chip
+                          v-for="preset in ['06:00', '06:30', '07:00', '16:00', '16:30', '19:00', '19:30', '20:00']"
+                          :key="preset"
+                          size="x-small"
+                          :variant="formData.time === preset ? 'flat' : 'tonal'"
+                          :color="formData.time === preset ? '#DC2626' : 'grey-darken-2'"
+                          class="font-weight-medium cursor-pointer"
+                          @click="setTimePreset(preset)"
+                        >
+                          {{ preset }}
+                        </v-chip>
+                      </div>
+                    </div>
                   </v-col>
                 </v-row>
 
@@ -170,12 +234,17 @@
                   class="mb-2"
                 ></v-text-field>
               </v-card-text>
-              <!-- Card Action Footer -->
+              <!-- Card Action Footer Step 1 -->
               <v-card-actions class="px-5 px-sm-6 py-4 border-t d-flex align-center justify-space-between flex-wrap ga-2">
                 <v-btn @click="cancel" variant="text" rounded="pill" color="grey-darken-1" size="large" class="text-none">Batal</v-btn>
-                <v-btn @click="nextStep" color="#DC2626" rounded="pill" size="large" class="text-none font-weight-bold text-white px-6 elevation-2">
-                  <span>Selanjutnya: Konten</span><v-icon end size="18">mdi-arrow-right</v-icon>
-                </v-btn>
+                <div class="d-flex align-center ga-2 flex-wrap">
+                  <v-btn v-if="isEditMode" @click="submit" :loading="loading" color="#DC2626" variant="flat" rounded="pill" size="large" class="text-none font-weight-bold text-white px-6 elevation-2">
+                    <v-icon start size="18">mdi-check-circle</v-icon>Simpan Perubahan
+                  </v-btn>
+                  <v-btn @click="nextStep" :color="isEditMode ? 'grey-darken-3' : '#DC2626'" :variant="isEditMode ? 'outlined' : 'flat'" rounded="pill" size="large" class="text-none font-weight-bold px-6 elevation-2" :class="isEditMode ? '' : 'text-white'">
+                    <span>Selanjutnya: Konten</span><v-icon end size="18">mdi-arrow-right</v-icon>
+                  </v-btn>
+                </div>
               </v-card-actions>
             </v-card>
 
@@ -188,14 +257,19 @@
                 <TiptapEditor v-model="formData.description" />
                 <v-text-field v-model="formData.youtube_link" label="Link YouTube (Opsional)" placeholder="https://youtube.com/watch?v=..." variant="outlined" class="mt-4"></v-text-field>
               </v-card-text>
-              <!-- Card Action Footer -->
+              <!-- Card Action Footer Step 2 -->
               <v-card-actions class="px-5 px-sm-6 py-4 border-t d-flex align-center justify-space-between flex-wrap ga-2">
                 <v-btn @click="previousStep" variant="outlined" rounded="pill" color="grey-darken-3" size="large" class="text-none">
                   <v-icon start size="18">mdi-arrow-left</v-icon>Sebelumnya
                 </v-btn>
-                <v-btn @click="nextStep" color="#DC2626" rounded="pill" size="large" class="text-none font-weight-bold text-white px-6 elevation-2">
-                  <span>Selanjutnya: Poster</span><v-icon end size="18">mdi-arrow-right</v-icon>
-                </v-btn>
+                <div class="d-flex align-center ga-2 flex-wrap">
+                  <v-btn v-if="isEditMode" @click="submit" :loading="loading" color="#DC2626" variant="flat" rounded="pill" size="large" class="text-none font-weight-bold text-white px-6 elevation-2">
+                    <v-icon start size="18">mdi-check-circle</v-icon>Simpan Perubahan
+                  </v-btn>
+                  <v-btn @click="nextStep" :color="isEditMode ? 'grey-darken-3' : '#DC2626'" :variant="isEditMode ? 'outlined' : 'flat'" rounded="pill" size="large" class="text-none font-weight-bold px-6 elevation-2" :class="isEditMode ? '' : 'text-white'">
+                    <span>Selanjutnya: Poster</span><v-icon end size="18">mdi-arrow-right</v-icon>
+                  </v-btn>
+                </div>
               </v-card-actions>
             </v-card>
 
@@ -211,18 +285,20 @@
                   <span class="text-caption text-grey mt-2 d-block">Preview Poster yang Aktif</span>
                 </div>
               </v-card-text>
-              <!-- Card Action Footer -->
+              <!-- Card Action Footer Step 3 -->
               <v-card-actions class="px-5 px-sm-6 py-4 border-t d-flex align-center justify-space-between flex-wrap ga-2">
                 <v-btn @click="previousStep" variant="outlined" rounded="pill" color="grey-darken-3" size="large" class="text-none">
                   <v-icon start size="18">mdi-arrow-left</v-icon>Sebelumnya
                 </v-btn>
-                <v-btn v-if="formData.type === 'walking'" @click="nextStep" color="#DC2626" rounded="pill" size="large" class="text-none font-weight-bold text-white px-6 elevation-2">
-                  <span>Selanjutnya: Rute</span><v-icon end size="18">mdi-arrow-right</v-icon>
-                </v-btn>
-                <v-btn v-else @click="submit" :loading="loading" color="#DC2626" rounded="pill" size="large" class="text-none font-weight-bold text-white px-8 elevation-3">
-                  <v-icon start size="18">mdi-check-circle</v-icon>
-                  <span>{{ isEditMode ? 'Simpan Perubahan' : 'Bagikan Event' }}</span>
-                </v-btn>
+                <div class="d-flex align-center ga-2 flex-wrap">
+                  <v-btn v-if="formData.type === 'walking'" @click="nextStep" variant="outlined" rounded="pill" color="grey-darken-3" size="large" class="text-none font-weight-bold px-6">
+                    <span>Selanjutnya: Rute</span><v-icon end size="18">mdi-arrow-right</v-icon>
+                  </v-btn>
+                  <v-btn @click="submit" :loading="loading" color="#DC2626" variant="flat" rounded="pill" size="large" class="text-none font-weight-bold text-white px-8 elevation-3">
+                    <v-icon start size="18">mdi-check-circle</v-icon>
+                    <span>{{ isEditMode ? 'Simpan Perubahan' : 'Bagikan Event' }}</span>
+                  </v-btn>
+                </div>
               </v-card-actions>
             </v-card>
 
@@ -237,12 +313,12 @@
                 </ClientOnly>
                 <v-text-field v-model="formData.duration" label="Estimasi Durasi (menit)" type="number" variant="outlined" class="mt-4"></v-text-field>
               </v-card-text>
-              <!-- Card Action Footer -->
+              <!-- Card Action Footer Step 4 -->
               <v-card-actions class="px-5 px-sm-6 py-4 border-t d-flex align-center justify-space-between flex-wrap ga-2">
                 <v-btn @click="previousStep" variant="outlined" rounded="pill" color="grey-darken-3" size="large" class="text-none">
                   <v-icon start size="18">mdi-arrow-left</v-icon>Sebelumnya
                 </v-btn>
-                <v-btn @click="submit" :loading="loading" color="#DC2626" rounded="pill" size="large" class="text-none font-weight-bold text-white px-8 elevation-3">
+                <v-btn @click="submit" :loading="loading" color="#DC2626" variant="flat" rounded="pill" size="large" class="text-none font-weight-bold text-white px-8 elevation-3">
                   <v-icon start size="18">mdi-check-circle</v-icon>
                   <span>{{ isEditMode ? 'Simpan Perubahan' : 'Bagikan Event' }}</span>
                 </v-btn>
@@ -278,6 +354,27 @@ const posterPreview = ref('')
 const activations = ref<any[]>([])
 
 const isEditMode = computed(() => !!props.eventId)
+
+// 24-Hour Time Selector state
+const timeHour = ref('06')
+const timeMinute = ref('00')
+const hoursList = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
+const minutesList = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
+
+const setTimePreset = (preset: string) => {
+  const parts = preset.split(':')
+  if (parts.length === 2) {
+    timeHour.value = parts[0]
+    timeMinute.value = parts[1]
+    formData.value.time = preset
+  }
+}
+
+watch([timeHour, timeMinute], ([h, m]) => {
+  if (h && m) {
+    formData.value.time = `${h}:${m}`
+  }
+})
 
 const formData = ref({
   type: 'regular',
@@ -351,11 +448,22 @@ const fetchEvent = async () => {
       }
     }
 
+    if (time) {
+      const parts = time.split(':')
+      if (parts[0]) timeHour.value = parts[0].padStart(2, '0')
+      if (parts[1]) timeMinute.value = parts[1].padStart(2, '0')
+      time = `${timeHour.value}:${timeMinute.value}`
+    } else {
+      timeHour.value = '06'
+      timeMinute.value = '00'
+      time = '06:00'
+    }
+
     formData.value = {
       ...formData.value,
       ...event,
       date,
-      time: time || '06:00',
+      time,
       meeting_point: event.meeting_point || '',
       is_curated_tikum: Boolean(event.is_curated_tikum),
       price: event.price !== null && event.price !== undefined ? Number(event.price) : 0,
