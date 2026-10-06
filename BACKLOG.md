@@ -16,14 +16,15 @@
 ### ✅ ~~B. Fix Ukuran Headline Mobile (Kecil)~~ — SELESAI (6 Oktober 2026)
 - [x] Samakan ukuran `h1` hero di `/cerita` dengan halaman lain (events, destinasi) di viewport 390px (`1.95rem` & line-height `1.15`)
 
-### C. Halaman Cerita Index — Rich Layout
-- [ ] Bagian atas: **"Cerita Terbaik"** — 2–3 card featured (sorted by likes + comments)
-- [ ] Bagian bawah: **"Cerita Terbaru"** — grid cerita dengan opsi sortir (Terbaru / Terpopuler)
-- [ ] Backend: tambah parameter `?sort=popular` di `GET /stories`
+### ✅ ~~C. Halaman Cerita Index — Rich Layout~~ — SELESAI (6 Oktober 2026)
+- [x] Bagian atas: **"Cerita Pilihan & Terpopuler"** — 2 card highlight cerita terbaik (berdasarkan views/popularity)
+- [x] Filter sortir: **"Terbaru"** vs **"Terpopuler"** interaktif via chips filter
+- [x] Backend: dukungan parameter `?sort=popular` dan `?sort=latest` di `StoryController::index()`
 
-### D. Beranda — Featured Story
-- [ ] Tampilkan **1 cerita terbaik** (most engaged) secara menonjol di section cerita beranda
-- [ ] Di bawahnya: 2–3 cerita terbaru sebagai preview
+### ✅ ~~D. Beranda — Featured Story~~ — SELESAI (6 Oktober 2026)
+- [x] Tampilan editorial split layout: **1 cerita terbaik/pilihan komunitas** menonjol di sebelah kiri dengan cover foto besar & badge views
+- [x] Di sebelah kanan: **3 cerita terbaru** berjejer rapi dengan thumbnail, penulis, tanggal, dan link ke seluruh arsip
+- [x] Tombol kirim cerita terhubung dengan `useAuthGuard` untuk menyambut guest dengan ramah
 
 ### E. Like & Komentar di Detail Cerita (Prioritas Tinggi)
 - [ ] Tombol **like** di halaman `/cerita/[slug]` — pakai endpoint `POST /likes/toggle` (sudah ada)
