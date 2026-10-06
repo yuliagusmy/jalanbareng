@@ -101,8 +101,22 @@
             <!-- ─ Divider ─ -->
             <v-divider class="my-10"></v-divider>
 
-            <!-- Share & Tags row -->
+            <!-- Like + Share row -->
             <div class="d-flex flex-column flex-sm-row align-start align-sm-center justify-space-between ga-4 mb-10">
+              <div class="d-flex align-center ga-3">
+                <StoryLikeButton
+                  v-if="story.id"
+                  :story-id="story.id"
+                  :initial-likes-count="story.likes_count ?? 0"
+                />
+                <div class="d-flex align-center ga-1 text-caption text-grey">
+                  <v-icon size="14">mdi-comment-outline</v-icon>
+                  <span>{{ commentCount }} komentar</span>
+                </div>
+              </div>
+
+            <!-- Share & Tags row -->
+            <div class="d-flex flex-column flex-sm-row align-start align-sm-center justify-end ga-4">
               <div>
                 <div class="text-caption text-uppercase font-weight-bold text-grey-darken-1 mb-2">Bagikan tulisan ini</div>
                 <div class="d-flex ga-2">
@@ -143,6 +157,7 @@
                 >{{ story.author_instagram }}</a>
               </div>
             </div>
+            </div>
 
             <!-- Author Bio Card -->
             <div class="author-card mb-12">
@@ -168,6 +183,16 @@
                   </a>
                 </div>
               </div>
+            </div>
+
+            <!-- ─ Comments ─ -->
+            <div class="mb-12">
+              <StoryCommentSection
+                v-if="story.id"
+                :story-id="story.id"
+                :initial-comments-count="story.comments_count ?? 0"
+                @count-change="commentCount = $event"
+              />
             </div>
 
             <!-- Bottom CTA -->
@@ -259,6 +284,8 @@ import { useRoute } from 'vue-router'
 import { useApi } from '~/composables/useApi'
 import { useAuthStore } from '~/stores/auth'
 import SubmitStoryDialog from '~/components/stories/SubmitStoryDialog.vue'
+import StoryLikeButton from '~/components/stories/StoryLikeButton.vue'
+import StoryCommentSection from '~/components/stories/StoryCommentSection.vue'
 import { defaultDummyStories } from '~/utils/dummyStories'
 
 const route = useRoute()
@@ -270,6 +297,7 @@ const related = ref<any[]>([])
 const loading = ref(true)
 const copied = ref(false)
 const showSubmitDialog = ref(false)
+const commentCount = ref(0)
 const articleEl = ref<HTMLElement | null>(null)
 const readingProgress = ref(0)
 

@@ -11,7 +11,7 @@ class LikeController extends Controller
     public function toggle(Request $request)
     {
         $request->validate([
-            'likeable_type' => 'required|in:App\Models\Destination,App\Models\Event,App\Models\Comment',
+            'likeable_type' => 'required|in:App\Models\Destination,App\Models\Event,App\Models\Comment,App\Models\Story',
             'likeable_id' => 'required|integer',
         ]);
 
@@ -69,7 +69,7 @@ class LikeController extends Controller
     public function check(Request $request)
     {
         $request->validate([
-            'likeable_type' => 'required|in:App\Models\Destination,App\Models\Event,App\Models\Comment',
+            'likeable_type' => 'required|in:App\Models\Destination,App\Models\Event,App\Models\Comment,App\Models\Story',
             'likeable_id' => 'required|integer',
         ]);
 

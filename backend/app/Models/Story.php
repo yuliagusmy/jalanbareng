@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 class Story extends Model
@@ -28,12 +29,16 @@ class Story extends Model
         'is_featured',
         'published_at',
         'views_count',
+        'likes_count',
+        'comments_count',
     ];
 
     protected $casts = [
         'is_featured' => 'boolean',
         'published_at' => 'datetime',
         'views_count' => 'integer',
+        'likes_count' => 'integer',
+        'comments_count' => 'integer',
     ];
 
     protected $appends = [
@@ -65,6 +70,16 @@ class Story extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function likes(): MorphMany
+    {
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public function getCoverImageUrlAttribute(): ?string

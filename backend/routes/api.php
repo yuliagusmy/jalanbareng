@@ -78,6 +78,9 @@ Route::get('/stories', [StoryController::class, 'index']);
 Route::get('/stories/{slug}', [StoryController::class, 'show']);
 Route::post('/stories', [StoryController::class, 'store']);
 
+// Comments (read-only is public, write actions require auth)
+Route::get('/comments', [CommentController::class, 'index']);
+
 // Protected routes (require authentication)
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -95,8 +98,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/events/{event}/join', [EventController::class, 'join']);
     Route::post('/events/{event}/leave', [EventController::class, 'leave']);
 
-    // Comments
-    Route::get('/comments', [CommentController::class, 'index']);
+    // Comments (write-only; read is public above)
     Route::post('/comments', [CommentController::class, 'store']);
     Route::put('/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);

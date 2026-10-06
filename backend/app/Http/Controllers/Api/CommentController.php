@@ -47,7 +47,7 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'commentable_type' => 'required|in:destination,event,App\Models\Destination,App\Models\Event',
+            'commentable_type' => 'required|in:destination,event,story,App\Models\Destination,App\Models\Event,App\Models\Story',
             'commentable_id' => 'required|integer',
             'content' => 'required|string|max:1000',
             'parent_id' => 'nullable|exists:comments,id',
@@ -170,8 +170,10 @@ class CommentController extends Controller
         $typeMap = [
             'destination' => 'App\Models\Destination',
             'event' => 'App\Models\Event',
+            'story' => 'App\Models\Story',
             'Destination' => 'App\Models\Destination',
             'Event' => 'App\Models\Event',
+            'Story' => 'App\Models\Story',
         ];
 
         // If already a full namespace, return as is
