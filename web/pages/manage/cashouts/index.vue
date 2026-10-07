@@ -3,94 +3,68 @@
     <v-container class="py-8">
       <!-- Header Card -->
       <v-card elevation="0" rounded="xl" class="mb-6 border">
-        <v-card-title class="d-flex flex-wrap align-center justify-space-between px-6 py-4 ga-3">
-          <div class="d-flex align-center">
-            <v-avatar color="#FEE2E2" size="48" class="mr-4">
-              <v-icon size="28" color="#DC2626">mdi-hand-coin</v-icon>
-            </v-avatar>
-            <div>
-              <h1 class="text-h5 font-weight-bold text-grey-darken-4 mb-0">Kelola Pencairan Poin</h1>
-              <p class="text-caption text-grey-darken-1 mb-0">Verifikasi dan proses penarikan uang kontributor Jalan Bareng</p>
+        <v-card-title class="admin-page-header px-6 py-4">
+          <div class="header-content">
+            <div class="header-main">
+              <v-avatar color="#FEE2E2" size="48" class="header-icon flex-shrink-0">
+                <v-icon size="28" color="#DC2626">mdi-hand-coin</v-icon>
+              </v-avatar>
+              <div class="header-text">
+                <h1 class="text-h5 font-weight-bold text-grey-darken-4 mb-0">Kelola Pencairan Poin</h1>
+                <p class="text-caption text-grey-darken-1 mb-0">Verifikasi dan proses penarikan uang kontributor Jalan Bareng</p>
+              </div>
             </div>
-          </div>
-
-          <div class="d-flex align-center ga-2">
-            <v-btn
-              variant="outlined"
-              color="#DC2626"
-              rounded="pill"
-              prepend-icon="mdi-refresh"
-              :loading="loading"
-              @click="fetchCashouts"
-            >
-              Segarkan
-            </v-btn>
+            <div class="header-actions">
+              <v-btn
+                variant="outlined"
+                color="#DC2626"
+                rounded="pill"
+                prepend-icon="mdi-refresh"
+                :loading="loading"
+                @click="fetchCashouts"
+              >
+                Segarkan
+              </v-btn>
+            </div>
           </div>
         </v-card-title>
       </v-card>
 
       <!-- Stats Summary Cards -->
-      <v-row class="mb-6">
-        <v-col cols="12" sm="6" md="3">
-          <v-card elevation="0" rounded="xl" class="pa-4 border bg-blue-lighten-5">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <div class="text-caption font-weight-bold text-blue-darken-3">TOTAL PENGAJUAN</div>
-                <div class="text-h4 font-weight-bold text-blue-darken-4">{{ counts.all }}</div>
-              </div>
-              <v-avatar color="blue" size="44">
-                <v-icon color="white">mdi-format-list-bulleted</v-icon>
-              </v-avatar>
-            </div>
+      <v-row class="mb-6" dense>
+        <v-col cols="6" sm="6" md="3">
+          <v-card elevation="0" rounded="xl" class="stat-card-compact border bg-blue-lighten-5">
+            <v-avatar color="blue" size="44"><v-icon color="white">mdi-format-list-bulleted</v-icon></v-avatar>
+            <div class="stat-number text-blue-darken-4">{{ counts.all }}</div>
+            <div class="stat-label text-blue-darken-3">Total Pengajuan</div>
           </v-card>
         </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-          <v-card elevation="0" rounded="xl" class="pa-4 border bg-amber-lighten-5">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <div class="text-caption font-weight-bold text-amber-darken-3">BUTUH TINDAKAN</div>
-                <div class="text-h4 font-weight-bold text-amber-darken-4">{{ counts.pending }}</div>
-              </div>
-              <v-avatar color="amber-darken-2" size="44">
-                <v-icon color="white">mdi-clock-alert-outline</v-icon>
-              </v-avatar>
-            </div>
+        <v-col cols="6" sm="6" md="3">
+          <v-card elevation="0" rounded="xl" class="stat-card-compact border bg-amber-lighten-5">
+            <v-avatar color="amber-darken-2" size="44"><v-icon color="white">mdi-clock-alert-outline</v-icon></v-avatar>
+            <div class="stat-number text-amber-darken-4">{{ counts.pending }}</div>
+            <div class="stat-label text-amber-darken-3">Butuh Tindakan</div>
           </v-card>
         </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-          <v-card elevation="0" rounded="xl" class="pa-4 border bg-green-lighten-5">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <div class="text-caption font-weight-bold text-green-darken-3">BERHASIL DITRANSFER</div>
-                <div class="text-h4 font-weight-bold text-green-darken-4">{{ counts.approved }}</div>
-              </div>
-              <v-avatar color="green-darken-1" size="44">
-                <v-icon color="white">mdi-check-decagram</v-icon>
-              </v-avatar>
-            </div>
+        <v-col cols="6" sm="6" md="3">
+          <v-card elevation="0" rounded="xl" class="stat-card-compact border bg-green-lighten-5">
+            <v-avatar color="green-darken-1" size="44"><v-icon color="white">mdi-check-decagram</v-icon></v-avatar>
+            <div class="stat-number text-green-darken-4">{{ counts.approved }}</div>
+            <div class="stat-label text-green-darken-3">Ditransfer</div>
           </v-card>
         </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-          <v-card elevation="0" rounded="xl" class="pa-4 border bg-red-lighten-5">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <div class="text-caption font-weight-bold text-red-darken-3">DITOLAK / REFUND</div>
-                <div class="text-h4 font-weight-bold text-red-darken-4">{{ counts.rejected }}</div>
-              </div>
-              <v-avatar color="red-darken-1" size="44">
-                <v-icon color="white">mdi-close-circle-outline</v-icon>
-              </v-avatar>
-            </div>
+        <v-col cols="6" sm="6" md="3">
+          <v-card elevation="0" rounded="xl" class="stat-card-compact border bg-red-lighten-5">
+            <v-avatar color="red-darken-1" size="44"><v-icon color="white">mdi-close-circle-outline</v-icon></v-avatar>
+            <div class="stat-number text-red-darken-4">{{ counts.rejected }}</div>
+            <div class="stat-label text-red-darken-3">Ditolak / Refund</div>
           </v-card>
         </v-col>
       </v-row>
 
       <!-- Filter Tabs & Main Table -->
       <v-card elevation="0" rounded="xl" class="border">
-        <div class="px-6 pt-4 border-b">
+        <div class="px-4 px-sm-6 pt-4 border-b">
           <v-tabs v-model="statusFilter" color="#DC2626" @update:model-value="fetchCashouts">
             <v-tab value="all">Semua ({{ counts.all }})</v-tab>
             <v-tab value="pending">
@@ -102,66 +76,60 @@
           </v-tabs>
         </div>
 
-        <!-- Table -->
-        <v-table hover>
-          <thead>
-            <tr>
-              <th class="font-weight-bold">Pengguna</th>
-              <th class="font-weight-bold">Jumlah Poin</th>
-              <th class="font-weight-bold">Nominal Transfer</th>
-              <th class="font-weight-bold">Tujuan &amp; Atas Nama</th>
-              <th class="font-weight-bold">Tanggal</th>
-              <th class="font-weight-bold">Status</th>
-              <th class="font-weight-bold text-right">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="loading">
-              <td colspan="7" class="text-center py-8">
-                <v-progress-circular indeterminate color="#DC2626"></v-progress-circular>
-              </td>
-            </tr>
-            <tr v-else-if="!cashouts.length">
-              <td colspan="7" class="text-center py-8 text-grey">
-                Tidak ada data pengajuan pencairan
-              </td>
-            </tr>
-            <tr v-for="item in cashouts" :key="item.id">
-              <td>
-                <div class="d-flex align-center ga-3 py-2">
-                  <v-avatar size="36" color="grey-lighten-3">
-                    <v-img v-if="item.user?.photo" :src="item.user.photo"></v-img>
-                    <v-icon v-else size="20">mdi-account</v-icon>
-                  </v-avatar>
-                  <div>
-                    <div class="font-weight-bold text-grey-darken-4">{{ item.user?.name || 'Anonim' }}</div>
-                    <div class="text-caption text-grey">{{ item.user?.email }}</div>
-                  </div>
+        <!-- Loading -->
+        <div v-if="loading" class="text-center py-10">
+          <v-progress-circular indeterminate color="#DC2626"></v-progress-circular>
+        </div>
+
+        <!-- Empty -->
+        <div v-else-if="!cashouts.length" class="text-center py-10 text-grey">
+          <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-hand-coin</v-icon>
+          <div class="text-body-2">Tidak ada data pengajuan pencairan</div>
+        </div>
+
+        <template v-else>
+          <!-- Mobile Card View (xs) -->
+          <div v-if="$vuetify.display.xs" class="pa-3">
+            <v-card
+              v-for="item in cashouts"
+              :key="item.id"
+              elevation="0"
+              rounded="xl"
+              class="pa-4 mb-3 border"
+            >
+              <div class="d-flex align-center ga-3 mb-3">
+                <v-avatar size="40" color="grey-lighten-3">
+                  <v-img v-if="item.user?.photo" :src="item.user.photo"></v-img>
+                  <v-icon v-else size="20">mdi-account</v-icon>
+                </v-avatar>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="font-weight-bold text-grey-darken-4 text-truncate">{{ item.user?.name || 'Anonim' }}</div>
+                  <div class="text-caption text-grey text-truncate">{{ item.user?.email }}</div>
                 </div>
-              </td>
-              <td>
-                <span class="font-weight-bold text-primary-red">{{ item.points_requested }} Pts</span>
-              </td>
-              <td>
-                <span class="font-weight-bold text-grey-darken-4">Rp {{ formatRupiah(item.rupiah_amount) }}</span>
-              </td>
-              <td>
-                <div class="font-weight-medium text-capitalize">{{ formatPaymentMethod(item.payment_method) }}</div>
-                <div class="text-caption text-grey-darken-1">{{ item.account_number }} (a.n {{ item.account_name }})</div>
-              </td>
-              <td class="text-caption text-grey">
-                {{ formatDate(item.created_at) }}
-              </td>
-              <td>
-                <v-chip
-                  size="small"
-                  :color="getStatusColor(item.status)"
-                  class="font-weight-bold text-capitalize"
-                >
+                <v-chip size="x-small" :color="getStatusColor(item.status)" class="font-weight-bold flex-shrink-0">
                   {{ getStatusLabel(item.status) }}
                 </v-chip>
-              </td>
-              <td class="text-right">
+              </div>
+
+              <div class="pa-3 rounded-lg bg-grey-lighten-5 mb-3">
+                <div class="d-flex justify-space-between mb-1">
+                  <span class="text-caption text-grey-darken-1">Nominal</span>
+                  <span class="font-weight-black text-primary-red">Rp {{ formatRupiah(item.rupiah_amount) }}</span>
+                </div>
+                <div class="d-flex justify-space-between mb-1">
+                  <span class="text-caption text-grey-darken-1">Poin</span>
+                  <span class="font-weight-bold">{{ item.points_requested }} Pts</span>
+                </div>
+                <div class="d-flex justify-space-between">
+                  <span class="text-caption text-grey-darken-1">Tujuan</span>
+                  <span class="text-caption font-weight-medium text-right">
+                    {{ formatPaymentMethod(item.payment_method) }} {{ item.account_number }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="d-flex align-center justify-space-between">
+                <span class="text-caption text-grey">{{ formatDate(item.created_at) }}</span>
                 <v-btn
                   v-if="item.status === 'pending'"
                   color="#DC2626"
@@ -183,11 +151,83 @@
                 >
                   Lihat Struk
                 </v-btn>
-                <span v-else class="text-caption text-grey">Selesai</span>
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
+              </div>
+            </v-card>
+          </div>
+
+          <!-- Desktop Table (smAndUp) -->
+          <v-table v-else hover>
+            <thead>
+              <tr>
+                <th class="font-weight-bold">Pengguna</th>
+                <th class="font-weight-bold">Jumlah Poin</th>
+                <th class="font-weight-bold">Nominal Transfer</th>
+                <th class="font-weight-bold">Tujuan &amp; Atas Nama</th>
+                <th class="font-weight-bold">Tanggal</th>
+                <th class="font-weight-bold">Status</th>
+                <th class="font-weight-bold text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in cashouts" :key="item.id">
+                <td>
+                  <div class="d-flex align-center ga-3 py-2">
+                    <v-avatar size="36" color="grey-lighten-3">
+                      <v-img v-if="item.user?.photo" :src="item.user.photo"></v-img>
+                      <v-icon v-else size="20">mdi-account</v-icon>
+                    </v-avatar>
+                    <div>
+                      <div class="font-weight-bold text-grey-darken-4">{{ item.user?.name || 'Anonim' }}</div>
+                      <div class="text-caption text-grey">{{ item.user?.email }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="font-weight-bold text-primary-red">{{ item.points_requested }} Pts</span>
+                </td>
+                <td>
+                  <span class="font-weight-bold text-grey-darken-4">Rp {{ formatRupiah(item.rupiah_amount) }}</span>
+                </td>
+                <td>
+                  <div class="font-weight-medium text-capitalize">{{ formatPaymentMethod(item.payment_method) }}</div>
+                  <div class="text-caption text-grey-darken-1">{{ item.account_number }} (a.n {{ item.account_name }})</div>
+                </td>
+                <td class="text-caption text-grey">
+                  {{ formatDate(item.created_at) }}
+                </td>
+                <td>
+                  <v-chip size="small" :color="getStatusColor(item.status)" class="font-weight-bold text-capitalize">
+                    {{ getStatusLabel(item.status) }}
+                  </v-chip>
+                </td>
+                <td class="text-right">
+                  <v-btn
+                    v-if="item.status === 'pending'"
+                    color="#DC2626"
+                    size="small"
+                    rounded="pill"
+                    class="text-white font-weight-bold"
+                    @click="openProcessModal(item)"
+                  >
+                    Proses Transfer
+                  </v-btn>
+                  <v-btn
+                    v-else-if="item.receipt_image_url"
+                    variant="outlined"
+                    size="small"
+                    rounded="pill"
+                    color="primary"
+                    :href="item.receipt_image_url"
+                    target="_blank"
+                  >
+                    Lihat Struk
+                  </v-btn>
+                  <span v-else class="text-caption text-grey">Selesai</span>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+        </template>
       </v-card>
     </v-container>
 
@@ -390,5 +430,63 @@ onMounted(() => {
 <style scoped>
 .text-primary-red {
   color: #DC2626;
+}
+
+/* Responsive Header */
+.admin-page-header .header-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
+.admin-page-header .header-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+.admin-page-header .header-text { flex: 1; min-width: 0; }
+.admin-page-header .header-actions {
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .admin-page-header .header-content { flex-direction: column; align-items: stretch; }
+  .admin-page-header .header-main { width: 100%; }
+  .admin-page-header .header-icon { width: 40px !important; height: 40px !important; }
+  .admin-page-header .header-text h1 { font-size: 1.1rem !important; }
+  .admin-page-header .header-actions { width: 100%; }
+  .admin-page-header .header-actions .v-btn { width: 100%; }
+}
+
+/* Compact Stat Cards */
+.stat-card-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  gap: 0.5rem;
+}
+.stat-card-compact .stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.stat-card-compact .stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+@media (max-width: 600px) {
+  .stat-card-compact { padding: 0.75rem 0.5rem; }
+  .stat-card-compact .v-avatar { width: 36px !important; height: 36px !important; }
+  .stat-card-compact .stat-number { font-size: 1.5rem; }
+  .stat-card-compact .stat-label { font-size: 0.65rem; }
 }
 </style>
