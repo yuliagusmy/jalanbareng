@@ -12,17 +12,20 @@ Tidak ada.
 
 ## ✅ Terakhir Diselesaikan
 
-- `feat: add cashouts to admin nav dropdown with pending badge` — entry Pencairan Poin di admin dropdown, badge count pending, fix py-2-5 invalid class, tambah pending_cashouts ke AdminStatsController
-- `fix: optimize cashouts admin page for mobile + remove unused DestinationCard` — stats compact 2 kolom, mobile card view, header responsive, hapus DestinationCard.vue yang tidak dipakai
-- `feat: add Kelola Mitra link to admin nav dropdown` — tambah entry Kelola Mitra ke section Administrasi Sistem
-- `feat: add Kelola Mitra feature (partners CRUD + public page)` — migration, model, controller, admin page, public page
+- `fix: replace backslash-in-string validation with closure for likes and comments` — fix validasi `in:` rule dengan backslash yang menyebabkan 422 di production
+- `feat: user can edit own story + fix silent comment errors` — user bisa edit cerita sendiri (pending/rejected), status reset ke pending, tombol Edit di author card
+- `feat: GPX export for walking tour routes` — tombol Ekspor GPX di section rute event walking, composable useGpxExport.ts
+- `feat: full-screen map mode for /destinations on mobile (Fitur I)` — DestinationMobileMapView, DestinationDirectorySheet, useGeolocation
+- `feat: add Kelola Mitra feature (partners CRUD + public page)` — migration, model, controller, admin page, public page /mitra
 
 ## 🐛 Isu yang Ditemukan
 
-- Migration `create_partners_table` belum dijalankan (PHP lokal 8.0, butuh 8.2+). Jalankan di production: `php artisan migrate`
+- Tombol edit cerita hanya muncul untuk tulisan dengan status `pending` atau `rejected` — tulisan yang sudah `approved` tidak bisa diedit langsung (by design, harus hubungi admin)
+- Railway perlu redeploy manual setelah push karena auto-deploy kadang tidak trigger
 
 ## 📋 Antrian Berikutnya
 
-1. **Fitur I/J dari BACKLOG** — Full-screen map mode & GPS recording (sedang dirancang ulang oleh user)
-2. **Scraping data historis** (BACKLOG section 9) — butuh tool eksternal
-3. **Infrastructure/DevOps** (BACKLOG section 1-7) — VPS, MySQL, CI/CD
+1. **Fitur L lanjutan** — statistik komunitas (total km dijelajahi), checkpoint system GPS
+2. **Halaman profil user publik** — `/profil/[id]` untuk lihat kontribusi member lain
+3. **Notifikasi in-app** — sudah ada backend (`notifications` table), perlu frontend bell yang lebih lengkap
+4. **Infrastructure** — setup VPS/MySQL production yang lebih stabil (BACKLOG section 1-7)
