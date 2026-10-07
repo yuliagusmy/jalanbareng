@@ -166,7 +166,7 @@
                 <v-avatar size="64" color="#FEF2F2" class="elevation-3 flex-shrink-0">
                   <v-icon size="36" color="#DC2626">mdi-fountain-pen-tip</v-icon>
                 </v-avatar>
-                <div>
+                <div class="flex-grow-1">
                   <div class="text-caption text-uppercase font-weight-bold text-grey mb-1" style="letter-spacing: 0.08em;">Penulis Kontributor</div>
                   <h3 class="text-subtitle-1 font-weight-black text-grey-darken-4 mb-1">{{ story.author_name }}</h3>
                   <p v-if="story.author_bio" class="text-body-2 text-grey-darken-2 mb-2" style="line-height: 1.6;">{{ story.author_bio }}</p>
@@ -182,7 +182,22 @@
                     {{ story.author_instagram }}
                   </a>
                 </div>
+                <!-- Tombol edit untuk pemilik tulisan -->
+                <div v-if="canEditStory" class="flex-shrink-0">
+                  <v-btn
+                    variant="outlined"
+                    color="primary"
+                    rounded="pill"
+                    size="small"
+                    class="font-weight-bold"
+                    @click="showEditDialog = true; openEditDialog()"
+                  >
+                    <v-icon start size="16">mdi-pencil-outline</v-icon>
+                    Edit Tulisan
+                  </v-btn>
+                </div>
               </div>
+            </div>
             </div>
 
             <!-- ─ Comments ─ -->
@@ -275,6 +290,103 @@
 
     <!-- Submit Story Dialog -->
     <SubmitStoryDialog v-model="showSubmitDialog" />
+
+    <!-- Edit Story Dialog -->
+    <v-dialog v-model="showEditDialog" max-width="680" scrollable>
+      <v-card rounded="xl">
+        <v-card-title class="d-flex align-center justify-space-between pa-5 border-b">
+          <div class="d-flex align-center ga-2">
+            <v-icon color="primary" size="20">mdi-pencil-outline</v-icon>
+            <span class="text-subtitle-1 font-weight-bold text-grey-darken-4">Edit Tulisan</span>
+          </div>
+          <div class="d-flex align-center ga-2">
+            <v-chip size="small" color="warning" variant="tonal" class="font-weight-bold">
+              Akan dikirim ulang ke kurator
+            </v-chip>
+            <v-btn icon="mdi-close" variant="text" density="comfortable" @click="showEditDialog = false" />
+          </div>
+        </v-card-title>
+
+        <v-card-text class="pa-5">
+          <v-alert type="info" variant="tonal" rounded="lg" class="mb-4 text-body-2">
+            Setelah diedit, tulisan akan dikirim ulang ke tim kurator Jalan Bareng untuk ditinjau sebelum dipublikasikan kembali.
+          </v-alert>
+
+          <div class="d-flex flex-column ga-4">
+            <v-text-field
+              v-model="editForm.title"
+              label="Judul Tulisan *"
+              variant="outlined"
+              rounded="lg"
+              density="comfortable"
+              hide-details
+            />
+            <v-textarea
+              v-model="editForm.excerpt"
+              label="Ringkasan (Excerpt)"
+              variant="outlined"
+              rounded="lg"
+              density="comfortable"
+              hide-details
+              rows="2"
+              auto-grow
+            />
+            <div>
+              <div class="text-caption font-weight-bold text-grey-darken-2 mb-2">Isi Tulisan *</div>
+              <v-textarea
+                v-model="editForm.content"
+                variant="outlined"
+                rounded="lg"
+                density="comfortable"
+                hide-details
+                rows="8"
+                auto-grow
+                placeholder="Tulis cerita kamu di sini..."
+              />
+            </div>
+            <v-text-field
+              v-model="editForm.author_instagram"
+              label="Instagram (opsional)"
+              variant="outlined"
+              rounded="lg"
+              density="comfortable"
+              hide-details
+              prefix="@"
+            />
+            <v-textarea
+              v-model="editForm.author_bio"
+              label="Bio Singkat Penulis"
+              variant="outlined"
+              rounded="lg"
+              density="comfortable"
+              hide-details
+              rows="2"
+            />
+          </div>
+        </v-card-text>
+
+        <v-card-actions class="pa-5 border-t">
+          <v-btn variant="text" rounded="pill" @click="showEditDialog = false">Batal</v-btn>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            variant="flat"
+            rounded="pill"
+            :loading="editSaving"
+            :disabled="!editForm.title || !editForm.content"
+            @click="submitEdit"
+          >
+            <v-icon start size="16">mdi-send-outline</v-icon>
+            Simpan & Kirim Ulang
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Edit Snackbar -->
+    <v-snackbar v-model="editSnackbar" :color="editSnackbarColor" rounded="pill" location="bottom" :timeout="4000">
+      {{ editSnackbarText }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -300,6 +412,68 @@ const showSubmitDialog = ref(false)
 const commentCount = ref(0)
 const articleEl = ref<HTMLElement | null>(null)
 const readingProgress = ref(0)
+
+// Edit story state
+const showEditDialog = ref(false)
+const editSaving = ref(false)
+const editSnackbar = ref(false)
+const editSnackbarText = ref('')
+const editSnackbarColor = ref('success')
+
+// Can the current user edit this story?
+const canEditStory = computed(() => {
+  if (!authStore.isLoggedIn || !story.value) return false
+  // Owner can edit if story is pending or rejected (not published)
+  return (
+    authStore.user?.id === story.value.user_id &&
+    story.value.status !== 'approved'
+  )
+})
+
+const editForm = ref({
+  title: '',
+  excerpt: '',
+  content: '',
+  author_bio: '',
+  author_instagram: '',
+  card_style: 'coral',
+})
+
+const openEditDialog = () => {
+  if (!story.value) return
+  editForm.value = {
+    title: story.value.title || '',
+    excerpt: story.value.excerpt || '',
+    content: story.value.content || '',
+    author_bio: story.value.author_bio || '',
+    author_instagram: story.value.author_instagram || '',
+    card_style: story.value.card_style || 'coral',
+  }
+  showEditDialog.value = true
+}
+
+const submitEdit = async () => {
+  if (!story.value) return
+  editSaving.value = true
+  try {
+    const fd = new FormData()
+    Object.entries(editForm.value).forEach(([k, v]) => {
+      if (v) fd.append(k, v)
+    })
+    const res = await api.post(`/stories/${story.value.id}`, fd)
+    story.value = { ...story.value, ...res.data.story, status: 'pending' }
+    showEditDialog.value = false
+    editSnackbarText.value = 'Tulisan berhasil diperbarui dan dikirim ulang untuk ditinjau!'
+    editSnackbarColor.value = 'success'
+    editSnackbar.value = true
+  } catch (err: any) {
+    editSnackbarText.value = err?.response?.data?.message || 'Gagal menyimpan perubahan'
+    editSnackbarColor.value = 'error'
+    editSnackbar.value = true
+  } finally {
+    editSaving.value = false
+  }
+}
 
 // Reading time estimator (~200 words per minute reading speed)
 const readingTime = computed(() => {

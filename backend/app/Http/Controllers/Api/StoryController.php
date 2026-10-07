@@ -147,6 +147,58 @@ class StoryController extends Controller
     }
 
     /**
+     * Authenticated User: Update own story — resets status to pending for re-review.
+     */
+    public function update(Request $request, $id)
+    {
+        $user = $request->user();
+        $story = Story::findOrFail($id);
+
+        // Only the owner can edit
+        if ($story->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Only allow editing pending or rejected stories (not published ones)
+        if ($story->status === 'approved') {
+            return response()->json([
+                'message' => 'Tulisan yang sudah diterbitkan tidak bisa diedit langsung. Hubungi admin Jalan Bareng.',
+            ], 422);
+        }
+
+        $validated = $request->validate([
+            'title'            => 'sometimes|required|string|max:255',
+            'excerpt'          => 'nullable|string|max:500',
+            'content'          => 'sometimes|required|string',
+            'author_name'      => 'sometimes|required|string|max:255',
+            'author_bio'       => 'nullable|string|max:500',
+            'author_instagram' => 'nullable|string|max:100',
+            'card_style'       => 'nullable|string|in:coral,magenta,amber,photo,dark',
+            'cover_image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+        ]);
+
+        if ($request->hasFile('cover_image')) {
+            $path = $request->file('cover_image')->store('stories', 'public');
+            $validated['cover_image'] = $path;
+        }
+
+        if (isset($validated['content'])) {
+            $validated['content'] = self::sanitizeHtml($validated['content']);
+        }
+
+        // Reset to pending for re-review by admin
+        $validated['status'] = 'pending';
+        $validated['rejection_reason'] = null;
+
+        $story->update($validated);
+
+        return response()->json([
+            'message' => 'Tulisan berhasil diperbarui dan dikirim ulang untuk ditinjau oleh kurator.',
+            'story'   => $story->fresh(),
+        ]);
+    }
+
+    /**
      * Admin: List all stories with curation filters and count summaries
      */
     public function adminIndex(Request $request)

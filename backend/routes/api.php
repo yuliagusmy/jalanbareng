@@ -95,6 +95,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Profile
     Route::put('/profile', [ProfileController::class, 'update']);
 
+    // Stories (user: edit own story — resets to pending)
+    Route::post('/stories/{id}', [StoryController::class, 'update']);
+
     // Events
     Route::post('/events', [EventController::class, 'store']);
     Route::put('/events/{event}', [EventController::class, 'update']);

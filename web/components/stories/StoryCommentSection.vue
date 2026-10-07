@@ -277,8 +277,9 @@ const fetchComments = async () => {
     })
     comments.value = res.data.comments || []
     emit('count-change', totalComments.value)
-  } catch {
-    // silent
+  } catch (err: any) {
+    console.error('Failed to fetch comments:', err?.response?.data || err)
+    comments.value = []
   } finally {
     loading.value = false
   }
@@ -308,8 +309,8 @@ const submitComment = async () => {
     comments.value.unshift(newItem)
     newComment.value = ''
     emit('count-change', totalComments.value)
-  } catch {
-    // silent
+  } catch (err: any) {
+    console.error('Failed to submit comment:', err?.response?.data || err)
   } finally {
     submitting.value = false
   }
