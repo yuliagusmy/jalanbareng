@@ -18,14 +18,6 @@ class ActivationController extends Controller
      */
     public function index(Request $request)
     {
-        if (Activation::count() === 0) {
-            try {
-                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-            } catch (\Throwable $e) {
-                // ignore
-            }
-        }
-
         $query = Activation::with(['media', 'faqs', 'testimonials'])
             ->withCount(['events', 'destinations']);
 
@@ -95,14 +87,14 @@ class ActivationController extends Controller
             ->where('date', '>=', now())
             ->orderBy('date', 'asc')
             ->first();
-        
+
         // Add featured event (most recent upcoming event with poster, fallback to first upcoming)
         $activation->featured_event = $activation->events()
             ->where('date', '>=', now())
             ->whereNotNull('poster')
             ->orderBy('date', 'asc')
             ->first();
-        
+
         // Fallback to first upcoming event if no event has poster
         if (!$activation->featured_event) {
             $activation->featured_event = $activation->events()
@@ -110,7 +102,7 @@ class ActivationController extends Controller
                 ->orderBy('date', 'asc')
                 ->first();
         }
-        
+
         // Add popular destinations (top 4 by likes)
         $activation->popular_destinations = $activation->destinations()
             ->with('category')
