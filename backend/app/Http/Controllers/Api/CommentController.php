@@ -60,7 +60,15 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'commentable_type' => 'required|in:destination,event,story,App\Models\Destination,App\Models\Event,App\Models\Story',
+            'commentable_type' => ['required', 'string', function ($attribute, $value, $fail) {
+                $allowed = [
+                    'destination', 'event', 'story',
+                    'App\\Models\\Destination', 'App\\Models\\Event', 'App\\Models\\Story',
+                ];
+                if (!in_array($value, $allowed, true)) {
+                    $fail('The selected commentable type is invalid.');
+                }
+            }],
             'commentable_id' => 'required|integer',
             'content' => 'required|string|max:1000',
             'parent_id' => 'nullable|exists:comments,id',
