@@ -415,6 +415,19 @@
                     <v-icon start size="16">mdi-cellphone-marker</v-icon>
                     Rekam Live GPS
                   </v-btn>
+                  <!-- Ekspor GPX -->
+                  <v-btn
+                    size="small"
+                    rounded="pill"
+                    variant="outlined"
+                    color="grey-darken-2"
+                    class="font-weight-bold"
+                    :title="`Unduh rute ${event.name} sebagai file GPX untuk Strava / Komoot`"
+                    @click="handleExportGpx"
+                  >
+                    <v-icon start size="16">mdi-download-outline</v-icon>
+                    Ekspor GPX
+                  </v-btn>
                   <span class="route-length-badge" v-if="event.distance">
                     {{ event.distance }} km Jalur Pejalan
                   </span>
@@ -614,13 +627,25 @@
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { defineAsyncComponent } from 'vue'
 import { useHead } from '#app'
+import { useGpxExport } from '~/composables/useGpxExport'
 
 const WalkingRouteMapViewer = defineAsyncComponent(() => import('~/components/events/WalkingRouteMapViewer.vue'))
 const LiveGpsRouteTrackerModal = defineAsyncComponent(() => import('~/components/events/LiveGpsRouteTrackerModal.vue'))
 const RouteMapViewer = defineAsyncComponent(() => import('~/components/events/RouteMapViewer.vue'))
 const GoogleMapRouteViewer = defineAsyncComponent(() => import('~/components/events/GoogleMapRouteViewer.vue'))
 
+const { downloadGpx } = useGpxExport()
+
 const showGpsTracker = ref(false)
+
+const handleExportGpx = () => {
+  if (!event.value?.route?.length) return
+  downloadGpx(
+    event.value.route,
+    event.value.name,
+    `Rute jalan kaki Jalan Bareng — ${event.value.name}`
+  )
+}
 
 const handleLiveGpsSaved = async (payload: { route: any[]; distance: number; duration: number }) => {
   if (!event.value) return
