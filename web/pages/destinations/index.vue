@@ -1,5 +1,24 @@
 <template>
   <div class="destinations-index-page">
+
+    <!-- ── Mobile Full-Screen Map Mode (xs only) ── -->
+    <ClientOnly>
+      <DestinationMobileMapView
+        v-if="showMobileMap"
+        :destinations="activeMapPins"
+        :categories="categories"
+        :selected-category="selectedCategory"
+        :map-center="mapCenter"
+        :loading="loading"
+        @search="(q) => { search = q; pagination.current_page = 1; fetchDestinations() }"
+        @filter-category="(id) => { selectCategory(id) }"
+        @select-landmark="handleSelectLandmark"
+        @add-destination="handleAddDestination"
+      />
+    </ClientOnly>
+
+    <!-- ── Desktop / Tablet layout (hidden on xs when mobile map is active) ── -->
+    <template v-if="!showMobileMap">
     <!-- 1. Editorial Hero Section (Temukan Destinasi & Sudut Kota) -->
     <section class="destinations-hero">
       <v-container class="hero-content">
@@ -454,11 +473,15 @@
         <span>{{ snackbarText }}</span>
       </div>
     </v-snackbar>
+  </template>
+  <!-- end desktop/tablet template -->
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
+import { defineAsyncComponent } from 'vue'
 import LargeDestinationMapSection from '~/components/destinations/LargeDestinationMapSection.vue'
 import FeaturedLandmarksSection from '~/components/destinations/FeaturedLandmarksSection.vue'
 import { useAuthStore } from '~/stores/auth'
@@ -466,6 +489,11 @@ import { useApi } from '~/composables/useApi'
 import { useBookmarks } from '~/composables/useBookmarks'
 import { useAuthGuard } from '~/composables/useAuthGuard'
 import { useRuntimeConfig, useRoute, useRouter, useSeoMeta } from '#app'
+import { useDisplay } from 'vuetify'
+
+const DestinationMobileMapView = defineAsyncComponent(() =>
+  import('~/components/destinations/DestinationMobileMapView.vue')
+)
 
 definePageMeta({
   layout: 'default'
@@ -479,6 +507,15 @@ useSeoMeta({
   ogImage: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&h=630&fit=crop',
   twitterCard: 'summary_large_image',
 })
+
+const { xs } = useDisplay()
+// Full-screen map mode — aktif otomatis di mobile xs
+const showMobileMap = ref(false)
+
+// Auto-show mobile map on xs when page mounts
+watch(xs, (isXs) => {
+  showMobileMap.value = isXs
+}, { immediate: true })
 
 const authStore = useAuthStore()
 const { api } = useApi()
