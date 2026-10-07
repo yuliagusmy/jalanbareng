@@ -12,24 +12,17 @@ Tidak ada.
 
 ## ✅ Terakhir Diselesaikan
 
-- `feat: add Kelola Mitra feature (partners CRUD + public page)`
-  - **Backend**: migration `create_partners_table` (name, category, role, collab_type, initial, logo_url, bg_color, text_color, website_url, sort_order, is_active)
-  - **Model**: `Partner.php` dengan scope `active()`
-  - **Controller**: `PartnerController.php` — `GET /api/partners` (publik), admin CRUD di `/api/admin/partners`
-  - **Admin page**: `web/pages/manage/partners/index.vue` — stats cards, filter, mobile card + desktop table, form dialog dengan live preview, toggle aktif/nonaktif
-  - **Public page**: `web/pages/mitra.vue` — hero, grouping per kategori, partner card grid, logo/initial fallback, CTA kolaborasi
-- `fix: batch replace all invalid Vuetify utility classes across codebase` — 37 penggantian di 13 file
-- `fix: mobile responsiveness audit fixes for detail pages`
-- `feat: add accessibility and scroll indicators to CategorySection`
+- `feat: add cashouts to admin nav dropdown with pending badge` — entry Pencairan Poin di admin dropdown, badge count pending, fix py-2-5 invalid class, tambah pending_cashouts ke AdminStatsController
+- `fix: optimize cashouts admin page for mobile + remove unused DestinationCard` — stats compact 2 kolom, mobile card view, header responsive, hapus DestinationCard.vue yang tidak dipakai
+- `feat: add Kelola Mitra link to admin nav dropdown` — tambah entry Kelola Mitra ke section Administrasi Sistem
+- `feat: add Kelola Mitra feature (partners CRUD + public page)` — migration, model, controller, admin page, public page
 
 ## 🐛 Isu yang Ditemukan
 
-- Migration `create_partners_table` belum dijalankan di lokal (PHP 8.0 di mesin dev tidak kompatibel, butuh PHP 8.2+). Jalankan di production setelah deploy: `php artisan migrate`
-- Halaman `/mitra` dan `/manage/partners` belum ada di navbar/sidebar navigasi — perlu ditambahkan agar bisa ditemukan user.
-- `DestinationCard.vue` di `web/components/` tidak dipakai, bisa dihapus.
+- Migration `create_partners_table` belum dijalankan (PHP lokal 8.0, butuh 8.2+). Jalankan di production: `php artisan migrate`
 
 ## 📋 Antrian Berikutnya
 
-1. **Tambahkan link `/mitra` ke navbar** dan `/manage/partners` ke sidebar navigasi admin
-2. **Jalankan migration** di production setelah deploy: `php artisan migrate`
-3. **Fitur I/J dari BACKLOG** — Full-screen map mode & GPS recording (kompleks, prioritas rendah)
+1. **Fitur I/J dari BACKLOG** — Full-screen map mode & GPS recording (sedang dirancang ulang oleh user)
+2. **Scraping data historis** (BACKLOG section 9) — butuh tool eksternal
+3. **Infrastructure/DevOps** (BACKLOG section 1-7) — VPS, MySQL, CI/CD
