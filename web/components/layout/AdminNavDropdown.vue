@@ -180,6 +180,25 @@
             </v-list-item>
 
             <v-list-item
+              to="/manage/partners"
+              rounded="lg"
+              class="mx-2 mb-1 dropdown-admin-item"
+              @click="isMenuOpen = false"
+            >
+              <template v-slot:prepend>
+                <div class="item-icon-box bg-teal-subtle">
+                  <v-icon size="16" color="#0D9488">mdi-handshake-outline</v-icon>
+                </div>
+              </template>
+              <v-list-item-title class="font-weight-bold text-grey-darken-4">
+                Kelola Mitra
+              </v-list-item-title>
+              <v-list-item-subtitle class="text-caption text-grey-darken-1">
+                Brand, komunitas &amp; media partner
+              </v-list-item-subtitle>
+            </v-list-item>
+
+            <v-list-item
               to="/manage/stories"
               rounded="lg"
               class="mx-2 mb-1 dropdown-admin-item"
@@ -350,6 +369,7 @@ const canManage = computed(() => {
 .bg-amber-subtle { background: #FFFBEB; }
 .bg-pink-subtle { background: #FFF1F2; }
 .bg-grey-subtle { background: #F3F4F6; }
+.bg-teal-subtle { background: #F0FDFA; }
 
 .dropdown-admin-item {
   transition: all 0.2s ease;
