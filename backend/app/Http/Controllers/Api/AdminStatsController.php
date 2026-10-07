@@ -49,6 +49,9 @@ class AdminStatsController extends Controller
         $totalComments = Comment::count();
         $totalLikes    = Like::count();
 
+        // Pending cashout requests
+        $pendingCashouts = \App\Models\CashoutRequest::where('status', 'pending')->count();
+
         // User growth: last 7 days per day
         $userGrowth = User::select(
             DB::raw('DATE(created_at) as date'),
@@ -170,6 +173,7 @@ class AdminStatsController extends Controller
                 'new_stories'         => $newStories,
                 'total_comments'      => $totalComments,
                 'total_likes'         => $totalLikes,
+                'pending_cashouts'    => $pendingCashouts,
             ],
             'user_growth'              => $userGrowthFull,
             'destination_growth'       => $destGrowthFull,

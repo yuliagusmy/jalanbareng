@@ -41,7 +41,7 @@
       <!-- Dropdown Card -->
       <v-card elevation="8" rounded="xl" class="admin-dropdown-card py-2 border-subtle">
         <!-- Header: Quick link to main management overview -->
-        <div class="px-4 py-2-5 d-flex align-center justify-space-between border-b-subtle">
+        <div class="px-4 py-3 d-flex align-center justify-space-between border-b-subtle">
           <div class="d-flex align-center ga-2">
             <div class="admin-shield-badge">
               <v-icon size="16" color="#DC2626">mdi-shield-crown</v-icon>
@@ -237,6 +237,36 @@
             </v-list-item>
 
             <v-list-item
+              to="/manage/cashouts"
+              rounded="lg"
+              class="mx-2 mb-1 dropdown-admin-item"
+              @click="isMenuOpen = false"
+            >
+              <template v-slot:prepend>
+                <div class="item-icon-box bg-green-subtle">
+                  <v-icon size="16" color="#059669">mdi-hand-coin</v-icon>
+                </div>
+              </template>
+              <v-list-item-title class="font-weight-bold text-grey-darken-4">
+                Pencairan Poin
+                <v-chip
+                  v-if="pendingCashouts > 0"
+                  color="#DC2626"
+                  size="x-small"
+                  variant="flat"
+                  rounded="pill"
+                  class="ml-2 text-white font-weight-black"
+                  style="font-size: 0.62rem; height: 16px; padding: 0 5px;"
+                >
+                  {{ pendingCashouts }}
+                </v-chip>
+              </v-list-item-title>
+              <v-list-item-subtitle class="text-caption text-grey-darken-1">
+                Verifikasi transfer kontributor
+              </v-list-item-subtitle>
+            </v-list-item>
+
+            <v-list-item
               to="/manage/settings"
               rounded="lg"
               class="mx-2 mb-1 dropdown-admin-item"
@@ -262,14 +292,32 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
+import { useApi } from '~/composables/useApi'
 
 const authStore = useAuthStore()
+const { api } = useApi()
 const isMenuOpen = ref(false)
+const pendingCashouts = ref(0)
 
 const canManage = computed(() => {
   return authStore.isAdmin || authStore.isCommunityAdmin
+})
+
+// Fetch pending cashout count (admin only)
+const fetchPendingCashouts = async () => {
+  if (!authStore.isAdmin) return
+  try {
+    const res = await api.get('/admin/cashouts', { params: { status: 'pending' } })
+    pendingCashouts.value = res.data?.data?.counts?.pending ?? 0
+  } catch {
+    // silent — badge tidak kritis
+  }
+}
+
+onMounted(() => {
+  if (canManage.value) fetchPendingCashouts()
 })
 </script>
 
