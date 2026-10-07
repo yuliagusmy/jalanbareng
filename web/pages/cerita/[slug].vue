@@ -198,7 +198,6 @@
                 </div>
               </div>
             </div>
-            </div>
 
             <!-- ─ Comments ─ -->
             <div class="mb-12">
